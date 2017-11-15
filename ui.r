@@ -19,7 +19,8 @@ header <- dashboardHeader(
 
 sidebar <- dashboardSidebar(
   width = 270,
-  tags$style("position: fixed;"),
+  
+  tags$style(".main-sidebar{ position: fixed;}"),
   
   sidebarMenu(
     id = "tabs",
@@ -72,7 +73,10 @@ body <- dashboardBody(
   div(class="tab-content", id="tabItemsEnvelope",
     tabItem(tabName="tab_turbWindPars",
             fluidRow(
-              box(title = "Wind farm features", width = 2, status = "primary", solidHeader = TRUE,
+              box(title = "Wind farm features", 
+                  width = 2, 
+                  status = "primary", 
+                  solidHeader = TRUE,
                   
                   #helpText("<Brief description of windfarm features here>"),
                   
@@ -83,7 +87,7 @@ body <- dashboardBody(
                                value = startUpValues$windfarmPars_targetPower, min = 0),
                   bsTooltip(id = "lbl_windfarmPars_targetPower", 
                             title = paste0("Target power to be generated within wind farm.", 
-                            " To be used in conjunction with turbine model to calculate number of turbines in the array"),
+                            " Used in conjunction with turbine model to calculate number of turbines in the array"),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
  
                   # ---  Latitude
@@ -107,34 +111,50 @@ body <- dashboardBody(
                   # --- Tidal offset
                   numericInput(width = "85%", 
                                inputId = "numInput_windfarmPars_tidalOffset", 
-                               label = "Tidal Offset (m)", 
+                               label = label.help("Tidal Offset (m)", "lbl_windfarmPars_tidalOffset"), #"Tidal Offset (m)", 
                                value = startUpValues$tidalOffset, min = 0, step = 0.5),
+                  bsTooltip(id = "lbl_windfarmPars_tidalOffset", 
+                            title = paste0("Tidal offset to correct for flight heights calculated in relation to sea-level",
+                                           " and turbine dimensions calculated in relation to Highest Astronomical Tide"),
+                            options = list(container = "body"), placement = "right", trigger = "hover"),
                   
                   br(),
                   # --- Upwind/Downwind proportion of flights
                   sliderInput(width = "85%", 
                               inputId = "sldInput_windfarmPars_upWindDownWindProp", 
-                              label = "up/downwind ratio of flights", 
-                              value = 0.5, min = 0, max = 1, step = 0.1)
-                  
+                              label = label.help("Upwind flights (%)", "lbl_windfarmPars_upWindDownWindProp"), #"up/downwind ratio of flights", 
+                              value = 50, min = 0, max = 100, step = 10),
+                  bsTooltip(id = "lbl_windfarmPars_upWindDownWindProp", 
+                            title = paste0("The percentage of upwind bird flights. Should be 50% unless direction of travel", 
+                                           " is biased in a particular direction"),
+                            options = list(container = "body"), placement = "right", trigger = "hover")
               ),
-              box(title = "Turbine parameters", width = 10, status = "primary", solidHeader = TRUE,
+              box(title = "Turbine parameters", 
+                  width = 10, 
+                  status = "primary", 
+                  solidHeader = TRUE,
                   
                   fluidRow(
                     column(width=4,
                            box(width = 12, 
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_turbinePower", 
-                                            label = "Turbine Model (output in MW)", 
-                                            value = 4, min = 0)
+                                            label = label.help("Turbine Model (MW)", "lbl_windfarmPars_turbinePower"), #Turbine Model (output in MW)", 
+                                            value = 4, min = 0),
+                               bsTooltip(id = "lbl_windfarmPars_turbinePower", 
+                                         title = paste0("The power output of each turbine"),
+                                         options = list(container = "body"), placement = "right", trigger = "hover")
                            )
                     ),
                     column(width=4, 
                            box(width = 12,
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_numBlades", 
-                                            label = "Number of blades", 
-                                            value = 3, min = 0)
+                                            label =  label.help("No. of blades", "lbl_windfarmPars_numBlades"), # "Number of blades", 
+                                            value = 3, min = 0),
+                               bsTooltip(id = "lbl_windfarmPars_turbinePower", 
+                                         title = paste0("Number of blades in each turbine"),
+                                         options = list(container = "body"), placement = "right", trigger = "hover")
                            )
                     )
                   ),

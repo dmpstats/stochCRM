@@ -197,16 +197,20 @@ function(input, output, session) {
     
     hotTag <- paste0("hotInput_birdDensPars_", cSpecTags$specLabel)
     
-    output[[hotTag]] <- renderRHandsontable({
+    walk(hotTag, function(x){
       
-      data.frame(matrix(c(startUpValues$meanDensity, startUpValues$phiDensity), nrow = 2, ncol = 12, byrow = TRUE,
-                       dimnames = list(c("meanDensity", "phiDensity"), month.name)),
-                 stringsAsFactors = FALSE) %>%
-        rhandsontable(rowHeaderWidth = 160, 
-                      rowHeaders = c("Mean birds/km^2", "Dispersion")) %>%
-        hot_cols(colWidths = 90) %>%
-        hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
-        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      output[[x]] <- renderRHandsontable({
+        
+        data.frame(matrix(c(startUpValues$meanDensity, startUpValues$phiDensity), nrow = 2, ncol = 12, byrow = TRUE,
+                          dimnames = list(c("meanDensity", "phiDensity"), month.name)),
+                   stringsAsFactors = FALSE) %>%
+          rhandsontable(rowHeaderWidth = 160, 
+                        rowHeaders = c("Mean birds/km^2", "Dispersion")) %>%
+          hot_cols(colWidths = 90) %>%
+          hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
+          hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      })  
+      
     })
   })
   
@@ -519,7 +523,7 @@ function(input, output, session) {
   observeEvent(input$actButtonInput_simulPars_GO, {
 
 
-    #--- step 1: gather and arrange all the current input value to run in simulation function
+    #--- step 1: gather and arrange all the current input value to run in simulation function ----- # 
 
     # -- bird biometric data 
     birdData <- rv$biomParsInputs_ls %>%
@@ -597,12 +601,11 @@ function(input, output, session) {
       countData <- NULL
     }
     
-    
     # - rotor speed and pitch vs windspeed and option
-    # - flight height
+
     
 
-    # ----- step 2: run simulation function
+    # ----- step 2: run simulation function ----- # 
     
     if(0){
     stochasticBand(
@@ -617,7 +620,7 @@ function(input, output, session) {
       TPower = input$numInput_windfarmPars_targetPower, #600
       LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
       WFWidth = input$numInput_windfarmPars_width,
-      Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp, # 0.5,
+      Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp/100, # convert % (user input) to proportion (expected by model)
       Latitude = input$numInput_windfarmPars_Latitude, # 55.8,
       TideOff = input$numInput_windfarmPars_tidalOffset, # 2.5,
       windSpeedMean = input$numInput_miscPars_windSpeed_E_, # 7.74,
@@ -660,7 +663,7 @@ function(input, output, session) {
   #' ------------------------------------------------------------------
    
   output$inputRVs <- renderPrint({
-    str(reactiveValuesToList(input), max.level = 3)
+    #str(reactiveValuesToList(input), max.level = 3)
   })
   
   # output$out_inputs_biom <- renderPrint({
