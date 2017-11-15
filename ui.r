@@ -129,6 +129,7 @@ body <- dashboardBody(
                                            " is biased in a particular direction"),
                             options = list(container = "body"), placement = "right", trigger = "hover")
               ),
+              
               box(title = "Turbine parameters", 
                   width = 10, 
                   status = "primary", 
@@ -139,9 +140,9 @@ body <- dashboardBody(
                            box(width = 12, 
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_turbinePower", 
-                                            label = label.help("Turbine Model (MW)", "lbl_windfarmPars_turbinePower"), #Turbine Model (output in MW)", 
+                                            label = label.help("Turbine Model (MW)", "lbl_turbinePars_turbinePower"), #Turbine Model (output in MW)", 
                                             value = 4, min = 0),
-                               bsTooltip(id = "lbl_windfarmPars_turbinePower", 
+                               bsTooltip(id = "lbl_turbinePars_turbinePower", 
                                          title = paste0("The power output of each turbine"),
                                          options = list(container = "body"), placement = "right", trigger = "hover")
                            )
@@ -150,9 +151,9 @@ body <- dashboardBody(
                            box(width = 12,
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_numBlades", 
-                                            label =  label.help("No. of blades", "lbl_windfarmPars_numBlades"), # "Number of blades", 
+                                            label =  label.help("No. of blades", "lbl_turbinePars_numBlades"), # "Number of blades", 
                                             value = 3, min = 0),
-                               bsTooltip(id = "lbl_windfarmPars_turbinePower", 
+                               bsTooltip(id = "lbl_turbinePars_numBlades", 
                                          title = paste0("Number of blades in each turbine"),
                                          options = list(container = "body"), placement = "right", trigger = "hover")
                            )
@@ -163,25 +164,32 @@ body <- dashboardBody(
                   fluidRow(
                     column(width = 4,
                            box(width = 12,
-                               NormNumericInput(title = "Rotor Radius (m)", paramID = "turbinePars_rotRadius", specID = "", 
-                                                varName = "Rotor Radius (m)"),
-                               h5(paste0("PDF of turbine's rotor Radius")),
+                               NormNumericInput(paramID = "turbinePars_rotRadius", specID = "", 
+                                                varName = "Rotor Radius (m)", 
+                                                infoText = paste0("The distance from the axis of rotation to blade tip (~Normal)."),
+                                                E_value = startUpValues$rotorSpeed_E, SD_value = startUpValues$rotorSpeed_SD),
+                               h5(paste0("PDF for turbine's rotor Radius")),
                                plotOutput("plot_turbinePars_rotRadius", width = 300, height = 200)
                            )
                     ),
                     column(width = 4,
                            box(width = 12,
-                               NormNumericInput(title = "Hub Height (m)", paramID = "turbinePars_hubHght", specID = "",
-                                                varName = "Hub Height (m)"),
-                               h5(paste0("PDF of turbine's Hub Height")),
+                               NormNumericInput(paramID = "turbinePars_hubHght", specID = "",
+                                                varName = "Hub Height (m)",
+                                                infoText = paste0("Used in conjunction with rotor radius to provide the distance", 
+                                                                  " between Highest Astronomical Tide and the axis of rotation (~Normal)."),
+                                                E_value = startUpValues$hubHght_E, SD_value = startUpValues$hubHght_SD),
+                               h5(paste0("PDF for turbine's Hub Height")),
                                plotOutput("plot_turbinePars_hubHght", width = 300, height = 200)
                            )
                     ),
                     column(width = 4,
                            box(width = 12,
-                               NormNumericInput(title = "Maximum blade width (m)", paramID = "turbinePars_maxBladeWdth", 
-                                                specID = "", varName = "Max blade width (m)"),
-                               h5(paste0("PDF of turbine's maximum blade width")),
+                               NormNumericInput(paramID = "turbinePars_maxBladeWdth", specID = "", 
+                                                varName = "Max blade width (m)",
+                                                infoText = paste0("The maximum width of the rotor blade (~Normal)."),
+                                                E_value = startUpValues$maxBladeWdth_E, SD_value = startUpValues$maxBladeWdth_SD),
+                               h5(paste0("PDF for turbine's maximum blade width")),
                                plotOutput("plot_turbinePars_maxBladeWdth", width = 300, height = 200)
                            )
                     )
