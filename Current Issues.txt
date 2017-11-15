@@ -1,0 +1,17 @@
+
+(i) Parameters Distributional Issues:
+  - Proportion of Nocturnal Activity parameterized as Normal
+  - Proportion at Collision risk height parameterized as Normal
+  - Probability of basic and extended avoidance parameterized as Normal 
+  
+  
+(ii) current restrictions
+  - only ONE turbine model allowed
+  - Only listed species allowed
+  
+  
+
+  
+  
+  
+
