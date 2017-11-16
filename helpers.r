@@ -1,5 +1,9 @@
 
+# modifying behaviour of qtnorm to deal with its errors when the specified parameters fall outside allowed values (e.g. when mu>upper and sd==0), returning 0
+qtnorm_possibly <- possibly(qtnorm, otherwise = 0)
 
+
+# Function to create icons and labels with info about parameters
 label.help <- function(label, id){
    HTML(paste0(label, actionLink(id,label=NULL,icon=icon('info-circle'))))
 }
@@ -25,7 +29,8 @@ NormSliderInput <- function(title, paramID, specID, varName, E_value=50, E_min=1
 
 
 
-NormNumericInput <- function(title="", paramID, specID, varName, infoText ="", E_value=50, E_min=1, E_max=100, SD_value=50, SD_min=1, SD_max=100){
+NormNumericInput <- function(title="", paramID, specID, varName, infoLabel="foo", infoText ="", 
+                             E_value=50, E_min=1, E_max=100, SD_value=50, SD_min=1, SD_max=100){
   # wellPanel(width=5,
   #   style = "padding: 5px;",
   div(
@@ -35,7 +40,8 @@ NormNumericInput <- function(title="", paramID, specID, varName, infoText ="", E
       numericInput(inputId = paste0("numInput_", paramID, "_E_", specID), 
                    #label = paste0("Mean ", varName, ":"),
                    #label = "Mean", 
-                   label = label.help(varName, paste0("lbl_", paramID)), #varName,
+                   label = label.help(varName, infoLabel), #varName,
+                   #label = label.help(varName, paste0("lbl_", paramID)), #varName,
                    min = E_min, max = E_max, step = 1,
                    value = E_value, width = '90%'),
       
@@ -45,11 +51,13 @@ NormNumericInput <- function(title="", paramID, specID, varName, infoText ="", E
                    min = SD_min, max = SD_max, step = 1, 
                    value = SD_value, width = '90%')
     ),
-    bsTooltip(id = paste0("lbl_", paramID),
+    bsTooltip(#id = paste0("lbl_", paramID),
+              id = infoLabel,
               title = infoText,
-              options = list(container = "body"), 
+              options = list(container = "body"),
               placement = "right", trigger = "hover")
   )
+#  browser()
 }
 
 

@@ -146,8 +146,10 @@ function(input, output, session) {
   # --- Create input table for turbine monthly operation parameters
   output$hotInput_turbinePars_monthOps <- renderRHandsontable({
 
-    data.frame(array(0, dim = c(3, 12),
-                     dimnames = list(c("Wind Availability (%)", "Mean Downtime (%)", "SD Downtime (%)"), month.name)),
+   
+    
+    data.frame(matrix(c(startUpValues$windAvail, startUpValues$meanDownTime, startUpValues$sdDownTime), nrow = 3, ncol = 12, byrow = TRUE,
+                       dimnames = list(c("Wind Availability (%)", "Mean Downtime (%)", "SD Downtime (%)"), month.name)),
                stringsAsFactors = FALSE) %>%
       rhandsontable(rowHeaderWidth = 140) %>%
       hot_cols(colWidths = 85) %>%
@@ -201,11 +203,11 @@ function(input, output, session) {
       
       output[[x]] <- renderRHandsontable({
         
-        data.frame(matrix(c(startUpValues$meanDensity, startUpValues$phiDensity), nrow = 2, ncol = 12, byrow = TRUE,
-                          dimnames = list(c("meanDensity", "phiDensity"), month.name)),
+        data.frame(matrix(c(startUpValues$meanDensity, startUpValues$sdDensity), nrow = 2, ncol = 12, byrow = TRUE,
+                          dimnames = list(c("meanDensity", "sdDensity"), month.name)),
                    stringsAsFactors = FALSE) %>%
           rhandsontable(rowHeaderWidth = 160, 
-                        rowHeaders = c("Mean birds/km^2", "Dispersion")) %>%
+                        rowHeaders = c("Mean birds/km^2", "SD of birds/km^2")) %>%
           hot_cols(colWidths = 90) %>%
           hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
           hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
@@ -279,7 +281,7 @@ function(input, output, session) {
               data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
                 ggplot(aes(qtls)) +
                 stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-                stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "blue", alpha = 0.3) +
+                stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "darkorange", alpha = 0.3) +
                 labs(y="Density", #title=c_tag,
                      x = unique(cPlotData$par))
               #plot(1:10)
@@ -326,7 +328,7 @@ function(input, output, session) {
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "blue", alpha = 0.3) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Rotation Radius (m)")
     })
@@ -339,7 +341,7 @@ function(input, output, session) {
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "blue", alpha = 0.3) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Hub Height (m)")
   })
@@ -352,7 +354,7 @@ function(input, output, session) {
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "blue", alpha = 0.3) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Maximum Blade Width (m)")
   })
@@ -366,7 +368,7 @@ function(input, output, session) {
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "blue", alpha = 0.3) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Rotation Speed (rpm)")
   })
@@ -379,7 +381,7 @@ function(input, output, session) {
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "blue", alpha = 0.3) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Blade Pitch (degrees)")
   })
@@ -395,7 +397,7 @@ function(input, output, session) {
       gather(month, windAvb, -Variable) %>% select(-Variable) %>%
       mutate(month = factor(month.abb, levels = month.abb)) %>%
       ggplot(aes(x=month, y=windAvb)) +
-      geom_col(fill= "darkblue", alpha = 0.7, width = 0.4) +
+      geom_col(fill= "olivedrab", alpha = 0.7, width = 0.4) +
       labs(x="", y = "Wind Availability (%)", title = "Monthly wind availability")
     
   })
@@ -416,8 +418,8 @@ function(input, output, session) {
       mutate(lwBound = qnorm(p=0.025, mean = meanDwnTm, sd = sdDwnTm),
              upBound = qnorm(p=c(0.975), mean = meanDwnTm, sd = sdDwnTm)) %>%
       ggplot(aes(x=month, y = meanDwnTm, group=month)) +
-      geom_pointrange(aes(ymin=lwBound, ymax=upBound), col = "blue") +
-      labs(y = "Downtime (%)", x = "", title = "Monthly turbine downtime")
+      geom_pointrange(aes(ymin=lwBound, ymax=upBound), col = "olivedrab", size =0.8) +
+      labs(y = "Downtime (%)", x = "", title = "Monthly turbine downtime (Means & 95% CIs)")
   })  
 
   
@@ -430,7 +432,7 @@ function(input, output, session) {
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "blue", alpha = 0.3) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Wind Seed (m/s)")
     
@@ -469,16 +471,20 @@ function(input, output, session) {
         
         as.data.frame(t(x)) %>% 
           rownames_to_column(var = "month") %>%
-          mutate(month = factor(month, levels = month),
-                 upBound = qnbinom(p=0.025, mu = meanDensity, size = meanDensity/(phiDensity - 1)),  # QuasiPoisson hack, phiDensity must be >=1
-                 lwBound = qnbinom(p=0.975, mu = meanDensity, size = meanDensity/(phiDensity - 1)),
-                 upBound = if_else(is.na(upBound), 0, upBound),
-                 lwBound = if_else(is.na(lwBound), 0, lwBound)) %>%
-                 #lwBound = qnorm(p=0.025, mean = meanDensity, sd = sdDensity),
-                 #upBound = qnorm(p=c(0.975), mean = meanDensity, sd = sdDensity)) %>%
-          ggplot(aes(x=month, y = meanDensity, group=month)) +
-          geom_pointrange(aes(ymin=lwBound, ymax=upBound), col = "blue") +
-          labs(y = "Number of birds per km2", x = "", title = specName)
+          mutate(month = factor(month, levels = month)) %>%
+          group_by(month) %>%
+          mutate(med = qtnorm_possibly(p=0.5, mean = meanDensity, sd = sdDensity + 1e-10, 0, 2),       # Truncated Normal bounded by 0 and 2 - ajustment on SD to workaround the issue of qtnorm error when mu==0 & sd==0
+                 lwBound = qtnorm_possibly(p=0.025, mean = meanDensity, sd = sdDensity + 1e-10, 0, 2),   
+                 upBound = qtnorm_possibly(p=0.975, mean = meanDensity, sd = sdDensity + 1e-10, 0, 2)) %>%
+        # upBound = qnbinom(p=0.025, mu = meanDensity, size = meanDensity/(phiDensity - 1)),  # QuasiPoisson hack, phiDensity must be >=1
+        # lwBound = qnbinom(p=0.975, mu = meanDensity, size = meanDensity/(phiDensity - 1)),
+        # upBound = if_else(is.na(upBound), 0, upBound),
+        # lwBound = if_else(is.na(lwBound), 0, lwBound)) %>%
+        ggplot(aes(x=month, y = meanDensity, group=month)) +
+          #geom_pointrange(aes(ymin=lwBound, ymax=upBound), col = "blue") +
+          geom_errorbar(aes(ymin=lwBound, ymax=upBound), col = "darkorange", width = 0.2, size = 1) +
+          geom_point(col="darkorange", size = 3) +
+          labs(y = "Number of birds per km2", x = "", title = paste0(specName, " (Mean and 95% CI)"))
       })
     })
     
@@ -519,7 +525,7 @@ function(input, output, session) {
 #   })
   
   
-  
+
   observeEvent(input$actButtonInput_simulPars_GO, {
 
 
@@ -543,7 +549,6 @@ function(input, output, session) {
       select(Species, AvoidanceBasic, AvoidanceBasicSD, AvoidanceExtended, AvoidanceExtendedSD, Body_Length, Body_LengthSD,
              Wingspan, WingspanSD, Flight_Speed, Flight_SpeedSD, Nocturnal_Activity, Nocturnal_ActivitySD, Flight, 
              Prop_CRH_Obs, Prop_CRH_ObsSD)
-      
     
     
     # -- turbine data 
@@ -575,9 +580,7 @@ function(input, output, session) {
       PitchSD = input$numInput_turbinePars_bladePitch_SD_
     ) %>%
       left_join(., turbineData_Operation, by = "TurbineModel")
-    
-
-    
+  
     
     # -- birds counts data
     if(length(rv$birdDensParsInputs_ls)>0){
@@ -592,7 +595,7 @@ function(input, output, session) {
         select(specLabel, hyperPar:December) %>%
         gather(month, Value, -c(specLabel, hyperPar)) %>%
         group_by(specLabel) %>%
-        mutate(VariableMasden = factor(paste0(rep(month.abb, each=2), c("", "Disp"))),
+        mutate(VariableMasden = factor(paste0(rep(month.abb, each=2), c("", "SD"))),
                VariableMasden = factor(VariableMasden, levels = VariableMasden)
         ) %>%
         select(-c(hyperPar:month)) %>%
@@ -604,29 +607,69 @@ function(input, output, session) {
     # - rotor speed and pitch vs windspeed and option
 
     
-
-    # ----- step 2: run simulation function ----- # 
     
-    if(0){
-    stochasticBand(
-      workingDirectory,
-      results_folder = "results",
-      BirdDataFile = birdData,
-      TurbineDataFile = turbineData,
-      CountDataFile = countData,
-      FlightDataFile = "data/FlightHeight.csv",
-      iter = input$sldInput_simulPars_numIter, #10,
-      CRSpecies = slctSpeciesTags()$specLabel, #CRSpecies = c("Black_legged_Kittiwake"),
-      TPower = input$numInput_windfarmPars_targetPower, #600
-      LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
-      WFWidth = input$numInput_windfarmPars_width,
-      Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp/100, # convert % (user input) to proportion (expected by model)
-      Latitude = input$numInput_windfarmPars_Latitude, # 55.8,
-      TideOff = input$numInput_windfarmPars_tidalOffset, # 2.5,
-      windSpeedMean = input$numInput_miscPars_windSpeed_E_, # 7.74,
-      windSpeedSD = input$numInput_miscPars_windSpeed_SD_ # 3.2
+    
+    # ----- step 2: Set progress bar ----- #
+    
+    # Create a Progress objects for species and iterations within each species
+    progress_Spec <- shiny::Progress$new()
+    progress_Iter <- shiny::Progress$new()
+    
+    progress_Spec$set(message = "Processing Species", value = 0)
+    progress_Iter$set(message = "Working through iterations", value = 0)
+    
+    on.exit({
+      progress_Iter$close()
+      progress_Spec$close()
+      })
+    #on.exit()
+    
+
+    #' callback functions to update progress on species.
+    updateProgress_Spec <- function(value = NULL, detail = NULL) {
+      progress_Spec$set(value = value, detail = detail)
+    }
+    
+    #' callback functions to update progress on iterations. Each time updateProgress_Iter() is called, 
+    #' it moves the bar 1/nth of the total distance.
+    # updateProgress_Iter <- function(detail = NULL, n = NULL) {
+    #   progress_Iter$inc(amount = 1/n, detail = detail)
+    # }
+    updateProgress_Iter <- function(value = NULL, detail = NULL) {
+      progress_Iter$set(value = value, detail = detail)
+    }
+    
+        
+
+    # ----- step 3: run simulation function ----- # 
+    
+    if(1){
+      stochasticBand(
+        workingDirectory,
+        results_folder = "results",
+        BirdDataFile = birdData,
+        TurbineDataFile = turbineData,
+        CountDataFile = countData,
+        FlightDataFile = "data/FlightHeight.csv",
+        iter = input$sldInput_simulPars_numIter, #10,
+        CRSpecies = slctSpeciesTags()$specLabel, #CRSpecies = c("Black_legged_Kittiwake"),
+        TPower = input$numInput_windfarmPars_targetPower, #600
+        LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
+        WFWidth = input$numInput_windfarmPars_width,
+        Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp/100, # convert % (user input) to proportion (expected by model)
+        Latitude = input$numInput_windfarmPars_Latitude, # 55.8,
+        TideOff = input$numInput_windfarmPars_tidalOffset, # 2.5,
+        windSpeedMean = input$numInput_miscPars_windSpeed_E_, # 7.74,
+        windSpeedSD = input$numInput_miscPars_windSpeed_SD_, # 3.2,
+        updateProgress_Spec,  # pass in the updateProgress function so that it can update the progress indicator.
+        updateProgress_Iter
       )
     }
+    
+    
+ 
+    
+    
     
     
     output$out_simFunctionArgs <- renderPrint({
@@ -648,7 +691,10 @@ function(input, output, session) {
         ))
       )
     })
-      
+     
+    
+
+    
   })
 
   

@@ -68,7 +68,7 @@ body <- dashboardBody(
   #   tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
   #   #tags$link(rel = "stylesheet", type = "text/css", href = "cyborgTheme.css")
   # ),
-  
+
   #tabItems(
   div(class="tab-content", id="tabItemsEnvelope",
     tabItem(tabName="tab_turbWindPars",
@@ -83,9 +83,9 @@ body <- dashboardBody(
                   # --- Turbine Power
                   numericInput(width = "85%", 
                                inputId = "numInput_windfarmPars_targetPower", 
-                               label = label.help("Target Power (MW)", "lbl_windfarmPars_targetPower"), #"Target Power (MW)", 
+                               label = label.help("Target Power (MW)", "lbl_windfarmTargetPower"), #"Target Power (MW)", 
                                value = startUpValues$windfarmPars_targetPower, min = 0),
-                  bsTooltip(id = "lbl_windfarmPars_targetPower", 
+                  bsTooltip(id = "lbl_windfarmTargetPower", 
                             title = paste0("Target power to be generated within wind farm.", 
                             " Used in conjunction with turbine model to calculate number of turbines in the array"),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
@@ -93,27 +93,27 @@ body <- dashboardBody(
                   # ---  Latitude
                   numericInput(width = "85%", 
                                inputId = "numInput_windfarmPars_Latitude", 
-                               label = label.help("Latitude (deg)", "lbl_windfarmPars_Latitude"), #"Latitude (deg)", 
+                               label = label.help("Latitude (deg)", "lbl_windfarmLatitude"), #"Latitude (deg)", 
                                value = startUpValues$windfarmPars_Latitude, min = -90, max = 90),
-                  bsTooltip(id = "lbl_windfarmPars_Latitude", 
+                  bsTooltip(id = "lbl_windfarmLatitude", 
                             title = paste0("Latitude of the wind farm in decimal degrees. Used to calculate day length at the site over the year."),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
                   
                   # --- Width
                   numericInput(width = "85%", 
                                inputId = "numInput_windfarmPars_width", 
-                               label = label.help("Width (Km)", "lbl_windfarmPars_width"), #"Width (Km)", 
+                               label = label.help("Width (Km)", "lbl_windfarmWidth"), #"Width (Km)", 
                                value = startUpValues$windfarmPars_width, min = 0), 
-                  bsTooltip(id = "lbl_windfarmPars_width", 
+                  bsTooltip(id = "lbl_windfarmWidth", 
                             title = paste0("The wind farm width"),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
                   
                   # --- Tidal offset
                   numericInput(width = "85%", 
                                inputId = "numInput_windfarmPars_tidalOffset", 
-                               label = label.help("Tidal Offset (m)", "lbl_windfarmPars_tidalOffset"), #"Tidal Offset (m)", 
+                               label = label.help("Tidal Offset (m)", "lbl_tidalOffset"), #"Tidal Offset (m)", 
                                value = startUpValues$tidalOffset, min = 0, step = 0.5),
-                  bsTooltip(id = "lbl_windfarmPars_tidalOffset", 
+                  bsTooltip(id = "lbl_tidalOffset", 
                             title = paste0("Tidal offset to correct for flight heights calculated in relation to sea-level",
                                            " and turbine dimensions calculated in relation to Highest Astronomical Tide"),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
@@ -122,9 +122,9 @@ body <- dashboardBody(
                   # --- Upwind/Downwind proportion of flights
                   sliderInput(width = "85%", 
                               inputId = "sldInput_windfarmPars_upWindDownWindProp", 
-                              label = label.help("Upwind flights (%)", "lbl_windfarmPars_upWindDownWindProp"), #"up/downwind ratio of flights", 
+                              label = label.help("Upwind flights (%)", "lbl_upWindDownWindProp"), #"up/downwind ratio of flights", 
                               value = 50, min = 0, max = 100, step = 10),
-                  bsTooltip(id = "lbl_windfarmPars_upWindDownWindProp", 
+                  bsTooltip(id = "lbl_upWindDownWindProp", 
                             title = paste0("The percentage of upwind bird flights. Should be 50% unless direction of travel", 
                                            " is biased in a particular direction"),
                             options = list(container = "body"), placement = "right", trigger = "hover")
@@ -140,9 +140,9 @@ body <- dashboardBody(
                            box(width = 12, 
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_turbinePower", 
-                                            label = label.help("Turbine Model (MW)", "lbl_turbinePars_turbinePower"), #Turbine Model (output in MW)", 
+                                            label = label.help("Turbine Model (MW)", "lbl_turbinePower"), #Turbine Model (output in MW)", 
                                             value = 4, min = 0),
-                               bsTooltip(id = "lbl_turbinePars_turbinePower", 
+                               bsTooltip(id = "lbl_turbinePower", 
                                          title = paste0("The power output of each turbine"),
                                          options = list(container = "body"), placement = "right", trigger = "hover")
                            )
@@ -151,9 +151,9 @@ body <- dashboardBody(
                            box(width = 12,
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_numBlades", 
-                                            label =  label.help("No. of blades", "lbl_turbinePars_numBlades"), # "Number of blades", 
+                                            label =  label.help("No. of blades", "lbl_numBlades"), # "Number of blades", 
                                             value = 3, min = 0),
-                               bsTooltip(id = "lbl_turbinePars_numBlades", 
+                               bsTooltip(id = "lbl_numBlades", 
                                          title = paste0("Number of blades in each turbine"),
                                          options = list(container = "body"), placement = "right", trigger = "hover")
                            )
@@ -166,6 +166,7 @@ body <- dashboardBody(
                            box(width = 12,
                                NormNumericInput(paramID = "turbinePars_rotRadius", specID = "", 
                                                 varName = "Rotor Radius (m)", 
+                                                infoLabel = "lbl_rotorRadius", 
                                                 infoText = paste0("The distance from the axis of rotation to blade tip (~Normal)."),
                                                 E_value = startUpValues$rotorSpeed_E, SD_value = startUpValues$rotorSpeed_SD),
                                h5(paste0("PDF for turbine's rotor Radius")),
@@ -176,6 +177,7 @@ body <- dashboardBody(
                            box(width = 12,
                                NormNumericInput(paramID = "turbinePars_hubHght", specID = "",
                                                 varName = "Hub Height (m)",
+                                                infoLabel = "lbl_turbineHubHeight", 
                                                 infoText = paste0("Used in conjunction with rotor radius to provide the distance", 
                                                                   " between Highest Astronomical Tide and the axis of rotation (~Normal)."),
                                                 E_value = startUpValues$hubHght_E, SD_value = startUpValues$hubHght_SD),
@@ -187,6 +189,7 @@ body <- dashboardBody(
                            box(width = 12,
                                NormNumericInput(paramID = "turbinePars_maxBladeWdth", specID = "", 
                                                 varName = "Max blade width (m)",
+                                                infoLabel = "lbl_maxBladeWdth", 
                                                 infoText = paste0("The maximum width of the rotor blade (~Normal)."),
                                                 E_value = startUpValues$maxBladeWdth_E, SD_value = startUpValues$maxBladeWdth_SD),
                                h5(paste0("PDF for turbine's maximum blade width")),
@@ -197,9 +200,21 @@ body <- dashboardBody(
                   br(),
                   fluidRow(
                     box(width = 12, 
-                        #title = tags$b("Monthly Operations"),
-                        h5(tags$b("Monthly Operation")),
+                        # #title = tags$b("Monthly Operations"),
+                        # h5(tags$b("Monthly Operation")),
+                        # helpText("Information on percentage of wind availability per month (treated as constant) and percentage of maintenance downtime per month (incorporating uncertainty via a Normal distribution)"),
+                        # br(),
                         #fileInput(inputId = "upldInput_dt_turbOper", label = "Upload data", width = "20%"),
+                        
+                        tags$b(HTML(paste0("Monthly Operation", actionLink("lbl_monthOPs",label=NULL,icon=icon('info-circle'))))),
+                        bsTooltip(id = "lbl_monthOPs", 
+                                  title = paste0("Information on turbine activity per month: % of wind availability (treated as constant) and % of", 
+                                                 " maintenance downtime (~ Normal)"),
+                                  options = list(container = "body"), placement = "right", trigger = "hover"),
+                        
+                        br(),
+                        br(),
+                        
                         rHandsontableOutput("hotInput_turbinePars_monthOps", width = "100%"),
                         tags$style(type="text/css", "#hotInput_turbinePars_monthOps th {font-weight:bold;}"),
                         br(),
@@ -274,7 +289,7 @@ body <- dashboardBody(
                                 value = TRUE),
                   hr(),
                   sliderInput(inputId = "sldInput_simulPars_numIter", label = "Number of Iterations", 
-                              min = 10, max = 10000, step = 500, value = 500),
+                              min = 50, max = 10000, step = 500, value = 50),
                   hr(),
                   actionButton(inputId = "actButtonInput_simulPars_GO", label = tags$b("Run Simulation"), 
                                icon = icon("cogs"), width = "100%")
@@ -285,8 +300,6 @@ body <- dashboardBody(
             )
     )
   ),
-  
-   
   # verbatimTextOutput("out_inputs_biom"),
   verbatimTextOutput("inputRVs")
   # 
@@ -299,11 +312,26 @@ body <- dashboardBody(
   #plotOutput("testPlot")
 )
 
-
-
 dashboardPage(header, sidebar, body)
 
-
+# bootstrapPage(
+#   
+#   
+#   useShinyjs(), 
+#   
+#   # Add custom CSS & Javascript;
+#   tagList(tags$head(
+#     #tags$link(rel="stylesheet", type="text/css",href="style.css"),
+#     tags$script(type="text/javascript", src = "busy.js")
+#   )),
+#   
+#   dashboardPage(header, sidebar, body),
+#   
+#   div(class = "busy", 
+#       h4("working..."),
+#       h2(HTML('<i class="fa fa-cog fa-spin fa-2x"></i>'))
+#   )
+# )
 
 
 
