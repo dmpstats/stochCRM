@@ -29,7 +29,7 @@ NormSliderInput <- function(title, paramID, specID, varName, E_value=50, E_min=1
 
 
 
-NormNumericInput <- function(title="", paramID, specID, varName, infoLabel="foo", infoText ="", 
+NormNumericInput <- function(title="", paramID, specID, varName, infoId="foo", infoText ="", 
                              E_value=50, E_min=1, E_max=100, SD_value=50, SD_min=1, SD_max=100){
   # wellPanel(width=5,
   #   style = "padding: 5px;",
@@ -38,9 +38,7 @@ NormNumericInput <- function(title="", paramID, specID, varName, infoLabel="foo"
     splitLayout(
       cellWidths = "50%",
       numericInput(inputId = paste0("numInput_", paramID, "_E_", specID), 
-                   #label = paste0("Mean ", varName, ":"),
-                   #label = "Mean", 
-                   label = label.help(varName, infoLabel), #varName,
+                   label = label.help(varName, infoId), #varName,
                    #label = label.help(varName, paste0("lbl_", paramID)), #varName,
                    min = E_min, max = E_max, step = 1,
                    value = E_value, width = '90%'),
@@ -52,12 +50,11 @@ NormNumericInput <- function(title="", paramID, specID, varName, infoLabel="foo"
                    value = SD_value, width = '90%')
     ),
     bsTooltip(#id = paste0("lbl_", paramID),
-              id = infoLabel,
+              id = infoId,
               title = infoText,
               options = list(container = "body"),
               placement = "right", trigger = "hover")
   )
-#  browser()
 }
 
 

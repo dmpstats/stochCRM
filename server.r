@@ -146,8 +146,6 @@ function(input, output, session) {
   # --- Create input table for turbine monthly operation parameters
   output$hotInput_turbinePars_monthOps <- renderRHandsontable({
 
-   
-    
     data.frame(matrix(c(startUpValues$windAvail, startUpValues$meanDownTime, startUpValues$sdDownTime), nrow = 3, ncol = 12, byrow = TRUE,
                        dimnames = list(c("Wind Availability (%)", "Mean Downtime (%)", "SD Downtime (%)"), month.name)),
                stringsAsFactors = FALSE) %>%
@@ -162,9 +160,10 @@ function(input, output, session) {
   # --- Create input table for turbine rotation speed vs windspeed relationship
   output$hotInput_turbinePars_rotationVsWind <- renderRHandsontable({
 
-    data.frame(array(0, dim = c(10, 2),
-                     dimnames = list(NULL, c("windSpeed", "rotationSpeed"))),
-               stringsAsFactors = FALSE) %>%
+    # data.frame(array(0, dim = c(10, 2),
+    #                  dimnames = list(NULL, c("windSpeed", "rotationSpeed"))),
+    #            stringsAsFactors = FALSE) %>%
+    startUpValues$rotationVsWind_df %>%
       bind_rows(data.frame(windSpeed = NA, rotationSpeed=NA)) %>%
       rhandsontable(rowHeaders=NULL, colHeaders = c("Wind speed (m/s)", "Rotation speed (rpm)")) %>%
       hot_cols(colWidths = 150) %>%
@@ -177,9 +176,10 @@ function(input, output, session) {
   # --- Create input table for turbine rotation speed vs windspeed relationship
   output$hotInput_turbinePars_pitchVsWind <- renderRHandsontable({
 
-    data.frame(array(0, dim = c(10, 2),
-                     dimnames = list(NULL, c("windSpeed", "bladePitch"))),
-               stringsAsFactors = FALSE) %>%
+    # data.frame(array(0, dim = c(10, 2),
+    #                  dimnames = list(NULL, c("windSpeed", "bladePitch"))),
+    #            stringsAsFactors = FALSE) %>%
+    startUpValues$pitchVsWind_df %>%
       bind_rows(data.frame(windSpeed = NA, bladePitch=NA)) %>%
       rhandsontable(rowHeaders=NULL, colHeaders = c("Wind speed (m/s)", "Blade Pitch (deg)")) %>%
       hot_cols(colWidths = 150) %>%
@@ -565,19 +565,33 @@ function(input, output, session) {
       select(-Variable) %>%
       spread(VariableMasden, Value)
     
+    #' managing the option of prodist vs windspeed - relationship for rotation speed and blade pitch 
+    #' Model function expects NAs on associated hyperparameters when the latter in optioned
+    rotSpeed_E <- ifelse(input$radButtonInput_turbinePars_rotSpdInputOption == 'probDist',   
+                           input$numInput_turbinePars_rotnSpeed_E_, NA)
+    rotSpeed_SD <- ifelse(input$radButtonInput_turbinePars_rotSpdInputOption == 'probDist', 
+          input$numInput_turbinePars_rotnSpeed_SD_, NA)
+    
+    pitch_E <- ifelse(input$radButtonInput_turbinePars_bldPitchInputOption == 'probDist', 
+           input$numInput_turbinePars_bladePitch_E_, NA)
+    
+    pitch_SD <- ifelse(input$radButtonInput_turbinePars_bldPitchInputOption == 'probDist', 
+           input$numInput_turbinePars_bladePitch_SD_, NA)
+    
+    # merging turbine data
     turbineData <- tibble(
       TurbineModel = input$numInput_turbinePars_turbinePower,
       Blades = input$numInput_turbinePars_numBlades,
-      RotationSpeed = input$numInput_turbinePars_rotnSpeed_E_,
-      RotationSpeedSD = input$numInput_turbinePars_rotnSpeed_SD_,
+      RotationSpeed = rotSpeed_E,
+      RotationSpeedSD = rotSpeed_SD,
       RotorRadius	= input$numInput_turbinePars_rotRadius_E_,
       RotorRadiusSD	= input$numInput_turbinePars_rotRadius_SD_,
       HubHeightAdd = input$numInput_turbinePars_hubHght_E_,
       HubHeightAddSD	= input$numInput_turbinePars_hubHght_SD_,
       BladeWidth	= input$numInput_turbinePars_maxBladeWdth_E_,
       BladeWidthSD = input$numInput_turbinePars_maxBladeWdth_SD_,
-      Pitch = input$numInput_turbinePars_bladePitch_E_,
-      PitchSD = input$numInput_turbinePars_bladePitch_SD_
+      Pitch = pitch_E,
+      PitchSD = pitch_SD
     ) %>%
       left_join(., turbineData_Operation, by = "TurbineModel")
   
@@ -603,11 +617,18 @@ function(input, output, session) {
     }else{
       countData <- NULL
     }
-    
-    # - rotor speed and pitch vs windspeed and option
 
-    
-    
+
+    # --- rotor speed and pitch vs windspeed
+    windPowerData <- left_join(hot_to_r(input$hotInput_turbinePars_rotationVsWind), # produces "Warning in asMethod(object) : NAs introduced by coercion"
+                               hot_to_r(input$hotInput_turbinePars_pitchVsWind),    # produces "Warning in asMethod(object) : NAs introduced by coercion"
+                               by = "windSpeed") %>%
+      rename(Wind = windSpeed, Rotor = rotationSpeed, Pitch = bladePitch) %>%
+      drop_na()
+
+    # model function expects a csv file named according to the turbine model/power - change code to accept a dataframe directly
+    write.csv(windPowerData, file = paste0("data/windpower_", input$numInput_turbinePars_turbinePower, ".csv"), row.names = FALSE)
+
     
     # ----- step 2: Set progress bar ----- #
     
@@ -651,28 +672,24 @@ function(input, output, session) {
         TurbineDataFile = turbineData,
         CountDataFile = countData,
         FlightDataFile = "data/FlightHeight.csv",
-        iter = input$sldInput_simulPars_numIter, #10,
+        iter = input$sldInput_simulPars_numIter, 
         CRSpecies = slctSpeciesTags()$specLabel, #CRSpecies = c("Black_legged_Kittiwake"),
         TPower = input$numInput_windfarmPars_targetPower, #600
         LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
         WFWidth = input$numInput_windfarmPars_width,
         Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp/100, # convert % (user input) to proportion (expected by model)
-        Latitude = input$numInput_windfarmPars_Latitude, # 55.8,
-        TideOff = input$numInput_windfarmPars_tidalOffset, # 2.5,
-        windSpeedMean = input$numInput_miscPars_windSpeed_E_, # 7.74,
-        windSpeedSD = input$numInput_miscPars_windSpeed_SD_, # 3.2,
+        Latitude = input$numInput_windfarmPars_Latitude,
+        TideOff = input$numInput_windfarmPars_tidalOffset,
+        windSpeedMean = input$numInput_miscPars_windSpeed_E_, 
+        windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
+        windPowerData = windPowerData,
         updateProgress_Spec,  # pass in the updateProgress function so that it can update the progress indicator.
         updateProgress_Iter
       )
     }
     
     
- 
-    
-    
-    
-    
-    output$out_simFunctionArgs <- renderPrint({
+     output$out_simFunctionArgs <- renderPrint({
       isolate(
         print(list(
           BirdDataFile = birdData,
@@ -687,14 +704,12 @@ function(input, output, session) {
           Latitude = input$numInput_windfarmPars_Latitude,
           TideOff = input$numInput_windfarmPars_tidalOffset,
           windSpeedMean = input$numInput_miscPars_windSpeed_E_,
-          windSpeedSD = input$numInput_miscPars_windSpeed_SD_
+          windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
+          windPowerData = windPowerData
         ))
       )
     })
      
-    
-
-    
   })
 
   
@@ -720,6 +735,17 @@ function(input, output, session) {
   #   print(inputs_monthDensPars())
   # })
 
+  observe(label="console",{
+    if(input$console != 0) {
+      options(browserNLdisabled=TRUE)
+      saved_console<-".RDuetConsole"
+      if (file.exists(saved_console)) load(saved_console)
+      isolate(browser())
+      save(file=saved_console,list=ls(environment()))
+    }
+  })
+
+  
   
     
 }

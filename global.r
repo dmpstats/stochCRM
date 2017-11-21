@@ -33,6 +33,8 @@ startUpValues <- list(
   windfarmPars_targetPower = 600,
   windfarmPars_Latitude = 55.8,
   windfarmPars_width = 10,
+  turbPower = 6,
+  numBlades = 3,
   tidalOffset = 2.5,
   windSpeed_E = 7.74,
   windSpeed_SD = 3.2,
@@ -44,7 +46,18 @@ startUpValues <- list(
   hubHght_E = 26.5,
   hubHght_SD = 2,
   maxBladeWdth_E = 5.5,
-  maxBladeWdth_SD=0.3
+  maxBladeWdth_SD=0.3,
+  windAvail = c(96.28, 96.53, 95.83, 92.78, 90.86, 92.22, 89.11, 89.92, 93.71, 96.14, 97.14, 96.41),
+  meanDownTime = rep(6.3, 12), 
+  sdDownTime = rep(2, 12),
+  rotnSpeed_E = 10, 
+  rotnSpeed_SD = 0.5,
+  bladePitch_E = 2,
+  bladePitch_SD = 0.1,
+  rotationVsWind_df = tibble(windSpeed = 0:29, rotationSpeed=c(rep(0,3), rep(6.8, 5), 8.1, 9.1, 9.3, 9.4, 
+                                                                   9.5, rep(9.7, 2), 9.9, rep(10.2, 14))),
+  pitchVsWind_df = tibble(windSpeed = 0:29, bladePitch=c(rep(90, 3), rep(0, 8), 4, 7, 9, 11, 13, 15, 
+                                                                16, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30))
 )
 
 

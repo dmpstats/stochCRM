@@ -54,7 +54,9 @@ sidebar <- dashboardSidebar(
     
     bsAlert(anchorId = "alert")
     
-  )
+  ),
+
+  actionButton("console","server console")
 )
 
 
@@ -64,13 +66,8 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   
-  # tags$head(
-  #   tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
-  #   #tags$link(rel = "stylesheet", type = "text/css", href = "cyborgTheme.css")
-  # ),
-
   #tabItems(
-  div(class="tab-content", id="tabItemsEnvelope",
+  div(class="tab-content", id="tabItemsEnvelope",  # required as reference to the dynamic UI tab for each species via insertUI()
     tabItem(tabName="tab_turbWindPars",
             fluidRow(
               box(title = "Wind farm features", 
@@ -141,7 +138,7 @@ body <- dashboardBody(
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_turbinePower", 
                                             label = label.help("Turbine Model (MW)", "lbl_turbinePower"), #Turbine Model (output in MW)", 
-                                            value = 4, min = 0),
+                                            value = startUpValues$turbPower, min = 0),
                                bsTooltip(id = "lbl_turbinePower", 
                                          title = paste0("The power output of each turbine"),
                                          options = list(container = "body"), placement = "right", trigger = "hover")
@@ -152,7 +149,7 @@ body <- dashboardBody(
                                numericInput(width = "70%", 
                                             inputId = "numInput_turbinePars_numBlades", 
                                             label =  label.help("No. of blades", "lbl_numBlades"), # "Number of blades", 
-                                            value = 3, min = 0),
+                                            value = startUpValues$numBlades, min = 0),
                                bsTooltip(id = "lbl_numBlades", 
                                          title = paste0("Number of blades in each turbine"),
                                          options = list(container = "body"), placement = "right", trigger = "hover")
@@ -166,7 +163,7 @@ body <- dashboardBody(
                            box(width = 12,
                                NormNumericInput(paramID = "turbinePars_rotRadius", specID = "", 
                                                 varName = "Rotor Radius (m)", 
-                                                infoLabel = "lbl_rotorRadius", 
+                                                infoId = "lbl_rotorRadius", 
                                                 infoText = paste0("The distance from the axis of rotation to blade tip (~Normal)."),
                                                 E_value = startUpValues$rotorSpeed_E, SD_value = startUpValues$rotorSpeed_SD),
                                h5(paste0("PDF for turbine's rotor Radius")),
@@ -177,7 +174,7 @@ body <- dashboardBody(
                            box(width = 12,
                                NormNumericInput(paramID = "turbinePars_hubHght", specID = "",
                                                 varName = "Hub Height (m)",
-                                                infoLabel = "lbl_turbineHubHeight", 
+                                                infoId = "lbl_turbineHubHeight", 
                                                 infoText = paste0("Used in conjunction with rotor radius to provide the distance", 
                                                                   " between Highest Astronomical Tide and the axis of rotation (~Normal)."),
                                                 E_value = startUpValues$hubHght_E, SD_value = startUpValues$hubHght_SD),
@@ -189,7 +186,7 @@ body <- dashboardBody(
                            box(width = 12,
                                NormNumericInput(paramID = "turbinePars_maxBladeWdth", specID = "", 
                                                 varName = "Max blade width (m)",
-                                                infoLabel = "lbl_maxBladeWdth", 
+                                                infoId = "lbl_maxBladeWdth", 
                                                 infoText = paste0("The maximum width of the rotor blade (~Normal)."),
                                                 E_value = startUpValues$maxBladeWdth_E, SD_value = startUpValues$maxBladeWdth_SD),
                                h5(paste0("PDF for turbine's maximum blade width")),
@@ -200,13 +197,9 @@ body <- dashboardBody(
                   br(),
                   fluidRow(
                     box(width = 12, 
-                        # #title = tags$b("Monthly Operations"),
-                        # h5(tags$b("Monthly Operation")),
-                        # helpText("Information on percentage of wind availability per month (treated as constant) and percentage of maintenance downtime per month (incorporating uncertainty via a Normal distribution)"),
-                        # br(),
-                        #fileInput(inputId = "upldInput_dt_turbOper", label = "Upload data", width = "20%"),
                         
-                        tags$b(HTML(paste0("Monthly Operation", actionLink("lbl_monthOPs",label=NULL,icon=icon('info-circle'))))),
+                        tags$b(HTML(paste0("Monthly Operation", actionLink("lbl_monthOPs", label=NULL, 
+                                                                           icon=icon('info-circle'))))),
                         bsTooltip(id = "lbl_monthOPs", 
                                   title = paste0("Information on turbine activity per month: % of wind availability (treated as constant) and % of", 
                                                  " maintenance downtime (~ Normal)"),
@@ -230,9 +223,13 @@ body <- dashboardBody(
                   br(),
                   fluidRow(
                     column(4,
+                           
+                           # ---- Turbine Rotation Speed 
                            box(width = 12, 
                                #h5(tags$b("Rotation Speed")),
-                               radioButtons(inputId = "radButtonInput_turbinePars_rotSpdInputOption", label = "Rotation Speed", inline = FALSE,
+                               radioButtons(inputId = "radButtonInput_turbinePars_rotSpdInputOption", 
+                                            label = label.help("Rotation Speed", "lbl_rotSpeed"), #"Rotation Speed", 
+                                            inline = FALSE,
                                             choices = list("Wind Vs. rotation speed relationship"= "windVsRotation", 
                                                            "Probability Distribution" = "probDist")),
                                conditionalPanel(
@@ -242,16 +239,27 @@ body <- dashboardBody(
                                ),
                                conditionalPanel(
                                  condition = "input.radButtonInput_turbinePars_rotSpdInputOption == 'probDist'",
-                                 NormNumericInput(title = "Rotation Speed (rpm)", paramID = "turbinePars_rotnSpeed", 
-                                                  specID = "", varName = "Rotation (rpm)"),
+                                 NormNumericInput(paramID = "turbinePars_rotnSpeed", specID = "", 
+                                                  varName = "Rotation (rpm)",
+                                                  infoId = "lbl_rotSpeedProbDist", 
+                                                  infoText = "Rotation speed (~Normal)",
+                                                  E_value = startUpValues$rotnSpeed_E, SD_value = startUpValues$rotnSpeed_SD),
                                  plotOutput("plot_turbinePars_rotnSpeed", width = 300, height = 200)
-                               )
+                               ), 
+                               bsTooltip(id = "lbl_rotSpeed", 
+                                         title = paste0("Rotation speed to be specified via a probability distribution", 
+                                                        " or a relationship between rotor speed and wind speed"),
+                                         options = list(container = "body"), placement = "right", trigger = "hover")
                            )
                     ),
                     column(4,
+                           
+                           # ---- Turbine Blade Pitch
                            box(width = 12, 
                                #h5(tags$b("Blade Pitch")),
-                               radioButtons(inputId = "radButtonInput_turbinePars_bldPitchInputOption", label = "Blade Pitch", inline = FALSE,
+                               radioButtons(inputId = "radButtonInput_turbinePars_bldPitchInputOption", 
+                                            label =  label.help("Blade Pitch", "lbl_bladePitch"),  #"Blade Pitch", 
+                                            inline = FALSE,
                                             choices = list("Wind Vs. blade pitch relationship" = "windVsPitch", 
                                                            "Probability Distribution"= "probDist")),
                                conditionalPanel(
@@ -261,18 +269,29 @@ body <- dashboardBody(
                                ),
                                conditionalPanel(
                                  condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'probDist'",
-                                 NormNumericInput(title = "Blade Pitch (degrees)", paramID = "turbinePars_bladePitch", 
-                                                  specID = "", varName = "Pitch (deg)"),
+                                 NormNumericInput(paramID = "turbinePars_bladePitch", specID = "", 
+                                                  varName = "Pitch (deg)", 
+                                                  infoId = "lbl_bladePitchProbDist", 
+                                                  infoText = "Blade pitch (~Normal)",
+                                                  E_value = startUpValues$bladePitch_E, SD_value = startUpValues$bladePitch_SD),
                                  plotOutput("plot_turbinePars_bladePitch", width = 300, height = 200)
-                               )
+                               ),
+                               bsTooltip(id = "lbl_bladePitch", 
+                                         title = paste0("Angle of the blade from plane of rotation (decimal degrees).", 
+                                                        " To be specified via a probability distribution or", 
+                                                        " a relationship between rotor speed and wind speed"),
+                                         options = list(container = "body"), placement = "right", trigger = "hover")
                         )
                     ),
                     conditionalPanel(
                       condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'windVsPitch' | input.radButtonInput_turbinePars_rotSpdInputOption == 'windVsRotation'",
                       column(4, 
                              box(width = 12, 
-                                 NormNumericInput(title = "Wind Speed (m/s)", paramID = "miscPars_windSpeed", 
-                                                  specID = "", varName = "Wind Speed (m/s)",
+                                 NormNumericInput(paramID = "miscPars_windSpeed", specID = "", 
+                                                  varName = "Wind Speed (m/s)",
+                                                  infoId = "lbl_winSpeed", 
+                                                  infoText = paste0("If rotation speed and/or blade pitch are specified in relation to wind speed," , 
+                                                                    " wind speed is randomly generated (~Truncated Normal with lower bound of 0)"),
                                                   E_value = startUpValues$windSpeed_E, SD_value = startUpValues$windSpeed_SD),
                                  plotOutput("plot_miscPars_windSpeed", width = 300, height = 200)
                              )
