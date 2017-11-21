@@ -299,9 +299,10 @@ body <- dashboardBody(
               )
             )
     )
-  ),
+  )
+  
   # verbatimTextOutput("out_inputs_biom"),
-  verbatimTextOutput("inputRVs")
+  # verbatimTextOutput("inputRVs")
   # 
   # uiOutput("bodyUI"),
   # 
@@ -312,26 +313,29 @@ body <- dashboardBody(
   #plotOutput("testPlot")
 )
 
-dashboardPage(header, sidebar, body)
 
-# bootstrapPage(
-#   
-#   
-#   useShinyjs(), 
-#   
-#   # Add custom CSS & Javascript;
-#   tagList(tags$head(
-#     #tags$link(rel="stylesheet", type="text/css",href="style.css"),
-#     tags$script(type="text/javascript", src = "busy.js")
-#   )),
-#   
-#   dashboardPage(header, sidebar, body),
-#   
-#   div(class = "busy", 
-#       h4("working..."),
-#       h2(HTML('<i class="fa fa-cog fa-spin fa-2x"></i>'))
-#   )
-# )
+#dashboardPage(header, sidebar, body)
+
+
+bootstrapPage(
+
+  useShinyjs(),
+
+  # Add custom CSS & Javascript;
+  tagList(tags$head(
+    tags$link(rel="stylesheet", type="text/css",href="styles.css"),
+    tags$script(type="text/javascript", src = "busy.js")
+  )),
+
+  dashboardPage(header, sidebar, body),
+
+  div(class = "busy",
+      tags$b(h4("Working...")),
+      #img(src="images/OurStory_06.Wind-Turbine.gif")
+      #h2(HTML('<i class="fa fa-cog fa-spin fa-2x"></i>'))
+      h2(HTML('<i  class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'))
+  )
+)
 
 
 
