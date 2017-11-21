@@ -429,10 +429,10 @@ function(input, output, session) {
     mu <- input$numInput_miscPars_windSpeed_E_
     stdev <- input$numInput_miscPars_windSpeed_SD_
     
-    data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
+    data.frame(qtls = qtnorm(c(0.001, 0.999), mean = mu, sd=stdev, lower = 0))  %>%
       ggplot(aes(qtls)) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
+      stat_function(fun=dtnorm, args = list(mean = mu, sd = stdev, lower = 0), col = "black", size =1.2) +
+      stat_function(fun=dtnorm, args = list(mean = mu, sd = stdev, lower = 0), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Wind Seed (m/s)")
     
