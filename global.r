@@ -57,7 +57,22 @@ startUpValues <- list(
   rotationVsWind_df = tibble(windSpeed = 0:29, rotationSpeed=c(rep(0,3), rep(6.8, 5), 8.1, 9.1, 9.3, 9.4, 
                                                                    9.5, rep(9.7, 2), 9.9, rep(10.2, 14))),
   pitchVsWind_df = tibble(windSpeed = 0:29, bladePitch=c(rep(90, 3), rep(0, 8), 4, 7, 9, 11, 13, 15, 
-                                                                16, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30))
+                                                                16, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30)),
+  bodyLt_E = 0.39,
+  bodyLt_SD = 0.005,
+  wngSpan_E = 1.08,
+  wngSpan_SD = 0.04,
+  flSpeed_E = 7.26,
+  flSpeed_SD = 1.5,
+  noctAct_E = 0.033, 
+  noctAct_SD = 0.0045,
+  CRHeight_E = 0.06,
+  CRHeight_SD = 0.009,
+  basicAvoid_E = 0.9893,
+  basicAvoid_SD = 0.0007,
+  extAvoid_E = 0.9672,
+  extAvoid_SD = 0.0018
+  
 )
 
 

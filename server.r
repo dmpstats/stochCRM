@@ -72,13 +72,85 @@ function(input, output, session) {
       where = "beforeEnd",
       ui = selectSpecies_UITabBuilder(specName = cSpecTags$species, 
                                       tabName = cSpecTags$specTabNames, 
-                                      specLabel = cSpecTags$specLabel)
+                                      specLabel = cSpecTags$specLabel, session,
+                                      startUpValues = startUpValues)
     )
   })
   
   
   
   
+  # Add bsTooltips of pop-ups with info on biometric parameters - needs to be species-specific
+  observeEvent(rv$addedSpec,{
+
+    req(rv$addedSpec)
+
+    cSpecTags <- slctSpeciesTags() %>%
+      filter(species == rv$addedSpec)
+
+    outTag <- paste0("BiomBStoolTips_", cSpecTags$specLabel)
+
+    output[[outTag]] <- renderUI({
+
+      tagList(
+        bsTooltip(id = paste0("lbl_bodyLt_", cSpecTags$specLabel),
+                  title = paste0("Bird body length ~ Normal"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+
+        bsTooltip(id = paste0("lbl_flType_", cSpecTags$specLabel),
+                  title = paste0("Predominant type of flight"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+
+        bsTooltip(id = paste0("lbl_wngSpan_", cSpecTags$specLabel),
+                  title = paste0("Bird wing spa ~ Normal)"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+        
+        bsTooltip(id = paste0("lbl_flSpeed_", cSpecTags$specLabel),
+                  title = paste0("Flight Speed ~ Normal"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+        
+        bsTooltip(id = paste0("lbl_noctAct_", cSpecTags$specLabel),
+                  title = paste0("Proportion of nocturnal", 
+                                 " activity ~ Normal"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+        
+        bsTooltip(id = paste0("lbl_CRHeight_", cSpecTags$specLabel),
+                  title = paste0("Proportion at colision risk height ~ Normal. Required for the basic model (option 1)"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+        
+        bsTooltip(id = paste0("lbl_basicAvoid_", cSpecTags$specLabel),
+                  title = paste0("The probability that a bird on a collision course with a turbine will take evading", 
+                                 " action to avoid collision (~Normal). Required for the basic model (option 1)"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+        
+        bsTooltip(id = paste0("lbl_extAvoid_", cSpecTags$specLabel),
+                  title = paste0("The probability that a bird on a collision course with a turbine will take evading", 
+                                 " action to avoid collision (~Normal). Required for the extended model (option 3)"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover"),
+        
+        bsTooltip(id = paste0("lbl_monthOPs_", cSpecTags$specLabel),
+                  title = paste0("The number of birds in flight during daytime per km2 in each month (~ Truncated Normal bounded by 0 and 2)"),
+                  options = list(container = "body"),
+                  placement = "right", trigger = "hover")
+        
+        
+      )
+    })
+  })
+  
+  
+
+
+  
+    
   
   #' -----------------------------------------------------------------
   #  ----                  Inputs Management                      ----
@@ -724,13 +796,13 @@ function(input, output, session) {
   #' ------------------------------------------------------------------
    
   output$inputRVs <- renderPrint({
-    #str(reactiveValuesToList(input), max.level = 3)
+    str(reactiveValuesToList(input), max.level = 3)
   })
   
-  # output$out_inputs_biom <- renderPrint({
-  #   str(reactiveValuesToList(rv), max.level = 3)
-  # })
-  # 
+  output$out_inputs_biom <- renderPrint({
+    str(reactiveValuesToList(rv), max.level = 3)
+  })
+
   # output$out_inputs_monthDens <- renderPrint({
   #   print(inputs_monthDensPars())
   # })
@@ -744,9 +816,6 @@ function(input, output, session) {
       save(file=saved_console,list=ls(environment()))
     }
   })
-
-  
-  
     
 }
 

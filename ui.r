@@ -66,6 +66,7 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   
+  
   #tabItems(
   div(class="tab-content", id="tabItemsEnvelope",  # required as reference to the dynamic UI tab for each species via insertUI()
     tabItem(tabName="tab_turbWindPars",
@@ -91,7 +92,7 @@ body <- dashboardBody(
                   numericInput(width = "85%", 
                                inputId = "numInput_windfarmPars_Latitude", 
                                label = label.help("Latitude (deg)", "lbl_windfarmLatitude"), #"Latitude (deg)", 
-                               value = startUpValues$windfarmPars_Latitude, min = -90, max = 90),
+                               value = startUpValues$windfarmPars_Latitude, min = -90, max = 90, step = 0.01),
                   bsTooltip(id = "lbl_windfarmLatitude", 
                             title = paste0("Latitude of the wind farm in decimal degrees. Used to calculate day length at the site over the year."),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
@@ -276,9 +277,9 @@ body <- dashboardBody(
                                                   E_value = startUpValues$bladePitch_E, SD_value = startUpValues$bladePitch_SD),
                                  plotOutput("plot_turbinePars_bladePitch", width = 300, height = 200)
                                ),
-                               bsTooltip(id = "lbl_bladePitch", 
-                                         title = paste0("Angle of the blade from plane of rotation (decimal degrees).", 
-                                                        " To be specified via a probability distribution or", 
+                               bsTooltip(id = "lbl_bladePitch",
+                                         title = paste0("Angle of the blade from plane of rotation (decimal degrees).",
+                                                        " To be specified via a probability distribution or",
                                                         " a relationship between rotor speed and wind speed"),
                                          options = list(container = "body"), placement = "right", trigger = "hover")
                         )
@@ -318,10 +319,12 @@ body <- dashboardBody(
               )
             )
     )
-  )
+  ),
+
   
-  # verbatimTextOutput("out_inputs_biom"),
-  # verbatimTextOutput("inputRVs")
+  
+  verbatimTextOutput("out_inputs_biom"),
+  verbatimTextOutput("inputRVs")
   # 
   # uiOutput("bodyUI"),
   # 
@@ -331,6 +334,10 @@ body <- dashboardBody(
   
   #plotOutput("testPlot")
 )
+
+
+
+
 
 
 #dashboardPage(header, sidebar, body)
@@ -349,7 +356,7 @@ bootstrapPage(
   dashboardPage(header, sidebar, body),
 
   div(class = "busy",
-      tags$b(h4("Working...")),
+      tags$b(h4("Working on it...")),
       #img(src="images/OurStory_06.Wind-Turbine.gif")
       #h2(HTML('<i class="fa fa-cog fa-spin fa-2x"></i>'))
       h2(HTML('<i  class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'))
