@@ -105,12 +105,7 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                    label = label.help("Flight Type", paste0("lbl_flType_", specLabel)), 
                                    #label = "Flight Type",
                                    choices = list("Flapping", "Glidding"))
-                       #helpText("Type of blight")
                    )
-                   
-                   #tipify(actionLink(inputId = "xxx", label=NULL,icon=icon('info-circle')), title = "testing this shit out", options = list(container = "body"))
-                   #tipify(el = bsButton("pB2", "Button", style = "inverse", size = "extra-small"), title = "This button is pointless too!",  options = list(container = "body"))
-                   #bsTooltip(id="foo",  title = "testing this shit out", options = list(container = "body"), placement = "right", trigger = "hover")
             ),
             column(width = 4,
                    box(width = 12,
@@ -234,6 +229,8 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                 
                 tags$b(HTML(paste0("Monthly Densities", actionLink(paste0("lbl_monthOPs_", specLabel), label=NULL, icon=icon('info-circle'))))),
                 br(),
+                br(),
+                br(),
                 #label = label.help("Flight Type", paste0("lbl_flType_", specLabel)), 
                 #title = tags$b("Monthly Densities"),
                 rHandsontableOutput(paste0("hotInput_birdDensPars_", specLabel), width = "100%"),
@@ -251,81 +248,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
         
         # Include bsTooltips with info on parameters
         uiOutput(paste0("BiomBStoolTips_", specLabel))
-        
-        #),
-# 
-        # tabPanel(
-        #   title = "Monthly Densities and Flight Height Distribution",
-        #   
-        #   fluidRow(
-        #     # box(width = 12,
-        #     #     title = tags$b("Monthly Densities"),
-        #     #     rHandsontableOutput(paste0("hotInput_birdDensPars_", specLabel), width = "100%"),
-        #     #     #p("Density = birds/km^2"),
-        #     #     tags$style(type="text/css", paste0("#hotInput_birdDensPars_", specLabel, " th {font-weight:bold;}")),
-        #     #     br(),
-        #     #     br(),
-        #     #     fluidRow(
-        #     #       column(width=8, offset = 2, 
-        #     #              plotOutput(paste0("plot_birdDensPars_", specLabel), width = 800, height = 350)
-        #     #       )
-        #     #     )
-        #     # )
-        #   ),
-        #   
-        #   # fluidRow(
-        #   #   box(width = 12, 
-        #   #       title = tags$b("Monthly Densities"),
-        #   #       fileInput(inputId = paste0("upldInput_dt_dens_", specLabel), label = "Upload data", width = "20%"),
-        #   #       wellPanel(#style = "padding: 5px;",
-        #   #         splitLayout(
-        #   #           cellWidths = "7.5%",
-        #   #           p("Mean Density", style = "font-size: 11pt; font-weight: bold; line-height: 10px; margin-top: 35px; text-align: center;"),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Jan_E_", specLabel), label="January", value = NULL),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Feb_E_", specLabel), label="February", value = 0), 
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Mar_E_", specLabel), label="March", value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Apr_E_", specLabel), label="April", value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_May_E_", specLabel), label="May", value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Jun_E_", specLabel), label="June" , value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Jul_E_", specLabel), label="June" , value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Aug_E_", specLabel), label="August" , value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Sep_E_", specLabel), label="September" , value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Oct_E_", specLabel), label="October" , value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Nov_E_", specLabel), label="November" , value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Dec_E_", specLabel), label="December" , value = 0)
-        #   #         ),
-        #   #         splitLayout(
-        #   #           cellWidths = "7.5%",
-        #   #           p("SD of Density", style = "font-size: 11pt; font-weight: bold; line-height: 10px; margin-top: 12px; text-align: center;"),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Jan_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Feb_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Mar_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Apr_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_May_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Jun_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Jul_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Aug_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Sep_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Oct_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Nov_SD_", specLabel), label=NULL, value = 0),
-        #   #           numericInput(inputId = paste0("numInput_birdDensPars_Dec_SD_", specLabel), label=NULL, value = 0)
-        #   #         )
-        #   #       )
-        #   #   )
-        #   # ),
-        #   br(),
-        #   fluidRow(
-        #     box(width = 12,
-        #         h4(tags$b("Flight Height Distribution")),
-        #         column(width = 4, 
-        #                fileInput(inputId = paste0("upldInput_dt_FlgHghDst_", specLabel), label = "Upload data",  width = "60%", 
-        #                          accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv"))), 
-        #         column(width = 7, offset = 1,
-        #                plotOutput(paste0("plot_FlgHghDst_", specLabel), width = 600, height = 300))
-        #     )
-        #   )
-        # )
-
       )
     )
   )

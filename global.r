@@ -12,7 +12,8 @@ library(shinyjs)
 # library(dplyr)
 
 source("helpers.r")
-source("bandModel_mock.r")
+#source("bandModel_mock.r")
+source("BandModel_function.R")
 
 species <- c("Arctic Skua", "Northern Fulmar", "Great Black backed Gull", "Common Guillemot", "Northern Gannet",
              "Black legged Kittiwake", "Lesser Black Backed Gull", "Little Auk", "Atlantic Puffin", 

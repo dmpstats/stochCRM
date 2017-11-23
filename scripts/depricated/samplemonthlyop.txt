@@ -1,0 +1,39 @@
+  ###JAN###
+  ifelse(!is.na(TurbineData$JanOpSD[t]), JanOp<-sampleOp(TurbineData$JanOpMean[t], TurbineData$JanOpSD[t]), JanOp<-TurbineData$JanOpMean[t])
+  sampledJanOp[i]<-TurbineData$JanOp[t]-JanOp
+  ###FEB###
+  ifelse(!is.na(TurbineData$FebOpSD[t]), FebOp<-sampleOp(TurbineData$FebOpMean[t], TurbineData$FebOpSD[t]), FebOp<-TurbineData$FebOpMean[t])
+  sampledFebOp[i]<-TurbineData$FebOp[t]-FebOp
+  ###MAR###
+  ifelse(!is.na(TurbineData$MarOpSD[t]), MarOp<-sampleOp(TurbineData$MarOpMean[t], TurbineData$MarOpSD[t]), MarOp<-TurbineData$MarOpMean[t])
+  sampledMarOp[i]<-TurbineData$MarOp[t]-MarOp
+  ###APR###
+  ifelse(!is.na(TurbineData$AprOpSD[t]), AprOp<-sampleOp(TurbineData$AprOpMean[t], TurbineData$AprOpSD[t]), AprOp<-TurbineData$AprOpMean[t])
+  sampledAprOp[i]<-TurbineData$AprOp[t]-AprOp
+  ###MAY###
+  ifelse(!is.na(TurbineData$MayOpSD[t]), MayOp<-sampleOp(TurbineData$MayOpMean[t], TurbineData$MayOpSD[t]), MayOp<-TurbineData$MayOpMean[t])
+  sampledMayOp[i]<-TurbineData$MayOp[t]-MayOp
+  ###JUN###
+  ifelse(!is.na(TurbineData$JunOpSD[t]), JunOp<-sampleOp(TurbineData$JunOpMean[t], TurbineData$JunOpSD[t]), JunOp<-TurbineData$JunOpMean[t])
+  sampledJunOp[i]<-TurbineData$JunOp[t]-JunOp
+  ###JUL###
+  ifelse(!is.na(TurbineData$JulOpSD[t]), JulOp<-sampleOp(TurbineData$JulOpMean[t], TurbineData$JulOpSD[t]), JulOp<-TurbineData$JulOpMean[t])
+  sampledJulOp[i]<-TurbineData$JulOp[t]-JulOp
+  ###AUG###
+  ifelse(!is.na(TurbineData$AugOpSD[t]), AugOp<-sampleOp(TurbineData$AugOpMean[t], TurbineData$AugOpSD[t]), AugOp<-TurbineData$AugOpMean[t])
+  sampledAugOp[i]<-TurbineData$AugOp[t]-AugOp
+  ###SEP###
+  ifelse(!is.na(TurbineData$SepOpSD[t]), SepOp<-sampleOp(TurbineData$SepOpMean[t], TurbineData$SepOpSD[t]), SepOp<-TurbineData$SepOpMean[t])
+  sampledSepOp[i]<-TurbineData$SepOp[t]-SepOp
+  ###OCT###
+  ifelse(!is.na(TurbineData$OctOpSD[t]), OctOp<-sampleOp(TurbineData$OctOpMean[t], TurbineData$OctOpSD[t]), OctOp<-TurbineData$OctOpMean[t])
+  sampledOctOp[i]<-TurbineData$OctOp[t]-OctOp
+  ###NOV###
+  ifelse(!is.na(TurbineData$NovOpSD[t]), NovOp<-sampleOp(TurbineData$NovOpMean[t], TurbineData$NovOpSD[t]), NovOp<-TurbineData$NovOpMean[t])
+  sampledNovOp[i]<-TurbineData$NovOp[t]-NovOp
+  ###DEC###
+  ifelse(!is.na(TurbineData$DecOpSD[t]), DecOp<-sampleOp(TurbineData$DecOpMean[t], TurbineData$DecOpSD[t]), DecOp<-TurbineData$DecOpMean[t])
+  sampledDecOp[i]<-TurbineData$DecOp[t]-DecOp
+
+
+

@@ -1,0 +1,75 @@
+#######################################################################################################################################
+#######################################################################################################################################
+#######################											###############################
+#######################		Do model using option 2 - modelled flight height distribution		###############################
+#######################											###############################
+#######################											###############################
+#######################################################################################################################################
+#######################################################################################################################################
+
+##### create dataframe giving the width of the chord relative to its maximum width at given points along the radius of the rotor
+
+rad = round(seq(0,1,0.05),2) ###### very convoluted, but necessary due to the way R treats seq...
+c = c(0.69,0.73,0.79,0.88,0.96,1,0.98,0.92,0.85,0.8,0.75,0.7,0.64,0.58,0.52,0.47,0.41,0.37,0.3,0.24,0)
+coverC = data.frame(cbind(rad,c))
+
+##### bring in call functions needed to calculate collision risk along blade
+
+source("scripts\\PCollFunctions.txt", local=T)
+
+
+##### Get flight height data for species of interest
+
+#FH.dat = FlightHeight[,c(grep(CRSpecies[s], colnames(FlightHeight)))] ##using generic/'averaged' distribution curve
+FH.dat = FlightHeightSpec[,flight.boot.sample[i]] ## using bootstraps
+
+
+##### start to calculate collision risk along the rotor blade
+
+
+HD.y = round(seq(-1,1,0.05),2)
+
+
+height = sampledHubHeight[i] + (HD.y * sampledRotorRadius[i]) + TideOff
+
+
+HD.d.y = (FH.dat[floor(height)+1] + ((FH.dat[floor(height)+1] - FH.dat[ceiling(height)+1]) * (floor(height)-height))) * sampledRotorRadius[i]
+
+
+
+risk.up = vector()
+risk.down = vector()
+
+
+for (q in 1:length(HD.y)) {
+
+	risk.up[q] = xrisksum2(HD.y[q], 0.05, "up")
+	risk.down[q] = xrisksum2(HD.y[q], 0.05, "down")
+
+	}
+
+d.risk.up = HD.d.y * risk.up
+d.risk.down = HD.d.y * risk.down
+
+Q2r = 0.05 * (HD.d.y[1]/2 + HD.d.y[41]/2 + sum(HD.d.y[c(2:40)]))
+
+
+
+
+
+Option2_collisions_No_Avoid = Option1_collisions_No_Avoid * Q2r / sampledbirdHeight[i]
+
+Option2_CollisionRate = data.frame(matrix(data = 0, nrow = 12, ncol = 1))
+names(Option2_CollisionRate) = c("Month")
+Option2_CollisionRate$Month = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+
+ifelse(LargeArrayCorrection == "yes",
+
+				Option2_collisions_No_Avoid * (1-sampledAvoidanceBasic[i]) * L_ArrayCF -> Option2_CollisionRate[,2],
+				Option2_collisions_No_Avoid * (1-sampledAvoidanceBasic[i]) -> Option2_CollisionRate[,2] )
+
+				names(Option2_CollisionRate)[2] = "Collisions"
+
+

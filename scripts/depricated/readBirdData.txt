@@ -1,0 +1,7 @@
+
+BirdData = read.table (BirdDataFile, header = T, sep = ",")
+row.names(BirdData) = BirdData$Species
+Flap_Glide = ifelse (BirdData$Flight == "Flapping", 1 -> Flap_Glide, 2/pi -> Flap_Glide) #### flapping or Gliding for   													 #### collision risk sheet
+
+
+

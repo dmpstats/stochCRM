@@ -1,0 +1,34 @@
+#######################################################################################################################################
+#######################################################################################################################################
+#######################											###############################
+#######################		Do model using option 1 - Site specific flight height information	###############################
+#######################											###############################
+#######################											###############################
+#######################################################################################################################################
+#######################################################################################################################################
+
+# Calculate potential transits through rotor area each month
+
+Operational = c(sampledJanOp[i],sampledFebOp[i],sampledMarOp[i],sampledAprOp[i],sampledMayOp[i],sampledJunOp[i],sampledJulOp[i],sampledAugOp[i],sampledSepOp[i],sampledOctOp[i],sampledNovOp[i],sampledDecOp[i])
+
+Operational = Operational /100
+
+
+Option1_Transits = hours$Flux * sampledbirdHeight[i] * Operational
+Option1_collisions_No_Avoid = Option1_Transits * (P_Collision/100)
+
+Option1_CollisionRate = data.frame(matrix(data = 0, nrow = 12, ncol = 1))
+names(Option1_CollisionRate) = c("Month")
+Option1_CollisionRate$Month = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+
+ifelse(LargeArrayCorrection == "yes",
+
+				Option1_collisions_No_Avoid * (1-sampledAvoidanceBasic[i]) * L_ArrayCF -> Option1_CollisionRate[,2],
+				Option1_collisions_No_Avoid * (1-sampledAvoidanceBasic[i]) -> Option1_CollisionRate[,2] )
+
+			names(Option1_CollisionRate)[2] = "Collisions"
+
+
+

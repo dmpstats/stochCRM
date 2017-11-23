@@ -80,7 +80,7 @@ function(input, output, session) {
   
   
   
-  # Add bsTooltips of pop-ups with info on biometric parameters - needs to be species-specific
+  # Add bsTooltips for pop-ups with info on biometric parameters - needs to be species-specific
   observeEvent(rv$addedSpec,{
 
     req(rv$addedSpec)
@@ -104,7 +104,7 @@ function(input, output, session) {
                   placement = "right", trigger = "hover"),
 
         bsTooltip(id = paste0("lbl_wngSpan_", cSpecTags$specLabel),
-                  title = paste0("Bird wing spa ~ Normal)"),
+                  title = paste0("Bird wing spa ~ Normal"),
                   options = list(container = "body"),
                   placement = "right", trigger = "hover"),
         
@@ -637,6 +637,7 @@ function(input, output, session) {
       select(-Variable) %>%
       spread(VariableMasden, Value)
     
+    
     #' managing the option of prodist vs windspeed - relationship for rotation speed and blade pitch 
     #' Model function expects NAs on associated hyperparameters when the latter in optioned
     rotSpeed_E <- ifelse(input$radButtonInput_turbinePars_rotSpdInputOption == 'probDist',   
@@ -649,6 +650,7 @@ function(input, output, session) {
     
     pitch_SD <- ifelse(input$radButtonInput_turbinePars_bldPitchInputOption == 'probDist', 
            input$numInput_turbinePars_bladePitch_SD_, NA)
+    
     
     # merging turbine data
     turbineData <- tibble(
@@ -668,6 +670,7 @@ function(input, output, session) {
       left_join(., turbineData_Operation, by = "TurbineModel")
   
     
+    
     # -- birds counts data
     if(length(rv$birdDensParsInputs_ls)>0){
       countData <- rv$birdDensParsInputs_ls %>%
@@ -677,10 +680,10 @@ function(input, output, session) {
             add_column(., inputTags = y, .before = 1)
         }) %>%
         mutate(inputTags_split = str_split(inputTags, "_")) %>%
-        mutate(specLabel = map_chr(inputTags_split, function(x) paste(x[-c(1:2)], collapse = "_"))) %>%
-        select(specLabel, hyperPar:December) %>%
-        gather(month, Value, -c(specLabel, hyperPar)) %>%
-        group_by(specLabel) %>%
+        mutate(Species = map_chr(inputTags_split, function(x) paste(x[-c(1:2)], collapse = "_"))) %>%
+        select(Species, hyperPar:December) %>%
+        gather(month, Value, -c(Species, hyperPar)) %>%
+        group_by(Species) %>%
         mutate(VariableMasden = factor(paste0(rep(month.abb, each=2), c("", "SD"))),
                VariableMasden = factor(VariableMasden, levels = VariableMasden)
         ) %>%
@@ -689,8 +692,9 @@ function(input, output, session) {
     }else{
       countData <- NULL
     }
-
-
+        
+    
+    
     # --- rotor speed and pitch vs windspeed
     windPowerData <- left_join(hot_to_r(input$hotInput_turbinePars_rotationVsWind), # produces "Warning in asMethod(object) : NAs introduced by coercion"
                                hot_to_r(input$hotInput_turbinePars_pitchVsWind),    # produces "Warning in asMethod(object) : NAs introduced by coercion"
@@ -698,9 +702,37 @@ function(input, output, session) {
       rename(Wind = windSpeed, Rotor = rotationSpeed, Pitch = bladePitch) %>%
       drop_na()
 
-    # model function expects a csv file named according to the turbine model/power - change code to accept a dataframe directly
-    write.csv(windPowerData, file = paste0("data/windpower_", input$numInput_turbinePars_turbinePower, ".csv"), row.names = FALSE)
+    
+    output$out_simFunctionArgs <- renderPrint({
+      isolate(
+        print(list(
+          BirdData= birdData,
+          TurbineData = turbineData,
+          CountData = countData,
+          iter = input$sldInput_simulPars_numIter,
+          CRSpecies = slctSpeciesTags()$specLabel,
+          TPower = input$numInput_windfarmPars_targetPower,
+          WFWidth = input$numInput_windfarmPars_width,
+          LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"),
+          rop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp,
+          Latitude = input$numInput_windfarmPars_Latitude,
+          TideOff = input$numInput_windfarmPars_tidalOffset,
+          windSpeedMean = input$numInput_miscPars_windSpeed_E_,
+          windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
+          windPowerData = windPowerData
+        ))
+      )
+    })
 
+    
+    #' model function expects data to be provided in csv files, so saving them out for now to avoid code inconsistencies 
+    #' Should change model function to expect data.frames instead of files once it's final version is established
+    write.csv(birdData, file = "data/BirdData.csv", row.names = FALSE)
+    write.csv(turbineData, file = "data/TurbineData.csv", row.names = FALSE)
+    write.csv(countData, file = "data/CountData.csv", row.names = FALSE)
+    write.csv(windPowerData, file = paste0("data/windpower_", input$numInput_turbinePars_turbinePower, ".csv"), row.names = FALSE)
+    
+    
     
     # ----- step 2: Set progress bar ----- #
     
@@ -708,14 +740,13 @@ function(input, output, session) {
     progress_Spec <- shiny::Progress$new()
     progress_Iter <- shiny::Progress$new()
     
-    progress_Spec$set(message = "Processing Species", value = 0)
+    progress_Spec$set(message = "Processing...", value = 0)
     progress_Iter$set(message = "Working through iterations", value = 0)
     
     on.exit({
       progress_Iter$close()
       progress_Spec$close()
       })
-    #on.exit()
     
 
     #' callback functions to update progress on species.
@@ -732,56 +763,34 @@ function(input, output, session) {
       progress_Iter$set(value = value, detail = detail)
     }
     
-        
 
+    
     # ----- step 3: run simulation function ----- # 
     
     if(1){
       stochasticBand(
-        workingDirectory,
+        workingDirectory="sCRM/",
         results_folder = "results",
-        BirdDataFile = birdData,
-        TurbineDataFile = turbineData,
-        CountDataFile = countData,
+        BirdDataFile = "data/BirdData.csv",
+        TurbineDataFile = "data/TurbineData.csv",
+        CountDataFile = "data/CountData.csv",
         FlightDataFile = "data/FlightHeight.csv",
         iter = input$sldInput_simulPars_numIter, 
         CRSpecies = slctSpeciesTags()$specLabel, #CRSpecies = c("Black_legged_Kittiwake"),
         TPower = input$numInput_windfarmPars_targetPower, #600
         LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
         WFWidth = input$numInput_windfarmPars_width,
-        Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp/100, # convert % (user input) to proportion (expected by model)
+        Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp/100, # convert % (user input) to proportion (expected by model function)
         Latitude = input$numInput_windfarmPars_Latitude,
         TideOff = input$numInput_windfarmPars_tidalOffset,
         windSpeedMean = input$numInput_miscPars_windSpeed_E_, 
         windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
-        windPowerData = windPowerData,
+        #windPowerData = windPowerData,
         updateProgress_Spec,  # pass in the updateProgress function so that it can update the progress indicator.
         updateProgress_Iter
       )
     }
-    
-    
-     output$out_simFunctionArgs <- renderPrint({
-      isolate(
-        print(list(
-          BirdDataFile = birdData,
-          TurbineDataFile = turbineData,
-          CountDataFile = countData,
-          iter = input$sldInput_simulPars_numIter,
-          CRSpecies = slctSpeciesTags()$specLabel,
-          TPower = input$numInput_windfarmPars_targetPower,
-          WFWidth = input$numInput_windfarmPars_width,
-          LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"),
-          rop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp,
-          Latitude = input$numInput_windfarmPars_Latitude,
-          TideOff = input$numInput_windfarmPars_tidalOffset,
-          windSpeedMean = input$numInput_miscPars_windSpeed_E_,
-          windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
-          windPowerData = windPowerData
-        ))
-      )
-    })
-     
+
   })
 
   

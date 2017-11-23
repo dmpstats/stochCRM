@@ -1,0 +1,32 @@
+  ####if no measure of variance provided, only the mean value is used####
+
+  ####AVOIDANCE####
+  ifelse(!is.na(species.dat$AvoidanceBasicSD), Avoidance<-sampleAvoidance(species.dat$AvoidanceBasic, species.dat$AvoidanceBasicSD), Avoidance<-species.dat$AvoidanceBasic)
+  sampledAvoidanceBasic[i]<-Avoidance
+
+ifelse(!is.na(species.dat$AvoidanceExtendedSD), Avoidance<-sampleAvoidance(species.dat$AvoidanceExtended, species.dat$AvoidanceExtendedSD), Avoidance<-species.dat$AvoidanceExtended)
+  sampledAvoidanceExtended[i]<-Avoidance
+  
+  ####WING SPAN####
+  ifelse(!is.na(species.dat$WingspanSD), WingSpan<-sampleWingSpan(species.dat$Wingspan, species.dat$WingspanSD), WingSpan<-species.dat$Wingspan)
+  sampledWingSpan[i]<-WingSpan
+  
+  ####BIRD LENGTH####
+  ifelse(!is.na(species.dat$Body_LengthSD), BirdLength<-sampleBirdLength(species.dat$Body_Length, species.dat$Body_LengthSD), BirdLength<-species.dat$Body_Length)
+  sampledbirdLength[i]<-BirdLength
+  
+  ####PERCENTAGE AT COLLISION RISK HEIGHT####
+  ifelse(!is.na(species.dat$Prop_CRH_ObsSD), BirdHeight<-sampleCRH(species.dat$Prop_CRH_Obs, species.dat$Prop_CRH_ObsSD), BirdHeight<-species.dat$Prop_CRH_Obs)
+  sampledbirdHeight[i]<-BirdHeight
+  
+  ####BIRD FLIGHT SPEED####
+  ifelse(!is.na(species.dat$Flight_SpeedSD), BirdSpeed<-sampleBirdFlight(species.dat$Flight_Speed, species.dat$Flight_SpeedSD), BirdSpeed<-species.dat$Flight_Speed)
+  sampledbirdSpeed[i]<-BirdSpeed
+  
+  ###NOCTURNAL ACTIVITY####
+  ifelse(!is.na(species.dat$Nocturnal_ActivitySD), Nocturnal<-sampleBirdFlight(species.dat$Nocturnal_Activity, species.dat$Nocturnal_ActivitySD), Nocturnal<-species.dat$Nocturnal_Activity)
+  sampledNocturnal[i]<-Nocturnal
+  
+  ###COMPILE IN DATA FRAME###
+  sampledBirdIter<-c(sampledAvoidanceBasic[i], sampledAvoidanceExtended[i], sampledWingSpan[i], sampledbirdLength[i], sampledbirdHeight[i], sampledbirdSpeed[i], sampledNocturnal[i])
+  sampledBirdParams[i,]=sampledBirdIter
