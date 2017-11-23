@@ -1,14 +1,19 @@
 
 (i) Parameters Distributional Issues:
+  - % of downtime parameterized as Normal when it should always be >= 0
   - Proportion of Nocturnal Activity parameterized as Normal
   - Proportion at Collision risk height parameterized as Normal
   - Probability of basic and extended avoidance parameterized as Normal 
   
-  
+
 (ii) current restrictions
   - only ONE turbine model allowed
   - Only listed species allowed
-  
+
+
+(iii) hidden restrictions
+  - according the Masden report, by default rotation speed and blade pitch specified in relation to windspeed, which requires
+  distributional hyper-parameters for those two variables to be left blank 
   
 
   
