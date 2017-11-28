@@ -70,7 +70,15 @@ NormNumericInput <- function(paramID, specID, varName, infoId="foo", infoText ="
 }
 
 
-
+# function for Normal density plot of model input parameters
+normDensPlotPars <- function(mu, stdev, fill="olivedrab", xlab){
+  
+  data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
+    ggplot(aes(qtls)) +
+    stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1) +
+    stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = fill, alpha = 0.3) +
+    labs(y="Density", x = xlab)
+}
 
 
 
