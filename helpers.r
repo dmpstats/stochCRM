@@ -109,10 +109,18 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
           fluidRow(
             column(width = 4,
                    box(width=12, 
-                       selectInput(inputId = paste0("slctInput_biomPars_flType_tp_", specLabel), 
-                                   label = label.help("Flight Type", paste0("lbl_flType_", specLabel)), 
-                                   #label = "Flight Type",
-                                   choices = list("Flapping", "Glidding"))
+                       # selectInput(inputId = paste0("slctInput_biomPars_flType_tp_", specLabel), 
+                       #             label = label.help("Flight Type", paste0("lbl_flType_", specLabel)), 
+                       #             #label = "Flight Type",
+                       #             choices = list("Flapping", "Glidding")),
+                       
+                       radioGroupButtons(inputId = paste0("slctInput_biomPars_flType_tp_", specLabel), 
+                                         label = label.help("Flight Type", paste0("lbl_flType_", specLabel)), 
+                                         choices = c("Flapping", "Glidding"), 
+                                         justified = TRUE,
+                                         checkIcon = list(yes = icon("ok", lib = "glyphicon"),
+                                                          no = icon("remove", lib = "glyphicon"))
+                       )
                    )
             ),
             column(width = 4,
@@ -281,6 +289,7 @@ results_tabPanelsBuilder <- function(specName, specLabel){
                           plotOutput(paste0("plot_overallCollisions_", specLabel), width = "100%") #width = plotWidth, height = plotHeight)
                    ),
                    column(6,
+                          align="center",
                           div(dataTableOutput(paste0("summTable_overallCollisions_", specLabel)), 
                               style = "font-size: 90%; width: 75%")
                           #tableOutput(paste0("sumTable_results_monthCollisions_", specLabel))
