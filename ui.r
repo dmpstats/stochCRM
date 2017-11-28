@@ -305,8 +305,13 @@ body <- dashboardBody(
     tabItem(tabName="tab_simulation", class = "active",
             fluidRow(
               box(title = "Simulation Options", width = 2, status = "primary", solidHeader = TRUE, #background = "aqua", 
-                  checkboxInput(inputId = "chkBoxInput_simulPars_largeArrarCorr", label = "Apply large Array Correction", 
-                                value = TRUE),
+                  # checkboxInput(inputId = "chkBoxInput_simulPars_largeArrarCorr", label = tags$b("Apply large Array Correction"), 
+                  #               value = TRUE),
+                  switchInput(inputId = "chkBoxInput_simulPars_largeArrarCorr", label = "Large Array Correction", size = "normal", 
+                              onStatus = "success", offStatus = "danger", value = TRUE),
+                  
+                  
+                  #actionLink("lbl_extArray", label=NULL, icon=icon('info-circle')),
                   hr(),
                   sliderInput(inputId = "sldInput_simulPars_numIter", label = "Number of Iterations", 
                               min = 50, max = 10000, step = 500, value = 50),
@@ -337,9 +342,6 @@ body <- dashboardBody(
   
   #plotOutput("testPlot")
 )
-
-
-
 
 
 

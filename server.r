@@ -82,7 +82,7 @@ function(input, output, session) {
   
   
   
-  # Add bsTooltips for pop-ups with info on biometric parameters - needs to be species-specific
+  # Add bsTooltips for pop-ups with info on biometric parameters - needs to be added a-posteriori
   observeEvent(rv$addedSpec,{
 
     req(rv$addedSpec)
@@ -157,20 +157,25 @@ function(input, output, session) {
     modelOutputs <- rv$sCRM_output_ls
     
     cSelSpec <- isolate(slctSpeciesTags())
-
+    
     tabs <- map2(cSelSpec$species, cSelSpec$specLabel, results_tabPanelsBuilder)
     
-    div(
-      helpText("Download zip file with plots and tables persented bellow"),
-      downloadButton("downloadData", "Download Outputs"),
+    tagList(
+      column(2, align = "right", offset = 10, tipify(downloadButton("downloadData", "Download Outputs"), 
+                                                     title = "Download zip file with plots and tables presented below", 
+                                                     placement = "left", trigger = "hover", options = list(container = "body"))),
       br(),
-      fluidRow(
-        invoke(tabBox, tabs,  width = 12) #, height = "250px")
-      )
+      br(),
+      invoke(tabBox, tabs,  width = 12) #, height = "250px")
+      # column(4,
+      #        box(width = 12,
+      #          helpText("Download zip file with plots and tables presented above"),
+      #          downloadButton("downloadData", "Download Outputs")
+      #        ))
+      
     )
-
+    
   })
-  
   
   
   
@@ -775,6 +780,9 @@ function(input, output, session) {
     updateProgress_Spec <- function(value = NULL, detail = NULL) {
       progress_Spec$set(value = value, detail = detail)
     }
+    # updateProgress_Spec <- function(detail = NULL, n = NULL) {
+    #   progress_Iter$inc(amount = 1/n, detail = detail)
+    # }
     
     #' callback functions to update progress on iterations. Each time updateProgress_Iter() is called, 
     #' it moves the bar 1/nth of the total distance.
@@ -786,7 +794,6 @@ function(input, output, session) {
     }
     
 
-    
     # ----- step 3: run simulation function ----- # 
     
     if(1){
@@ -812,16 +819,6 @@ function(input, output, session) {
         updateProgress_Iter
       )
     }
-    
-    # browser()
-    
-    # # -- fetch the summary tables back to the session (as the function saves them out) - in future, function should return theses tables as output
-    # monthSummaryFiles <- list.files(path = "results/tables/", full.names = TRUE, pattern = "monthlySummary|CollisionEstimates")
-    # 
-    # rv$summaryTables_ls <- map(monthSummaryFiles, ~ fread(., drop=1)) %>%
-    #   set_names(str_replace(monthSummaryFiles, pattern = "results/tables/", replacement = ""))
-    # 
-
   })
 
   
@@ -854,7 +851,7 @@ function(input, output, session) {
   
   
   
-  #observeEvent(sCRM_outputDF(), {
+  
   observe({
     
     df <- sCRM_outputDF()
@@ -890,8 +887,8 @@ function(input, output, session) {
         output[[plotTag]] <- renderPlot(p)
         
         # save plot externally
-        p <- p+labs(title=str_replace_all(specLabel, "_", " "))
-        ggsave(paste0(plotTag, ".png"), p, path="shinyOutputs", width = 19, height = 12, units = "cm")
+        p2 <- p+labs(title=str_replace_all(specLabel, "_", " "))
+        ggsave(paste0(plotTag, ".png"), p2, path="shinyOutputs", width = 19, height = 12, units = "cm")
         
       }))
     
@@ -950,8 +947,8 @@ function(input, output, session) {
         output[[plotTag]] <- renderPlot(p)
         
         # save plot externally
-        p <- p+labs(title=str_replace_all(specLabel, "_", " "))
-        ggsave(paste0(plotTag, ".png"), p, path="shinyOutputs", width = 19, height = 12, units = "cm")
+        p2 <- p+labs(title=str_replace_all(specLabel, "_", " "))
+        ggsave(paste0(plotTag, ".png"), p2, path="shinyOutputs", width = 19, height = 12, units = "cm")
       }))
       
 
@@ -966,7 +963,9 @@ function(input, output, session) {
           summarise(Mean = mean(overalCollisions), 
                     SD = sd(overalCollisions), CV = SD/Mean, Median = median(overalCollisions), IQR = IQR(overalCollisions), 
                     `2.5%` = quantile(overalCollisions, 0.025), `97.5%` = quantile(overalCollisions, 0.975)) %>%
-          mutate_at(.vars = vars(Mean:`97.5%`), funs(round), 3)
+          mutate_at(.vars = vars(Mean:`97.5%`), funs(round), 3) %>%
+          ungroup() %>% select(-Turbine)  # leave turbine model out of the table for now - current version with only one turbine model per simulation
+        
         #print(dt)
         
         sumTableTag <- paste0("summTable_overallCollisions_", spec)
@@ -998,11 +997,12 @@ function(input, output, session) {
       "modelOutputs.zip"
     },
     content = function(file) {
-      #basedir <- getwd()
+      basedir <- getwd()
       setwd("shinyOutputs")
       fs <- list.files()
       #fs <- list.files("shinyOutputs", full.names = TRUE)
       zip(zipfile = file, files = fs)
+      setwd(basedir)
     },
     contentType = "application/zip"
   )
