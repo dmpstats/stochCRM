@@ -1,5 +1,0 @@
-
-CountData = read.table(CountDataFile, header = T, sep = ",")
-
-
-

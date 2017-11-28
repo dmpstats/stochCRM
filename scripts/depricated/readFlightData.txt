@@ -1,5 +1,0 @@
-
-FlightHeight = read.table(FlightDataFile, header = T, sep = ",")
-
-
-
