@@ -715,6 +715,7 @@ function(input, output, session) {
                VariableMasden = factor(VariableMasden, levels = VariableMasden)
         ) %>%
         select(-c(hyperPar:month)) %>%
+        mutate(Value = Value + 1e-8) %>%  # hack to deal with truncated normal function error when mean = sd = 0, when lower truncation at 0
         spread(VariableMasden, Value)
     }else{
       countData <- NULL
