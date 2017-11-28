@@ -301,9 +301,17 @@ function(input, output, session) {
       
       output[[x]] <- renderRHandsontable({
         
-        data.frame(matrix(c(startUpValues$meanDensity, startUpValues$sdDensity), nrow = 2, ncol = 12, byrow = TRUE,
-                          dimnames = list(c("meanDensity", "sdDensity"), month.name)),
-                   stringsAsFactors = FALSE) %>%
+        if(cSpecTags$specLabel == "Black_legged_Kittiwake"){
+          initDF <-  data.frame(matrix(c(startUpValues$meanDensity, startUpValues$sdDensity), nrow = 2, ncol = 12, byrow = TRUE,
+                                       dimnames = list(c("meanDensity", "sdDensity"), month.name)),
+                                stringsAsFactors = FALSE)
+        }else{
+          initDF <- data.frame(matrix(c(rep(1, 12), rep(0.0001, 12)), nrow = 2, ncol = 12, byrow = TRUE,
+                                      dimnames = list(c("meanDensity", "sdDensity"), month.name)),
+                               stringsAsFactors = FALSE)
+        }
+        
+        initDF %>%
           rhandsontable(rowHeaderWidth = 160, 
                         rowHeaders = c("Mean birds/km^2", "SD of birds/km^2")) %>%
           hot_cols(colWidths = 90) %>%

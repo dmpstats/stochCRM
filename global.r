@@ -19,11 +19,11 @@ source("helpers.r")
 #source("bandModel_mock.r")
 source("BandModel_function.R")
 
-species <- c("Arctic Skua", "Northern Fulmar", "Great Black backed Gull", "Common Guillemot", "Northern Gannet",
+species <- sort(c("Arctic Skua", "Northern Fulmar", "Great Black backed Gull", "Common Guillemot", "Northern Gannet",
              "Black legged Kittiwake", "Lesser Black Backed Gull", "Little Auk", "Atlantic Puffin", 
              "Razorbill", "Arctic Tern", "Black headed Gull", "Black throated Diver", "Common Gull", "Common Scoter",
              "Common Tern", "Cormorant", "Eider", "European Shag", "Herring Gull", "Little Gull", "Manx Shearwater",
-             "Red throated Diver", "Sandwich Tern")
+             "Red throated Diver", "Sandwich Tern"))
 
 
 # set theme for ggplot
