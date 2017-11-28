@@ -13,7 +13,7 @@
 
 ##### bring in call functions needed to calculate collision risk along blade
 
-  source("scripts\\PCollFunctions.r", local=T)
+  source("scripts/PCollFunctions.r", local=T)
 
 
 ##### Get flight height data for species of interest

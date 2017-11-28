@@ -8,7 +8,7 @@
 #'  
 #'  - results_folder: output folder for tables/plots defaults to "results" in working directory
 #'  
-#'  - BirdDataFile: currently species-by-parameter CSV file, found in "data\\BirdData.csv"
+#'  - BirdDataFile: currently species-by-parameter CSV file, found in "data/BirdData.csv"
 #'  -- [contains: Species AvoidanceBasic	AvoidanceBasicSD	
 #'               AvoidanceExtended	AvoidanceExtendedSD	
 #'               Body_Length	Body_LengthSD	
@@ -18,7 +18,7 @@
 #'               Flight	
 #'               Prop_CRH_Obs	Prop_CRH_ObsSD]
 
-#'  - TurbineDataFile: currently contains turbine model-by-parameter CSV, found in "data\\TurbineData.csv"
+#'  - TurbineDataFile: currently contains turbine model-by-parameter CSV, found in "data/TurbineData.csv"
 #'  -- [contains: TurbineModel	Blades	
 #'                RotationSpeed	RotationSpeedSD	RotorRadius	RotorRadiusSD	
 #'                HubHeightAdd	HubHeightAddSD	BladeWidth	BladeWidthSD	
@@ -26,10 +26,10 @@
 #'                JanOp	JanOpMean	JanOpSD	
 #'                FebOp	FebOpMean	FebOpSD ... etc to Dec]
 #'                
-#'  - CountDataFile: currently contains species-by-parameters CSV, found in "data\\CountData.csv"  
+#'  - CountDataFile: currently contains species-by-parameters CSV, found in "data/CountData.csv"  
 #'  -- [contains: Species	Jan	JanSD	Feb	FebSD ... etc to Dec]
 #'  
-#'  - FlightDataFile: currently contains height-by-species CSV , found in "data\\FlightHeight.csv" 
+#'  - FlightDataFile: currently contains height-by-species CSV , found in "data/FlightHeight.csv" 
 #'  -- [contains: Height (300 values) Shag	Little_Gull ... etc ]
 #'  
 #'  - iter: integer constant > 0. number of iterations - the number of stochastic draws to take
@@ -91,6 +91,13 @@
     set.seed(100)
     S<-iter*20 ## this is number of samples, increased to ensure enough valid values - is this used?
 
+    
+    #### BC ##### -- initialise objects to store simulation replicates of monthly collisions, for each option, for current species and turbine  ===========
+    monthCollsnReps_opt1 <- list()
+    monthCollsnReps_opt2 <- list()
+    monthCollsnReps_opt3 <- list()
+    
+    
 
 # Create folders and paths ------------------------------------------------
     
@@ -137,7 +144,7 @@
     for (s in 1 : length (CRSpecies)){
       
       
-      # progress bar update for species
+      #### BC ##### -- progress bar update for iterations    ===========
       if (is.function(updateProgress_Spec)) {
         text <- gsub("_", " ", CRSpecies[s])
         updateProgress_Spec(value = s/(length(CRSpecies)), detail = text)
@@ -206,14 +213,14 @@
         
         #= sample bird parameters
         
-          source("scripts\\samplebirdparams.r", local=T)
+          source("scripts/samplebirdparams.r", local=T)
           
 # Iterating i - over random samples  --------------------------------------        
   
       for (i in 1:iter){                    
          
         
-        # progress bar update for iterations  
+        #### BC ##### -- progress bar update for iterations    ===========
         if (is.function(updateProgress_Iter)) {
           text <- NULL # paste0("Working through iteration ", i)
           updateProgress_Iter(value = i/iter, detail = text)
@@ -222,11 +229,11 @@
           # sample turbine pars based on their sampling dists
           #= samples from wind pars, then uses pitch/speed curves
         
-          source("scripts\\get_rotor_plus_pitch_auto.r", local=T)
+          source("scripts/get_rotor_plus_pitch_auto.r", local=T)
         
           #= outputs large (size S) rotor speeds and pitch - sampled into the DF
         
-          source("scripts\\sampleturbineparams.r", local=T)
+          source("scripts/sampleturbineparams.r", local=T)
         
           MonthlyOperational <- sampledTurbine %>% select(contains("Op", ignore.case = F))
         
@@ -239,7 +246,7 @@
           
           ############## STEP ONE - Calculate the collision risk in the absence of avoidance action
           
-          source("scripts\\ProbabilityCollision.r", local=T)
+          source("scripts/ProbabilityCollision.r", local=T)
           
           
           ############## STEP TWO - Calculate Flux Factor - the number of birds passing a turbine in each month
@@ -285,7 +292,7 @@
           
           #######################		Do model using option 1 - Site specific flight height information	###############################
           
-          source("scripts\\Option1.r", local=T)
+          source("scripts/Option1.r", local=T)
           
           ## add results to overall species/turbine results table
           tab1[i,]=Option1_CollisionRate[,2]
@@ -296,7 +303,7 @@
           
           #######################		Do model using option 2 - modelled flight height distribution		###############################
           
-          source("scripts\\Option2.r", local=T)
+          source("scripts/Option2.r", local=T)
           ## add results to overall species/turbine results table
           tab2[i,]=Option2_CollisionRate[,2]
           
@@ -304,7 +311,7 @@
           #######################		Do model using option 3 - modelled flight height distribution		###############################
           #######################		taking account of variation in risk along the rotor blades		###############################
           
-          source("scripts\\Option3.r", local=T)
+          source("scripts/Option3.r", local=T)
           ## add results to overall species/turbine results table
           tab3[i,]=Option3_CollisionRate[,2]  
           
@@ -322,20 +329,26 @@
 
         source("scripts/turbineSpeciesOuputs.r", local=T)
         
-        # reset counter of progress bar for iterations 
+        #### BC ##### -- reset counter of progress bar for iterations =====================
         if (is.function(updateProgress_Iter)) {
           text <- NULL # paste0("Working through iteration ", i)
           updateProgress_Iter(value = 0, detail = text)
         }
         
         
+        #### BC ##### -- Store simulation replicates under each option, for current species and turbine  ===========
+        cSpec <- CRSpecies[s]
+        cTurbModel <- paste0("turbModel", TurbineData$TurbineModel[t])
+        
+        monthCollsnReps_opt1[[cSpec]][[cTurbModel]] <- tab1
+        monthCollsnReps_opt2[[cSpec]][[cTurbModel]] <- tab2
+        monthCollsnReps_opt3[[cSpec]][[cTurbModel]] <- tab3
+        
       } # end of t over number of turbine
       
 
 # End of the turbine loop -------------------------------------------------
 
-
-      
       ###output species plots of density by option with curves for turbine model###
       ###PLOT DENSITY BY OPTION (useful if several turbine models)###
       
@@ -365,7 +378,7 @@
         
         fileName<-CRSpecies[s]
         fileName<-paste(fileName, ".png", sep="")
-        png(paste(results_folder, "figures", fileName, sep="\\"),width=500,height=900,res=100)
+        png(paste(results_folder, "figures", fileName, sep="/"),width=500,height=900,res=100)
         par(mfrow = c(3, 1))
         
         plot(density(option1[,1]), main="Option 1", xlab="Number of Collisions", ylab ="Probability Density", xlim=c(0,max1), ylim=(c(0, max1y)))
@@ -405,19 +418,19 @@
     } # end of the species loop over s
     
     ##output input data##
-    write.csv(BirdData, paste(results_folder,"input", "BirdData.csv", sep="\\"))
-    write.csv(CountData, paste(results_folder,"input", "CountData.csv", sep="\\"))
-    write.csv(TurbineData, paste(results_folder,"input", "TurbineData.csv", sep="\\"))
+    write.csv(BirdData, paste(results_folder,"input", "BirdData.csv", sep="/"))
+    write.csv(CountData, paste(results_folder,"input", "CountData.csv", sep="/"))
+    write.csv(TurbineData, paste(results_folder,"input", "TurbineData.csv", sep="/"))
     
     ###output results table###
-    write.csv (resultsSummary, paste(results_folder,"tables", "CollisionEstimates.csv", sep="\\"))
+    write.csv (resultsSummary, paste(results_folder,"tables", "CollisionEstimates.csv", sep="/"))
     
     
     end.time <- Sys.time()
     run.time <- end.time - start.time
     run.time
     
-    sink(paste(results_folder,"run.time.txt", sep="\\"))
+    sink(paste(results_folder,"run.time.txt", sep="/"))
     print(run.time)
     print(paste("The model ran", iter,"iterations", sep=" "))
     print("The following species were modelled:")
@@ -427,6 +440,9 @@
     sink()
     
     
+    #### BC ##### -- return collision replicates as output  ===========
+    return(list(monthCollsnReps_opt1 = monthCollsnReps_opt1, monthCollsnReps_opt2 = monthCollsnReps_opt2, 
+           monthCollsnReps_opt3 = monthCollsnReps_opt3))
         
   }
 

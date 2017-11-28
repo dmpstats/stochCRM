@@ -11,7 +11,7 @@
   
   windName <- paste("windpower",TurbineData$TurbineModel[t], sep="_")
   windD <- paste(windName,"csv", sep=".")
-  windData <- read.csv(paste("data",windD, sep="\\"), header=T)
+  windData <- read.csv(paste("data",windD, sep="/"), header=T)
 
   #remove anything less than wind threshold of power curve
   windThreshold <- windData$Wind[min(which(windData$Rotor != 0))]

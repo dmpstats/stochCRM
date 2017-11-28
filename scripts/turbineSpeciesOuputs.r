@@ -62,11 +62,11 @@ monthlySummaryOpt3[12,2:6]=c(mean(tab3$Dec),sd(tab3$Dec),CV(mean(tab3$Dec),sd(ta
 
 ###SAVE MONTHLY SUMMARIES###
 fileName<-paste(TurbineData$TurbineModel[t],CRSpecies[s],"monthlySummaryOpt1.csv", sep="_")
-write.csv (monthlySummaryOpt1, paste(results_folder,"tables",  fileName, sep="\\"))
+write.csv (monthlySummaryOpt1, paste(results_folder,"tables",  fileName, sep="/"))
 fileName<-paste(TurbineData$TurbineModel[t],CRSpecies[s],"monthlySummaryOpt2.csv", sep="_")
-write.csv (monthlySummaryOpt2, paste(results_folder,"tables",  fileName, sep="\\"))
+write.csv (monthlySummaryOpt2, paste(results_folder,"tables",  fileName, sep="/"))
 fileName<-paste(TurbineData$TurbineModel[t],CRSpecies[s],"monthlySummaryOpt3.csv", sep="_")
-write.csv (monthlySummaryOpt3, paste(results_folder,"tables",  fileName, sep="\\"))
+write.csv (monthlySummaryOpt3, paste(results_folder,"tables",  fileName, sep="/"))
 
 ###DATA TO DENSITY SUMMARY TABLE###
 densitySummary[,(t-1)*3+1]=rowSums(tab1)
@@ -77,7 +77,7 @@ densitySummary[,(t-1)*3+3]=rowSums(tab3)
 
 fileName<-paste(TurbineData$TurbineModel[t],CRSpecies[s], sep="_")
 fileName<-paste(fileName, ".png", sep="")
-png(paste(results_folder, "figures", fileName, sep="\\"),width=500,height=900,res=100)
+png(paste(results_folder, "figures", fileName, sep="/"),width=500,height=900,res=100)
 par(mfrow = c( 3, 1))
 
 boxplot(tab1, outline=F, ylim=c(0,max(max(tab1), max(tab2), max(tab3))),ylab="Number of collisions", main="Option 1")
@@ -89,7 +89,7 @@ dev.off()
 ###make density plots and save###
 fileName<-paste(TurbineData$TurbineModel[t],CRSpecies[s], "density",sep="_")
 fileName<-paste(fileName, ".png", sep="")
-png(paste(results_folder, "figures", fileName, sep="\\"),width=800,height=600,res=100)
+png(paste(results_folder, "figures", fileName, sep="/"),width=800,height=600,res=100)
 
 plot(density(rowSums(tab1)), main="", xlab="Number of Collisions", ylab ="Probability Density", col="chocolate",xlim=(c(0, max(max(density(rowSums(tab1))$x),max(density(rowSums(tab2))$x),max(density(rowSums(tab3))$x)))), ylim=(c(0, max(max(density(rowSums(tab1))$y),max(density(rowSums(tab2))$y),max(density(rowSums(tab3))$y)))))
 lines(density(rowSums(tab2)), col="darkgoldenrod", lty=2)
@@ -124,7 +124,7 @@ sampledBirdParamsSummary[7,2:5]=c(mean(sampledBirdParams$NocturnalActivity), sd(
 
 ###output parameter table###
 fileName<-paste(TurbineData$TurbineModel[t],CRSpecies[s],"sampledBirdParameters.csv", sep="_")
-write.csv (sampledBirdParamsSummary, paste(results_folder,"tables",  fileName, sep="\\"))
+write.csv (sampledBirdParamsSummary, paste(results_folder,"tables",  fileName, sep="/"))
 
 
 ###TURBINE PARAMETERS###
@@ -153,4 +153,4 @@ sampledTurbineParamsSummary[17,2:5]=c(mean(sampledTurbine$DecOp), sd(sampledTurb
 
 ###output parameter table###
 fileName<-paste(TurbineData$TurbineModel[t],CRSpecies[s],"sampledTurbineParameters.csv", sep="_")
-write.csv (sampledTurbineParamsSummary, paste(results_folder, "tables",fileName, sep="\\"))
+write.csv (sampledTurbineParamsSummary, paste(results_folder, "tables",fileName, sep="/"))
