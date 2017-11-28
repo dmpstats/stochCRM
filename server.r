@@ -17,7 +17,9 @@ function(input, output, session) {
     addedSpec = NULL,
     biomParsInputs_ls = NULL,
     FlgtHghDstInputs_ls = NULL,
-    densParsInputs_ls = NULL
+    densParsInputs_ls = NULL,
+    summaryTables_ls = NULL,
+    sCRM_output_ls = NULL
     #inputs_BiometricPars_rv = NULL,
     #rctvBlck_FltHghDstInput = NULL # reactivity blocker for flight Height distributions fileInputs
   )
@@ -104,7 +106,7 @@ function(input, output, session) {
                   placement = "right", trigger = "hover"),
 
         bsTooltip(id = paste0("lbl_wngSpan_", cSpecTags$specLabel),
-                  title = paste0("Bird wing spa ~ Normal"),
+                  title = paste0("Bird wing span ~ Normal"),
                   options = list(container = "body"),
                   placement = "right", trigger = "hover"),
         
@@ -140,11 +142,36 @@ function(input, output, session) {
                   title = paste0("The number of birds in flight during daytime per km2 in each month (~ Truncated Normal bounded by 0 and 2)"),
                   options = list(container = "body"),
                   placement = "right", trigger = "hover")
-        
-        
       )
     })
   })
+  
+  
+  
+  
+  # --- render UI section for model outputs dynamically, according to the selected species.
+  output$simResults_UI <- renderUI({
+    
+    req(rv$sCRM_output_ls)
+    
+    modelOutputs <- rv$sCRM_output_ls
+    
+    cSelSpec <- isolate(slctSpeciesTags())
+
+    tabs <- map2(cSelSpec$species, cSelSpec$specLabel, results_tabPanelsBuilder)
+    
+    div(
+      helpText("Download zip file with plots and tables persented bellow"),
+      downloadButton("downloadData", "Download Outputs"),
+      br(),
+      fluidRow(
+        invoke(tabBox, tabs,  width = 12) #, height = "250px")
+      )
+    )
+
+  })
+  
+  
   
   
 
@@ -352,7 +379,7 @@ function(input, output, session) {
               #print(c_tag)
               data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
                 ggplot(aes(qtls)) +
-                stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
+                stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1) +
                 stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "darkorange", alpha = 0.3) +
                 labs(y="Density", #title=c_tag,
                      x = unique(cPlotData$par))
@@ -397,14 +424,18 @@ function(input, output, session) {
     mu <- input$numInput_turbinePars_rotRadius_E_
     stdev <- input$numInput_turbinePars_rotRadius_SD_
     
+    # normDensPlotPars(mu = mu, stdev = stdev, fill = "olivedrab", xlab = "Rotation Radius (m)")
+    
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Rotation Radius (m)")
     })
   
+  
+
   
   output$plot_turbinePars_hubHght <- renderPlot({
     mu <- input$numInput_turbinePars_hubHght_E_
@@ -412,7 +443,7 @@ function(input, output, session) {
     
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Hub Height (m)")
@@ -425,7 +456,7 @@ function(input, output, session) {
     
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Maximum Blade Width (m)")
@@ -439,7 +470,7 @@ function(input, output, session) {
     
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Rotation Speed (rpm)")
@@ -452,7 +483,7 @@ function(input, output, session) {
     
     data.frame(qtls = qnorm(c(0.001, 0.999), mean = mu, sd=stdev))  %>%
       ggplot(aes(qtls)) +
-      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1.2) +
+      stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), col = "black", size =1) +
       stat_function(fun=dnorm, args = list(mean = mu, sd = stdev), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Blade Pitch (degrees)")
@@ -503,7 +534,7 @@ function(input, output, session) {
     
     data.frame(qtls = qtnorm(c(0.001, 0.999), mean = mu, sd=stdev, lower = 0))  %>%
       ggplot(aes(qtls)) +
-      stat_function(fun=dtnorm, args = list(mean = mu, sd = stdev, lower = 0), col = "black", size =1.2) +
+      stat_function(fun=dtnorm, args = list(mean = mu, sd = stdev, lower = 0), col = "black", size =1) +
       stat_function(fun=dtnorm, args = list(mean = mu, sd = stdev, lower = 0), geom="area", fill = "olivedrab", alpha = 0.3) +
       labs(y="Density", #title=c_tag,
            x = "Wind Seed (m/s)")
@@ -588,15 +619,6 @@ function(input, output, session) {
   #' -----------------------------------------------------------------------
   #  ----            Collision Risk Simulation Model                    ----
   #' -----------------------------------------------------------------------
-
-#   observe({
-#     #print(str(reactiveValuesToList(input), max.level = 2, list.len = 5))
-#     #print(rv$biomParsInputs_ls)
-#     print(rv$biomParsInputs_ls[grep(pattern = "basicAvoid_E", names(rv$biomParsInputs_ls))])
-#     print(slctSpeciesTags()$specLabel)
-#   })
-  
-  
 
   observeEvent(input$actButtonInput_simulPars_GO, {
 
@@ -703,26 +725,26 @@ function(input, output, session) {
       drop_na()
 
     
-    output$out_simFunctionArgs <- renderPrint({
-      isolate(
-        print(list(
-          BirdData= birdData,
-          TurbineData = turbineData,
-          CountData = countData,
-          iter = input$sldInput_simulPars_numIter,
-          CRSpecies = slctSpeciesTags()$specLabel,
-          TPower = input$numInput_windfarmPars_targetPower,
-          WFWidth = input$numInput_windfarmPars_width,
-          LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"),
-          rop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp,
-          Latitude = input$numInput_windfarmPars_Latitude,
-          TideOff = input$numInput_windfarmPars_tidalOffset,
-          windSpeedMean = input$numInput_miscPars_windSpeed_E_,
-          windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
-          windPowerData = windPowerData
-        ))
-      )
-    })
+    # output$out_simFunctionArgs <- renderPrint({
+    #   isolate(
+    #     print(list(
+    #       BirdData= birdData,
+    #       TurbineData = turbineData,
+    #       CountData = countData,
+    #       iter = input$sldInput_simulPars_numIter,
+    #       CRSpecies = slctSpeciesTags()$specLabel,
+    #       TPower = input$numInput_windfarmPars_targetPower,
+    #       WFWidth = input$numInput_windfarmPars_width,
+    #       LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"),
+    #       rop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp,
+    #       Latitude = input$numInput_windfarmPars_Latitude,
+    #       TideOff = input$numInput_windfarmPars_tidalOffset,
+    #       windSpeedMean = input$numInput_miscPars_windSpeed_E_,
+    #       windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
+    #       windPowerData = windPowerData
+    #     ))
+    #   )
+    # })
 
     
     #' model function expects data to be provided in csv files, so saving them out for now to avoid code inconsistencies 
@@ -740,8 +762,8 @@ function(input, output, session) {
     progress_Spec <- shiny::Progress$new()
     progress_Iter <- shiny::Progress$new()
     
-    progress_Spec$set(message = "Processing...", value = 0)
-    progress_Iter$set(message = "Working through iterations", value = 0)
+    progress_Spec$set(message = "Processing ", value = 0)
+    progress_Iter$set(message = "Simulating...", value = 0)  # "Going through iterations"
     
     on.exit({
       progress_Iter$close()
@@ -768,14 +790,14 @@ function(input, output, session) {
     # ----- step 3: run simulation function ----- # 
     
     if(1){
-      stochasticBand(
+      rv$sCRM_output_ls <- stochasticBand(
         workingDirectory="sCRM/",
         results_folder = "results",
         BirdDataFile = "data/BirdData.csv",
         TurbineDataFile = "data/TurbineData.csv",
         CountDataFile = "data/CountData.csv",
         FlightDataFile = "data/FlightHeight.csv",
-        iter = input$sldInput_simulPars_numIter, 
+        iter = 10, #input$sldInput_simulPars_numIter, 
         CRSpecies = slctSpeciesTags()$specLabel, #CRSpecies = c("Black_legged_Kittiwake"),
         TPower = input$numInput_windfarmPars_targetPower, #600
         LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
@@ -790,12 +812,208 @@ function(input, output, session) {
         updateProgress_Iter
       )
     }
+    
+    # browser()
+    
+    # # -- fetch the summary tables back to the session (as the function saves them out) - in future, function should return theses tables as output
+    # monthSummaryFiles <- list.files(path = "results/tables/", full.names = TRUE, pattern = "monthlySummary|CollisionEstimates")
+    # 
+    # rv$summaryTables_ls <- map(monthSummaryFiles, ~ fread(., drop=1)) %>%
+    #   set_names(str_replace(monthSummaryFiles, pattern = "results/tables/", replacement = ""))
+    # 
 
   })
 
   
   
+  
+  
+  #' -----------------------------------------------------------------------
+  #  ----            Compute and display model outputs                  ----
+  #' -----------------------------------------------------------------------
+  
+  
+  # Arrange results data into a data.frame
+  sCRM_outputDF <- eventReactive(rv$sCRM_output_ls, {
+    
+    req(rv$sCRM_output_ls)
 
+    listLevels <- expand.grid(option = names(rv$sCRM_output_ls), specLabel = names(rv$sCRM_output_ls[[1]]), 
+                              turbineModel =  names(rv$sCRM_output_ls[[1]][[1]]))
+    
+    pmap(list(x = as.character(listLevels$option), y = as.character(listLevels$specLabel), z=as.character(listLevels$turbineModel)), 
+         function(x, y, z) {
+           data.frame(option = x, specLabel = y, turbineModel = z, rv$sCRM_output_ls[[x]][[y]][[z]]) %>%
+             mutate(option = str_replace(option, "monthCollsnReps_opt", "Option "),
+                    turbineModel = str_replace(turbineModel, "turbModel", ""), 
+                    iter = 1:nrow(.))
+         }
+    ) %>%
+      bind_rows()
+  })
+  
+  
+  
+  #observeEvent(sCRM_outputDF(), {
+  observe({
+    
+    df <- sCRM_outputDF()
+    
+    req(nrow(df) > 0)
+  
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~  boxplots and summary tables of collisons per month, for each option and species  ~~~ #
+    
+    df_monthlyColl <- df %>%
+      gather(Month, Collisions, -c(option, specLabel, turbineModel, iter)) %>%
+      #select(-turbineModel) %>%
+      mutate(Month = factor(Month, levels = unique(Month)),
+             specLabel = as.character(specLabel)) %>%
+      group_by(specLabel, option, turbineModel) %>%
+      nest()
+    
+    # --- plots
+    df_monthlyColl %>%
+      mutate(plot = pmap(list(dt = data, spec = specLabel, opt = option), function(dt, spec, opt){
+
+        dt %<>% mutate(opt = opt)
+        plotTag <- paste0("plot_monthCollisions_", str_replace(opt, " ", ""), "_", spec)
+        # print(plotTag)
+        
+        p <- ggplot(dt) +
+          geom_boxplot(aes(x = Month, y = Collisions), fill = "mediumpurple1", alpha = 0.8) +
+          facet_wrap(~opt) +
+          theme(legend.position="none") +
+          labs(y="Number of Collisions", x = "") +
+          theme(strip.background=element_rect(fill="grey95"))
+
+        output[[plotTag]] <- renderPlot(p)
+        
+        # save plot externally
+        p <- p+labs(title=str_replace_all(specLabel, "_", " "))
+        ggsave(paste0(plotTag, ".png"), p, path="shinyOutputs", width = 19, height = 12, units = "cm")
+        
+      }))
+    
+    # --- summary tables
+    df_monthlyColl %>%
+      mutate(sumTable = pmap(list(dt = data, spec = specLabel, opt = option), function(dt, spec, opt){
+        
+        dt %<>% #mutate(opt = opt) %>% 
+          group_by(Month) %>%
+          summarise(Mean = mean(Collisions), 
+                    SD = sd(Collisions), CV = SD/Mean, Median = median(Collisions), IQR = IQR(Collisions), 
+                    `2.5%` = quantile(Collisions, 0.025), `97.5%` = quantile(Collisions, 0.975)) %>%
+          mutate_at(.vars = vars(Mean:`97.5%`), funs(round), 3)
+        
+        #print(dt)
+        
+        sumTableTag <- paste0("summTable_monthCollisions_", str_replace(opt, " ", ""), "_", spec)
+        #print(sumTableTag)
+        
+        output[[sumTableTag]] <- renderDataTable({
+          datatable(dt, rownames = FALSE, 
+                    caption = paste0("Model ", opt), # , " (SD = standard deviation, CV = coefficient of variation, IQR = inter quartile range, percentile)"),
+                    options = list(pageLength = 12, dom = 't'))
+        })
+        
+        write.csv(dt, file.path("shinyOutputs", paste0(sumTableTag, ".csv")), row.names = FALSE)
+        
+      }))
+    
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~ density plots and summary tables of overall collisons, for each option and species   ~~~ #
+    
+    df_overallColl <- df %>%
+      gather(Month, Collisions, -c(option, specLabel, turbineModel, iter)) %>%
+      mutate(Month = factor(Month, levels = unique(Month)),
+             specLabel = as.character(specLabel)) %>%
+      group_by(option, specLabel, turbineModel, iter) %>%
+      summarise(overalCollisions = sum(Collisions)) %>%
+      group_by(specLabel, turbineModel) %>%
+      nest()
+    
+    # -- Plots
+    df_overallColl %>%
+      mutate(plot=pmap(list(dt = data, spec = specLabel), function(dt, spec){
+        
+        plotTag <- paste0("plot_overallCollisions_", spec)
+        #print(plotTag)
+        
+        p <- ggplot(dt) +
+          geom_density(aes(x = overalCollisions, colour = option, fill = option), alpha = 0.2) +
+          labs(x="Number of Collisions", y = "Probability Density") +
+          scale_colour_brewer(palette = "Set1") +
+          scale_fill_brewer(palette = "Set1") +
+          theme(legend.title=element_blank(), legend.position="top") 
+        
+        output[[plotTag]] <- renderPlot(p)
+        
+        # save plot externally
+        p <- p+labs(title=str_replace_all(specLabel, "_", " "))
+        ggsave(paste0(plotTag, ".png"), p, path="shinyOutputs", width = 19, height = 12, units = "cm")
+      }))
+      
+
+    # -- Summary tables
+    df_overallColl %>%
+      mutate(sumPlot = pmap(list(dt = data, spec = specLabel, turb = turbineModel), function(dt, spec, turb){
+        
+        dt %<>%
+          mutate(Turbine = turb) %>%
+          rename(Option = option) %>%
+          group_by(Turbine, Option) %>%
+          summarise(Mean = mean(overalCollisions), 
+                    SD = sd(overalCollisions), CV = SD/Mean, Median = median(overalCollisions), IQR = IQR(overalCollisions), 
+                    `2.5%` = quantile(overalCollisions, 0.025), `97.5%` = quantile(overalCollisions, 0.975)) %>%
+          mutate_at(.vars = vars(Mean:`97.5%`), funs(round), 3)
+        #print(dt)
+        
+        sumTableTag <- paste0("summTable_overallCollisions_", spec)
+        #print(sumTableTag)
+        
+        output[[sumTableTag]] <- renderDataTable({
+          datatable(dt, rownames = FALSE, 
+                    options = list(
+                      #autoWidth = TRUE,
+                      pageLength = 12, 
+                      dom = 't'))
+        })
+        
+        write.csv(dt, file.path("shinyOutputs", paste0(sumTableTag, ".csv")), row.names = FALSE)
+      }))
+    
+    
+  })
+  
+  
+  
+  
+  #' ----------------------------------------------------------------
+  #  ----              Download model outputs                    ----
+  #' ----------------------------------------------------------------
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      "modelOutputs.zip"
+    },
+    content = function(file) {
+      #basedir <- getwd()
+      setwd("shinyOutputs")
+      fs <- list.files()
+      #fs <- list.files("shinyOutputs", full.names = TRUE)
+      zip(zipfile = file, files = fs)
+    },
+    contentType = "application/zip"
+  )
+  
+  
+
+  
+  
+  
+  
+  
   
   
   
@@ -815,7 +1033,7 @@ function(input, output, session) {
   # output$out_inputs_monthDens <- renderPrint({
   #   print(inputs_monthDensPars())
   # })
-
+ 
   observe(label="console",{
     if(input$console != 0) {
       options(browserNLdisabled=TRUE)

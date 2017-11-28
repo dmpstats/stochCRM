@@ -230,7 +230,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                 tags$b(HTML(paste0("Monthly Densities", actionLink(paste0("lbl_monthOPs_", specLabel), label=NULL, icon=icon('info-circle'))))),
                 br(),
                 br(),
-                br(),
                 #label = label.help("Flight Type", paste0("lbl_flType_", specLabel)), 
                 #title = tags$b("Monthly Densities"),
                 rHandsontableOutput(paste0("hotInput_birdDensPars_", specLabel), width = "100%"),
@@ -251,4 +250,85 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
       )
     )
   )
+}
+
+
+
+
+
+results_tabPanelsBuilder <- function(specName, specLabel){
+    
+    #plotWidth <- 400
+    #plotHeight <- 200
+    
+    tabPanel(title = tags$b(specName),
+             fluidRow(
+               box(width = 12,
+                   #title = h4(paste0("Overall number of collisions - ", specName)),
+                   #h5(tags$b(paste0("Overall number of collisions - ", specName))),
+                   h4(paste0("Overall number of collisions - ", specName)),
+                   br(),
+                   
+                   column(6,
+                          plotOutput(paste0("plot_overallCollisions_", specLabel), width = "100%") #width = plotWidth, height = plotHeight)
+                   ),
+                   column(6,
+                          div(dataTableOutput(paste0("summTable_overallCollisions_", specLabel)), 
+                              style = "font-size: 90%; width: 75%")
+                          #tableOutput(paste0("sumTable_results_monthCollisions_", specLabel))
+                   )
+               )
+             ),
+             fluidRow(
+               box(width = 12,
+                   #title = h4(paste0("Number of collisions per month - ", specName)),
+                   #h5(tags$b(paste0("Number of collisions per month - ", specName))),
+                   h4(paste0("Number of collisions per month by model option - ", specName)),
+                   br(),
+                   
+                   fluidRow(
+                     column(6, 
+                            br(),br(),br(),br(),
+                            plotOutput(paste0("plot_monthCollisions_Option1_", specLabel), width = "100%")
+                            ),
+                     column(6, 
+                            align="center",
+                            div(dataTableOutput(paste0("summTable_monthCollisions_Option1_", specLabel)),
+                                   style = "font-size: 90%; width: 75%")
+                            )
+                   ),
+                   br(),
+                   br(),
+                   hr(),
+                   
+                   fluidRow(
+                     column(6, 
+                            br(),br(),br(),br(),
+                            plotOutput(paste0("plot_monthCollisions_Option2_", specLabel), width = "100%")
+                            ),
+                     
+                     column(6, 
+                            align="center",
+                            div(dataTableOutput(paste0("summTable_monthCollisions_Option2_", specLabel)),
+                                style = "font-size: 90%; width: 75%")
+                            )
+                   ),
+                   br(),
+                   br(),
+                   hr(),
+                   
+                   fluidRow(
+                     column(6, 
+                            br(),br(),br(),br(),
+                            plotOutput(paste0("plot_monthCollisions_Option3_", specLabel), width = "100%")
+                            ),
+                     column(6, 
+                            align="center",
+                            div(dataTableOutput(paste0("summTable_monthCollisions_Option3_", specLabel)),
+                                style = "font-size: 90%; width: 75%")
+                            )
+                   )
+               )
+             )
+    )
 }

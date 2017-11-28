@@ -314,8 +314,11 @@ body <- dashboardBody(
                   actionButton(inputId = "actButtonInput_simulPars_GO", label = tags$b("Run Simulation"), 
                                icon = icon("cogs"), width = "100%")
               ),
-              box(title = "Outputs", width = 10, status = "primary", solidHeader = TRUE,
-                  verbatimTextOutput("out_simFunctionArgs")
+              box(title = "Model Ouputs", width = 10, status = "primary", solidHeader = TRUE,
+                  #verbatimTextOutput("out_simFunctionArgs")
+                  # downloadButton("downloadData", "Download"),
+                  # br(),
+                  uiOutput("simResults_UI")
               )
             )
     )
@@ -357,9 +360,10 @@ bootstrapPage(
 
   div(class = "busy",
       tags$b(h4("Working on it...")),
-      #img(src="images/OurStory_06.Wind-Turbine.gif")
+      img(src="loading.gif")
+      #img(src="operation-and-maintenance.gif", height = "50%", width = "50%")
       #h2(HTML('<i class="fa fa-cog fa-spin fa-2x"></i>'))
-      h2(HTML('<i  class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'))
+      #h2(HTML('<i  class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'))
   )
 )
 

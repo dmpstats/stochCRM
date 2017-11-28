@@ -8,6 +8,9 @@ library(stringr)
 library(shinyBS)
 library(msm)
 library(shinyjs)
+library(data.table)
+library(DT)
+library(zip)
 
 # library(dplyr)
 
