@@ -3,7 +3,7 @@
   - % of downtime parameterized as Normal when it should always be >= 0
   - Proportion of Nocturnal Activity parameterized as Normal
   - Proportion at Collision risk height parameterized as Normal
-  - Probability of basic and extended avoidance parameterized as Normal 
+  - Probability of basic and extended avoidance parameterized as Normal, i.e. not bounded by 0 and 1
   
 
 (ii) current restrictions

@@ -314,7 +314,7 @@ body <- dashboardBody(
                   #actionLink("lbl_extArray", label=NULL, icon=icon('info-circle')),
                   hr(),
                   sliderInput(inputId = "sldInput_simulPars_numIter", label = "Number of Iterations", 
-                              min = 50, max = 10000, step = 500, value = 50),
+                              min = 10, max = 5000, step = 100, value = 10),
                   hr(),
                   actionButton(inputId = "actButtonInput_simulPars_GO", label = tags$b("Run Simulation"), 
                                icon = icon("cogs"), width = "100%")

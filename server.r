@@ -127,13 +127,13 @@ function(input, output, session) {
                   placement = "right", trigger = "hover"),
         
         bsTooltip(id = paste0("lbl_basicAvoid_", cSpecTags$specLabel),
-                  title = paste0("The probability that a bird on a collision course with a turbine will take evading", 
+                  title = paste0("The probability (0-1) that a bird on a collision course with a turbine will take evading", 
                                  " action to avoid collision (~Normal). Required for the basic model (option 1)"),
                   options = list(container = "body"),
                   placement = "right", trigger = "hover"),
         
         bsTooltip(id = paste0("lbl_extAvoid_", cSpecTags$specLabel),
-                  title = paste0("The probability that a bird on a collision course with a turbine will take evading", 
+                  title = paste0("The probability (0-1) that a bird on a collision course with a turbine will take evading", 
                                  " action to avoid collision (~Normal). Required for the extended model (option 3)"),
                   options = list(container = "body"),
                   placement = "right", trigger = "hover"),
@@ -167,12 +167,6 @@ function(input, output, session) {
       br(),
       br(),
       invoke(tabBox, tabs,  width = 12) #, height = "250px")
-      # column(4,
-      #        box(width = 12,
-      #          helpText("Download zip file with plots and tables presented above"),
-      #          downloadButton("downloadData", "Download Outputs")
-      #        ))
-      
     )
     
   })
@@ -805,7 +799,7 @@ function(input, output, session) {
         TurbineDataFile = "data/TurbineData.csv",
         CountDataFile = "data/CountData.csv",
         FlightDataFile = "data/FlightHeight.csv",
-        iter = 10, #input$sldInput_simulPars_numIter, 
+        iter = input$sldInput_simulPars_numIter, 
         CRSpecies = slctSpeciesTags()$specLabel, #CRSpecies = c("Black_legged_Kittiwake"),
         TPower = input$numInput_windfarmPars_targetPower, #600
         LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
@@ -1010,11 +1004,6 @@ function(input, output, session) {
   
   
 
-  
-  
-  
-  
-  
   
   
   
