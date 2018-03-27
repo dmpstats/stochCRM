@@ -16,7 +16,8 @@
   TurbineData <- read.csv(TurbineDataFile, header = T)
   
   #### Transform Pitch, needed for Collision Risk Sheet
-  Pitch <- TurbineData$Pitch*pi/180 
+  # superceeded by the sampled versions I believe
+  #Pitch <- TurbineData$Pitch*pi/180 
 
 
 # Read in bird count data -------------------------------------------------

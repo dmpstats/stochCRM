@@ -1,4 +1,7 @@
 
+# Rotor properties - minor tidying of Masden ------------------------------
+
+
 # get pitch and rotor values for turbine sampling -------------------------
 
   # truncated normal sampling of wind speed (non-negativity constraint) -- S is bigger than iter

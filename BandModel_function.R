@@ -64,25 +64,27 @@
             CountDataFile = "data/CountData.csv",
             FlightDataFile = "data/FlightHeight.csv",
             iter = 10,
-            CRSpecies = c("Black_legged_Kittiwake"),
-            TPower = 600, 
+            CRSpecies = c("Northern_Gannet"),
+            TPower = 1760, 
             LargeArrayCorrection = "yes",
-            WFWidth = 10, 
+            WFWidth = 54, 
             Prop_Upwind = 0.5,
-            Latitude = 55.8,
+            Latitude = 53.7,
             TideOff = 2.5, 
-            windSpeedMean = 7.74,
-            windSpeedSD = 3.2,
-            #windPowerData = windPowerData,
+            windSpeedMean = 30,
+            windSpeedSD = 0.000000001,
             updateProgress_Spec,  # pass in the updateProgress function so that it can update the progress indicator.
-            updateProgress_Iter) {
-  
+            updateProgress_Iter,
+            DensityOpt
+            ) {
+    
 # preamble ----------------------------------------------------------------
     
     # library msm - believe this is only for the truncated normal distrubtion
     library(msm)    
     library(dplyr)
     library(tidyr)
+    library(pracma)
 
     ###start timers
     start.time <- Sys.time()
@@ -90,17 +92,16 @@
     ###set random number seed
     set.seed(100)
     S<-iter*20 ## this is number of samples, increased to ensure enough valid values - is this used?
-
     
     #### BC ##### -- initialise objects to store simulation replicates of monthly collisions, for each option, for current species and turbine  ===========
     monthCollsnReps_opt1 <- list()
     monthCollsnReps_opt2 <- list()
     monthCollsnReps_opt3 <- list()
-    
-    
+
 
 # Create folders and paths ------------------------------------------------
-    
+
+
     ###create results folder
     if(results_folder == "") results_folder<- Sys.Date() ## if no name given for results folder, use today's date
     if(results_folder !="") dir.create(results_folder) ## if name given for results folder use that and create folder
@@ -130,6 +131,22 @@
     source("scripts/helpers_sampling functions.r", local=T)
     
 
+
+# Prob collision functions and associated bits ----------------------------
+
+    ##### create dataframe giving the width of the chord relative to its maximum width at given points along the radius of the rotor
+    
+    rad = round(seq(0,1,0.05),2) 
+    
+    circ = c(0.69,0.73,0.79,0.88,0.96,1,0.98,0.92,0.85,0.8,0.75,0.7,0.64,0.58,0.52,0.47,0.41,0.37,0.3,0.24,0)
+    
+    coverC = data.frame(cbind(rad, circ))
+    
+    ##### bring in call functions needed to calculate collision risk along blade
+    
+    source("scripts/PCollFunctions.r", local=T)
+    
+    
 # calculations ------------------------------------------------------------
     
     ##set progress bar
@@ -143,16 +160,36 @@
     
     for (s in 1 : length (CRSpecies)){
       
-      
       #### BC ##### -- progress bar update for iterations    ===========
       if (is.function(updateProgress_Spec)) {
         text <- gsub("_", " ", CRSpecies[s])
         updateProgress_Spec(value = s/(length(CRSpecies)), detail = text)
       }
       
-      
       species.dat = subset (BirdData, Species == CRSpecies[s])
-      species.count = subset (CountData, Species == CRSpecies[s])
+      
+      species.dat$FlightNumeric <- ifelse(species.dat$Flight == 'Flapping', 1, 0)
+      
+  
+      c_densOpt <- filter(DensityOpt, specLabel == CRSpecies[s])$userOption
+      
+      if(c_densOpt == "truncNorm"){
+        species.count = subset(CountData, Species == CRSpecies[s])  
+      }
+      
+      
+      if(c_densOpt == "reSamp"){
+        species.count <- fread("data/birdDensityData_samples.csv") %>%
+          filter(specLabel == CRSpecies[s])
+      }
+      
+      
+      if(c_densOpt == "pcntiles"){
+        species.count <- fread("data/birdDensityData_refPoints.csv") %>%
+          filter(specLabel == CRSpecies[s])
+      }
+      
+      
       
       Flap_Glide = ifelse (species.dat$Flight == "Flapping", 1, 2/pi)
       
@@ -167,8 +204,6 @@
       flight.boot.sample <- sample(flight.boot, iter, replace=T)
       
       
-      
-      
       ###CREATE BIRD PARAMETER DATA FRAME###
       sampledBirdParams = data.frame(matrix(data = 0, ncol = 7, nrow = iter))
       names(sampledBirdParams) = c("AvoidanceBasic", "AvoidanceExtended",  "WingSpan", "BodyLength", "PCH", "FlightSpeed", "NocturnalActivity")
@@ -181,16 +216,21 @@
       densitySummary=data.frame(matrix(data = 0, ncol = nrow(TurbineData)*3, nrow = iter))
       ##add names of columns later in turbine loop###
       
+      #= sample bird parameters
+      #' Not sure why this was within the t loop - moved
+      
+      source("scripts/samplebirdparams.r", local=T)
 
 # Start of turbine loop ---------------------------------------------------
 
 
       for ( t in 1:nrow(TurbineData))  {
-        
+        #' Things indexed by t
+        #' TurbineData
         
         ###CREATE TURBINE DATA FRAME###
-        sampledTurbine = data.frame(matrix(data = 0, ncol = 17, nrow = iter))
-        names(sampledTurbine) = c("RotorSpeed", "RotorRadius", "HubHeight", "BladeWidth", "Pitch", 
+        sampledTurbine = data.frame(matrix(data = 0, ncol = 18, nrow = iter))
+        names(sampledTurbine) = c("RotorRadius", "HubHeight", "BladeWidth", "WindSpeed", "RotorSpeed", "Pitch", ### BC CHANGE ### -- windSpeed added
                                   "JanOp", "FebOp", "MarOp", "AprOp", "MayOp",   "JunOp", "JulOp",   
                                   "AugOp", "SepOp", "OctOp", "NovOp", "DecOp")
         
@@ -211,48 +251,70 @@
         sampledCollInt <- data.frame(matrix(data = 0, ncol = 1, nrow = iter))
         names(sampledCollInt) <- "CollInt"
         
-        #= sample bird parameters
+      
+        # sample turbine pars based on their sampling dists
+        #= samples from wind pars, then uses pitch/speed curves
         
-          source("scripts/samplebirdparams.r", local=T)
+        source("scripts/get_rotor_plus_pitch_auto.r", local=T)
+        
+        #= outputs large (size S) rotor speeds and pitch - sampled into the DF
+        
+        source("scripts/sampleturbineparams.r", local=T)
+        
+        MonthlyOperational <- sampledTurbine %>% select(contains("Op", ignore.case = F))
+        
+        MeanOperational <- apply(MonthlyOperational, 1, mean)
           
 # Iterating i - over random samples  --------------------------------------        
   
-      for (i in 1:iter){                    
-         
-        
+      for (i in 1:iter){          
+          #' things that are index by i in orginal
+          #' MonthlyOperational
+          #' sampledTurbine
+          #' sampledBirdParams
+          #' sampledSpeciesCount
+          
         #### BC ##### -- progress bar update for iterations    ===========
         if (is.function(updateProgress_Iter)) {
           text <- NULL # paste0("Working through iteration ", i)
           updateProgress_Iter(value = i/iter, detail = text)
         }
         
-          # sample turbine pars based on their sampling dists
-          #= samples from wind pars, then uses pitch/speed curves
         
-          source("scripts/get_rotor_plus_pitch_auto.r", local=T)
+        # following are required to speed up pcoll function - need single numeric inputs for speed        
+        # coverC
+        currentRad <- coverC$rad
+        currentCirc <- coverC$circ
         
-          #= outputs large (size S) rotor speeds and pitch - sampled into the DF
+        # fixed turbine pars
+        currentBlades <- TurbineData$Blades
         
-          source("scripts/sampleturbineparams.r", local=T)
+        # sampled turbine pars
+        currentRotorRadius <- sampledTurbine$RotorRadius[i]
+        currentBladeWidth <- sampledTurbine$BladeWidth[i]
+        currentRotorSpeed <- sampledTurbine$RotorSpeed[i]
+        currentPitch <- sampledTurbine$Pitch[i]
         
-          MonthlyOperational <- sampledTurbine %>% select(contains("Op", ignore.case = F))
+        # fixed bird parameter
+        currentFlightNumeric <- species.dat$FlightNumeric
         
-          MeanOperational <- apply(MonthlyOperational, 1, mean)
-          
+        # sampled bird parameters
+        currentWingSpan <- sampledBirdParams$WingSpan[i]
+        currentFlightSpeed <- sampledBirdParams$FlightSpeed[i]
+        currentBirdLength <- sampledBirdParams$BodyLength[i]
+            
 
-          #######################################
-          ######Start collision Risk model#######
-          #######################################
-          
-          ############## STEP ONE - Calculate the collision risk in the absence of avoidance action
+# Collision risk steps - options appear here ------------------------------
+
+
+      ############## STEP ONE - Calculate the collision risk in the absence of avoidance action
           
           source("scripts/ProbabilityCollision.r", local=T)
           
           
-          ############## STEP TWO - Calculate Flux Factor - the number of birds passing a turbine in each month
+      ############## STEP TWO - Calculate Flux Factor - the number of birds passing a turbine in each month
         
-          
-          
+        
           ## First calculate turbine frontal area
           
           NTurbines = round (TPower / TurbineData$TurbineModel[t]) ### Number of turbines of given Output required to produce target output
@@ -269,19 +331,13 @@
           }
           
           
-          ############## STEP THREE - Calculate Large Array Correction Factor
+      ############## STEP THREE - Calculate Large Array Correction Factor
           
           ## calculate number of turbine rows - manually enter if appropriate
           
           NTurbRows = NTurbines ^ 0.5
           
 
-          
-          # MeanOperational = mean(c(sampledJanOp[i],sampledFebOp[i],sampledMarOp[i],sampledAprOp[i],
-          #                          sampledMayOp[i],sampledJunOp[i],sampledJulOp[i],sampledAugOp[i],
-          #                          sampledSepOp[i],sampledOctOp[i],sampledNovOp[i],sampledDecOp[i]))
-          # 
-          
           CollRiskSinglePassage = NTurbines * (pi * sampledTurbine$RotorRadius[i]^2)/(2 * sampledTurbine$RotorRadius[i] * WFWidth * 1000) * 
             (P_Collision/100) * (MeanOperational[i]/100) * (1-sampledBirdParams$AvoidanceBasic[i])
           
@@ -289,6 +345,9 @@
             (NTurbRows - 1) * (2*NTurbRows)/(6 * NTurbRows^2) * (CollRiskSinglePassage ^2)
           
           
+
+# Option 1 ----------------------------------------------------------------
+
           
           #######################		Do model using option 1 - Site specific flight height information	###############################
           
@@ -300,14 +359,22 @@
           #store P_Coll
           sampledPColl[i,]<-P_Collision/100
           
-          
+
+# Option 2 ----------------------------------------------------------------
+
+         
           #######################		Do model using option 2 - modelled flight height distribution		###############################
+          
+
           
           source("scripts/Option2.r", local=T)
           ## add results to overall species/turbine results table
           tab2[i,]=Option2_CollisionRate[,2]
           
-          
+
+# Option 3 ----------------------------------------------------------------
+
+        
           #######################		Do model using option 3 - modelled flight height distribution		###############################
           #######################		taking account of variation in risk along the rotor blades		###############################
           
@@ -327,7 +394,8 @@
         
 # End of the random samplling iterations i --------------------------------
 
-        source("scripts/turbineSpeciesOuputs.r", local=T)
+        
+      source("scripts/turbineSpeciesOuputs.r", local=T)
         
         #### BC ##### -- reset counter of progress bar for iterations =====================
         if (is.function(updateProgress_Iter)) {
@@ -349,63 +417,15 @@
 
 # End of the turbine loop -------------------------------------------------
 
+
+      
       ###output species plots of density by option with curves for turbine model###
       ###PLOT DENSITY BY OPTION (useful if several turbine models)###
       
       if (nrow(TurbineData)>1)  {
-        
-        option1<-numeric()
-        option2<-numeric()
-        option3<-numeric()
-        max1<-0
-        max2<-0
-        max3<-0
-        max1y<-0
-        max2y<-0
-        max3y<-0
-        
-        for (j in 1:nrow(TurbineData)){
-          option1<-cbind(option1,densitySummary[,(j-1)*3+1])
-          ifelse (max(density(densitySummary[,(j-1)*3+1])$x)>max1,max1<-max(density(densitySummary[,(j-1)*3+1])$x),max1)
-          ifelse (max(density(densitySummary[,(j-1)*3+1])$y)>max1y,max1y<-max(density(densitySummary[,(j-1)*3+1])$y),max1y)
-          option2<-cbind(option2,densitySummary[,(j-1)*3+2])
-          ifelse (max(density(densitySummary[,(j-1)*3+2])$x)>max2,max2<-max(density(densitySummary[,(j-1)*3+2])$x),max2)
-          ifelse (max(density(densitySummary[,(j-1)*3+2])$y)>max2y,max2y<-max(density(densitySummary[,(j-1)*3+2])$y),max2y)
-          option3<-cbind(option3,densitySummary[,(j-1)*3+3])
-          ifelse (max(density(densitySummary[,(j-1)*3+3])$x)>max3,max3<-max(density(densitySummary[,(j-1)*3+3])$x),max3)
-          ifelse (max(density(densitySummary[,(j-1)*3+3])$y)>max3y,max3y<-max(density(densitySummary[,(j-1)*3+3])$y),max3y)
-        }
-        
-        fileName<-CRSpecies[s]
-        fileName<-paste(fileName, ".png", sep="")
-        png(paste(results_folder, "figures", fileName, sep="/"),width=500,height=900,res=100)
-        par(mfrow = c(3, 1))
-        
-        plot(density(option1[,1]), main="Option 1", xlab="Number of Collisions", ylab ="Probability Density", xlim=c(0,max1), ylim=(c(0, max1y)))
-        names<-paste("Turbine model",TurbineData$TurbineModel[1], sep=":")
-        for (i in 2:nrow(TurbineData)){
-          lines(density(option1[,i]), lty=i)
-          names<-c(names,paste("Turbine model",TurbineData$TurbineModel[i], sep=":"))
-        }
-        legend("topright", names, cex=0.8, lty=1:nrow(TurbineData))
-        
-        plot(density(option2[,1]), main="Option 2", xlab="Number of Collisions", ylab ="Probability Density", xlim=c(0,max2), ylim=(c(0, max2y)))
-        names<-paste("Turbine model",TurbineData$TurbineModel[1], sep=":")
-        for (i in 2:nrow(TurbineData)){
-          lines(density(option2[,i]), lty=i)
-          names<-c(names,paste("Turbine model",TurbineData$TurbineModel[i], sep=":"))
-        }
-        legend("topright", names, cex=0.8, lty=1:nrow(TurbineData))
-        
-        plot(density(option3[,1]), main="Option 3", xlab="Number of Collisions", ylab ="Probability Density",xlim=c(0,max3), ylim=(c(0, max3y)))
-        names<-paste("Turbine model",TurbineData$TurbineModel[1], sep=":")
-        for (i in 2:nrow(TurbineData)){
-          lines(density(option3[,i]), lty=i)
-          names<-c(names,paste("Turbine model",TurbineData$TurbineModel[i], sep=":"))
-        }
-        legend("topright", names, cex=0.8, lty=1:nrow(TurbineData))
-        
-        dev.off()
+       
+        source("scripts/species_turbine_plots.r", local = T) 
+       
       }
       
       ###relabel sampledBirdParams by species name###
@@ -419,7 +439,7 @@
     
     ##output input data##
     write.csv(BirdData, paste(results_folder,"input", "BirdData.csv", sep="/"))
-    write.csv(CountData, paste(results_folder,"input", "CountData.csv", sep="/"))
+    write.csv(CountData, paste(results_folder,"input", "birdDensityData.csv", sep="/"))      # <<<<< BC <<<<<  change of file name, for clarity
     write.csv(TurbineData, paste(results_folder,"input", "TurbineData.csv", sep="/"))
     
     ###output results table###
@@ -439,10 +459,9 @@
     print(TurbineData$TurbineModel)
     sink()
     
-    
     #### BC ##### -- return collision replicates as output  ===========
     return(list(monthCollsnReps_opt1 = monthCollsnReps_opt1, monthCollsnReps_opt2 = monthCollsnReps_opt2, 
-           monthCollsnReps_opt3 = monthCollsnReps_opt3))
+                monthCollsnReps_opt3 = monthCollsnReps_opt3))
         
   }
 

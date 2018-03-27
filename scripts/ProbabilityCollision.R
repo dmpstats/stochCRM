@@ -1,3 +1,7 @@
+
+# Minorly modified version from Masden ------------------------------------
+
+
 CollisionRiskTab = data.frame(matrix(data = 0, nrow = 21, ncol = 7))
 
 names(CollisionRiskTab) = c("radius", "chord", "alpha", "Up_length", "Up_P", "Down_length", "Down_P")
@@ -34,13 +38,13 @@ for (u in 1:20) {
 			CollisionRiskTab$Up_length[u+1] <- ifelse (CollisionRiskTab$alpha[u + 1] < (sampledBirdParams$BodyLength[i] /sampledBirdParams$WingSpan[i]),
 			
 	sampledBirdParams$BodyLength[i] + 	
-		abs(sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(Pitch[1])+
-			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(Pitch[1]))),
+		abs(sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(sampledTurbine$Pitch[i])+
+			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(sampledTurbine$Pitch[i]))),
 
 	
 	(sampledBirdParams$WingSpan[i] * Flap_Glide * CollisionRiskTab$alpha[u + 1]) + 	
-		abs(sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(Pitch[1])+
-			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(Pitch[1]))))
+		abs(sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(sampledTurbine$Pitch[i])+
+			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(sampledTurbine$Pitch[i]))))
 
 #### Now calculate upwind probability of collision
 
@@ -53,14 +57,14 @@ for (u in 1:20) {
 			ifelse (CollisionRiskTab$alpha[u + 1] < (sampledBirdParams$BodyLength[i] /sampledBirdParams$WingSpan[i]),
 			
 			        sampledBirdParams$BodyLength[i] + 	
-		abs(-sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(Pitch[1])+
-			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(Pitch[1])))
+		abs(-sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(sampledTurbine$Pitch[i])+
+			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(sampledTurbine$Pitch[i])))
 						-> CollisionRiskTab$Down_length[u+1],
 
 	
 	(sampledBirdParams$WingSpan[i] * Flap_Glide * CollisionRiskTab$alpha[u + 1]) + 	
-		abs(-sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(Pitch[1])+
-			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(Pitch[1])))
+		abs(-sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*sin(sampledTurbine$Pitch[i])+
+			(CollisionRiskTab$alpha[u + 1] * sampledTurbine$BladeWidth[i]*CollisionRiskTab$chord[u + 1]*cos(sampledTurbine$Pitch[i])))
 						-> CollisionRiskTab$Down_length[u+1])
 
 

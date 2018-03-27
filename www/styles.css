@@ -30,4 +30,13 @@ div.busy {
   padding-bottom: 40px;
   padding-right: 30px;
   border-radius: 5px;
+  z-index: 10;
 }
+
+
+
+.shiny-output-error-valErrorMsgClass{
+  color: #24a531;
+  font-size: 15px;
+}
+

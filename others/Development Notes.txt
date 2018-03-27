@@ -1,26 +1,84 @@
 
-TO DO's
+TO DO's - Shiny App
 
-(i) Coding:
+(i) Bugs
+  - something's wrong with the annual collisions density plot - it looks like the distributions are being 
+  cropped on the x-axis (compare with the Masden's plots)
+  - Check if there are conflicts between simultaneous users in terms of files saved to disk on shinyapps.io
+  
+
+(ii) Coding:
   - Tidy-up code via sourcing aux files, functions and Shiny's modulatization tool
   
-(ii) Performance
-  - Profile and improve performance
   
-(iii) Help System
-  - Walkthrough tutorial via intraJS
-  - input values validation
+(iii) Performance and behaviour
+  - final validation step when simulation is triggered - manage how NA's in input pars are dealt with (flaggin them to the user)
+  - Profile and improve performance
+  - improve progress bar
+  
+  
+(iv) UI side
+  - Add logos of DMP, HiDef & MarineScotland(?)
+  - add description of what Options 1, 2 & 3 entail
+  - Add progress bar for rendering output plots
 
 
-(iv) Aesthetics 
+(v) Aesthetics 
   - color scheme, theme, style
   - better-looking buttons, plots, icons
+  - Add version control (i.e. version number, releases log, etc) in sidebar
   
   
-(v) Additional features
-  - possibility to add flight heights distributions (FHD) and bootstraps of FHD for species not listed or to 
+(vi) Additional features
+  - Walkthrough help system via intraJS
+  - TextBox to describe how parameters were devised
+  
+
+
+
+
+
+
+
+LOG OF CHANGES
+  (i) Removed stochasticity from Turbine Model, Rotos Radius, Air Gap, Max Blade width
+  
+  (ii) Masden file: "sampleturbineparams.r" - Added option to sample Turbine's Rotation speed and blade pitch from self-contained probability 
+  distributions - Used Truncated Normal bounded at 0
+  
+  (iii) Masden file: "sampleturbineparams.r" - Fixed bug with the sampling of turbine monthly operations - class of monthly operation (fixed) needs to be numeric, otherwise the vector of differences between monthly operation and downtime (stochastic) is fixed at the first value sampled
+  from downtime.
+  
+  (iv) Masden Files: "sampleturbineparams.r" & "BandModel_function.r" - simulated windSpeed values added to stored turbined params for summary outputs
+  
+  (v) Include sampled parameter values in output files to be downloaded by user
+  
+  (vi) Possibility to add flight heights distributions (FHD) and bootstraps of FHD for species not listed or to 
   update current FHD data
   
+  (vii) Added customized functions for beta and truncated normal distributions - Masden file changed: "helpers_samplingh_functions.r"
+  
+  (viii) bird biometric params "Body Length", "Wing Span" and "Flight Speed" are now being resampled as truncated normals bounded at 0 - 
+   Masden file changed: "helpers_sampling_functions.r"
+  
+  (ix) bird biometric params "Nocturnal Activity", "Basic Avoidance", "Extended Avoidance" & "Proportion at CRH" are now being
+  resampled as beta distributions - Masden file changed: "helpers_sampling_functions.r"
+  
+  (x) Add tables with sampled parameters values to Outputs zip file 
+  
+  (xi) Input values validation/sense-check (on-the-fly)
+  
+  (xii) added options for monthly bird densities: (a) truncated normal lower bounded at 0; (b) provide reference points (min, max and percentiles) & (c) random smples
+  
+  (xiii)
+  
+  
+
+  
+  
+
+
+
 
 
 

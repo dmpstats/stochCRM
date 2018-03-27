@@ -3,20 +3,38 @@
   
 
 
-# Rotor speed -------------------------------------------------------------
+#### BC ##### -- adding option of sampling from a prob distns alone  & adding simulated windspeed values to records =====================
+# Rotor speed & Pitch -------------------------------------------------------------
 
+if(TurbineData$RotorSpeedAndPitch_SimOption == "windSpeedReltn"){
   
   randomSample <- sample(1:length(rotorSpeed), iter, replace=T)
   
+  # wind speed
+  sampledTurbine$WindSpeed <- wind.speed.m.s[randomSample]
+  
+  # rotor speed
   sampledTurbine$RotorSpeed <- rotorSpeed[randomSample]
-
-
-# Pitch -------------------------------------------------------------------
-
+  
+  # Pitch
   sampledTurbine$Pitch <- rotorPitch[randomSample]
   
-  Pitch = sampledTurbine$Pitch[i]*pi / 180 #### Transform Pitch, needed for Collision Risk Sheet
+  sampledTurbine$Pitch = sampledTurbine$Pitch*pi / 180 #### Transform Pitch, needed for Collision Risk Sheet
   
+}else{
+  if(TurbineData$RotorSpeedAndPitch_SimOption == "probDist"){
+    
+    # Rotor speed
+    sampledTurbine$RotorSpeed<- sampleRotnSpeed(iter, TurbineData$RotationSpeed[t], TurbineData$RotationSpeedSD[t])
+    
+    # Pitch
+    sampledTurbine$Pitch<- samplePitch(iter, TurbineData$Pitch[t], TurbineData$PitchSD[t])
+    
+    sampledTurbine$Pitch = sampledTurbine$Pitch*pi / 180 #### Transform Pitch, needed for Collision Risk Sheet
+  }
+}
+
+
 
 # Radius  -----------------------------------------------------------------
 
@@ -80,10 +98,12 @@
       
       workingVect <- sampleOp(iter, workingMean[1,1], workingSD[1,1]) 
       
-      sampledTurbine[,grep(currentMonth, names(sampledTurbine))] <- workingOp - workingVect
+      ### === BC BUG FIXING === ### workingOp needs to be converted from a data.frame otherwise it doesn't return the vector of differences (only the 1st difference)
+      sampledTurbine[,grep(currentMonth, names(sampledTurbine))] <- as.numeric(workingOp) - workingVect  
       
       # will explicitly rep mean, although not needed as filling into the DF
-    } else {sampledTurbine[,grep(currentMonth, names(sampledTurbine))] <- workingOp - rep(workingMean[1,1], iter)}
+      ### === BC BUG FIXING === ### workingOp needs to be converted from a data.frame (see above)
+    } else {sampledTurbine[,grep(currentMonth, names(sampledTurbine))] <- as.numeric(workingOp) - rep(workingMean[1,1], iter)}
     
   }
   

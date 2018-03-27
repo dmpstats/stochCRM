@@ -22,12 +22,12 @@
 
 ## Up wind
 
-CollMinUP <- HD.d.y[1] * xrisksum2(HD.y[1], 0.05, "up") / 2 ### risk at lowest point on rotor blade
-CollIntUP <- CollMinUP + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, "up") / 2 ### risk at highest point on rotor blade
+CollMinUP <- HD.d.y[1] * xrisksum2(HD.y[1], 0.05, 1) / 2 ### risk at lowest point on rotor blade
+CollIntUP <- CollMinUP + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, 1) / 2 ### risk at highest point on rotor blade
 
   for (v in 2:40) {
 
-	  CollIntUP <- CollIntUP + HD.d.y[v] * xrisksum2(HD.y[v], 0.05, "up")  #### Fill in intermediate heights
+	  CollIntUP <- CollIntUP + HD.d.y[v] * xrisksum2(HD.y[v], 0.05, 1)  #### Fill in intermediate heights
  
 		}
 
@@ -36,12 +36,12 @@ CollIntUP <- CollMinUP + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, "up") / 2 ### ri
 
 ## Down wind
 
-CollMinDown <- HD.d.y[1] * xrisksum2(HD.y[1], 0.05, "up") / 2 ### risk at lowest point on rotor blade
-CollIntDown <- CollMinDown + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, "up") / 2 ### risk at highest point on rotor blade
+CollMinDown <- HD.d.y[1] * xrisksum2(HD.y[1], 0.05, 1) / 2 ### risk at lowest point on rotor blade
+CollIntDown <- CollMinDown + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, 1) / 2 ### risk at highest point on rotor blade
 
 for (w in 2:40) {
 
-	CollIntDown = CollIntDown + HD.d.y[w] * xrisksum2(HD.y[w], 0.05, "down")  #### Fill in intermediate heights
+	CollIntDown = CollIntDown + HD.d.y[w] * xrisksum2(HD.y[w], 0.05, -1)  #### Fill in intermediate heights
  
 		}
 
