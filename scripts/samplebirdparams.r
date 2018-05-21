@@ -132,7 +132,9 @@ if(c_densOpt == "truncNorm"){
 if(c_densOpt == "reSamp"){
   for(currentMonth in monthLabels){
     
-    workingVect <- sampleCount_resample(iter, species.count %>% select(contains(currentMonth)))
+    #browser()
+  
+    workingVect <- sampleCount_resample(n = iter, countsSample = species.count %>% select(contains(currentMonth)))
     
     sampledSpeciesCount[,grep(currentMonth, names(sampledSpeciesCount))] <- workingVect
     

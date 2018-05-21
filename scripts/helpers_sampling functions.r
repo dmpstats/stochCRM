@@ -108,9 +108,12 @@
   # resampling with replacement from a vector of random realizations of counts from an unspecified distribution
   sampleCount_resample <- function(n, countsSample){
     
-    sample(x = countsSample, size = n, replace = TRUE)
+    dplyr::sample_n(tbl = countsSample, size = n, replace = TRUE)
+    
+    #countsSample[sample(1:nrow(countsSample), size = n, replace = TRUE),]
     
   }
+  
   
   
   # resample from empirical cdf based on set of quantiles
