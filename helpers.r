@@ -11,26 +11,6 @@ label.help <- function(label, id){
 }
 
 
-# # generate input slider widget for Normal distributions
-# NormSliderInput <- function(title, paramID, specID, varName, E_value=50, E_min=1, E_max=100, SD_value=50, SD_min=1, SD_max=100){
-#   # wellPanel(width=5,
-#   #   style = "padding: 5px;",
-#   div(
-#     h4(title),
-#     sliderInput(inputId = paste0("sldInput_", paramID, "_E_", specID), 
-#                 label = paste0("Mean ", varName, ":"), 
-#                 min = E_min, max = E_max, step = 1, 
-#                 value = E_value, ticks = FALSE),
-#     
-#     sliderInput(inputId = paste0("sldInput_", paramID, "_SD_", specID), 
-#                 label = paste0("SD of ", varName, ":"), 
-#                 min = SD_min, max = SD_max, step = 1, 
-#                 value = SD_value, ticks = FALSE)
-#   )
-# }
-
-
-
 
 
 NormNumericInput <- function(paramID, specID, varName, infoId="foo", infoText ="",
@@ -86,21 +66,12 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
     tabName = tabName,
     fluidRow(
       box(
-        title = paste0(specName, " parameters"),
+        title = paste0(specName, " Parameters"),
         width = 12,
         status = "primary", 
         solidHeader = TRUE,
         #side = "right",
         
-        
-        # tabPanel(
-        #   title = "Biometric and behaviour features",
-        #   
-          # fileInput(inputId = paste0("upldInput_dt_biom_", specLabel), label = h3("Upload data")),
-          # hr(),
-          # h4("Flight Type", tipify(actionLink(inputId = paste0("lbl_flType_", specLabel), label=NULL, icon=icon('question-circle')),
-          #                          title="Type of flight", trigger = "hover", placement = "right")),
-          
         
         fluidRow(
           column(width = 4,
@@ -133,10 +104,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                        column(11, 
                               verbatimTextOutput(paste0("qtls_biomPars_bodyLt_", specLabel))
                        )
-                       # ,
-                       # textAreaInput(inputId = paste0("textInput_bioParsSrc_bodyLt_", specLabel), label = NULL, value = "", 
-                       #               placeholder = "If possible, description of the source(s) for the specified parameter values", 
-                       #               width = "90%", rows = 6)
                    )
             ),
             column(width = 4,
@@ -261,8 +228,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                        br(),
                        br(),
                        
-                       #helpText("Choose between using the default data (provided by Johnson et al, 2014) or an alternative dataset."),
-                       
                        fluidRow(
                          column(5, 
                                 radioGroupButtons(inputId = paste0("slctInput_userOpts_FHD_dtSrc_", specLabel),
@@ -320,29 +285,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
 
                          br(),
                          uiOutput(paste0("renderUI_uploadUserFHD_", specLabel), inline = TRUE),
-                         # fluidRow(
-                         #   column(4,
-                         #          fileInput(inputId = paste0("upldInput_biomPars_FHD_userDt_", specLabel),
-                         #                    label = "Upload File",
-                         #                    multiple = FALSE,
-                         #                    accept = c("text/csv",
-                         #                               "text/comma-separated-values,text/plain",
-                         #                               ".csv"))
-                         #   ),
-                         #   column(1,
-                         #          style = "margin-top: 25px; margin-left: -10px",
-                         #          downloadButton(outputId = paste0("dwnld_template_FHD_", specLabel), label = NULL, class = "butt"),
-                         #          tags$head(tags$style(".butt{background-color:#4570a5;
-                         #                               color: #efecec}
-                         #                               .butt:hover{
-                         #                               background-color:#4570a5;
-                         #                               color: #efecec}"
-                         #                               ))
-                         #          )
-                         #   
-                         # ),
-                         #br(),
-                         
                          column(12,
                            # --- User FHD data
                            awesomeRadio(inputId = paste0("aweRadio_userOpts_UserFHDPlotType_", specLabel),
@@ -380,8 +322,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
               tags$b(HTML(paste0("Monthly Densities", actionLink(paste0("lbl_monthOPs_", specLabel), label=NULL, icon=icon('info-circle'))))),
               br(),
               br(),
-              
-              #helpText("Choose how to specify distribution of monthly bird densities"),
               
               radioGroupButtons(inputId = paste0("slctInput_userOpts_monthDens_sampler_", specLabel),
                                 individual = TRUE,
@@ -443,9 +383,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                fluidRow(
                                  column(12, offset = 3, plotOutput(paste0("plot_inputMonthDens_QtlsBars_samples_", specLabel), width = 800, height = 350))
                                )
-                               #)
-                               # rHandsontableOutput(paste0("hotInput_birdDensPars_prcntls_", specLabel), width = "100%"),
-                               # tags$style(type="text/css", paste0("#hotInput_birdDensPars_prcntls_", specLabel, " th {font-weight:bold;}"))
               ),
               br(),
               br()
@@ -471,26 +408,21 @@ results_tabPanelsBuilder <- function(specName, specLabel){
     tabPanel(title = tags$b(specName),
              fluidRow(
                box(width = 12,
-                   #title = h4(paste0("Overall number of collisions - ", specName)),
-                   #h5(tags$b(paste0("Overall number of collisions - ", specName))),
                    h4(paste0("Annual number of collisions - ", specName)),
                    br(),
                    
                    column(6,
-                          plotOutput(paste0(specLabel, "_plot_overallCollisions"), width = "100%") #width = plotWidth, height = plotHeight)
+                          plotOutput(paste0(specLabel, "_plot_overallCollisions"), width = "100%")
                    ),
                    column(6,
                           align="center",
                           div(dataTableOutput(paste0(specLabel, "_summTable_overallCollisions")), 
                               style = "font-size: 90%; width: 100%")
-                          #tableOutput(paste0("sumTable_results_monthCollisions_", specLabel))
                    )
                )
              ),
              fluidRow(
                box(width = 12,
-                   #title = h4(paste0("Number of collisions per month - ", specName)),
-                   #h5(tags$b(paste0("Number of collisions per month - ", specName))),
                    h4(paste0("Monthly number of collisions by model option - ", specName)),
                    br(),
                    
@@ -758,13 +690,6 @@ betaInputPars_densPlots <- function(p, stdev, fill="olivedrab", xlab){
 truncNormPars_qtlTbl <- function(mu, stdev, lower = -Inf, upper = Inf, varTag, decPlaces = 3){
   
   req(mu, stdev)
-  
-  # data.frame(pctile = paste0(varTag, "|"), t(round(qtnorm(p = c(0.025, 0.25, 0.5, 0.75, 0.975), mean = mu, sd = stdev, lower = lower, 
-  #                              upper = upper), decPlaces))) %>%
-  #   rename(`%tile|` = pctile, `2.5th` = X1, `25th` = X2, `50th` = X3, `75th` = X4, `97.5th` = X5) %>%
-  #   mutate_at(.vars = vars(`2.5th`:`97.5th`), funs(sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
-  #   mutate(dummy = "") %>%
-  #   column_to_rownames("dummy")
   
   if(stdev == 0 & mu <= lower){
     #NULL

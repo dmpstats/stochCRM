@@ -12,12 +12,10 @@ function(input, output, session) {
   rv <- reactiveValues(
     addedSpec = NULL,
     biomParsInputs_ls = NULL,
-    #FlgtHghDstInputs_ls = NULL,
     densParsInputs_ls = NULL,
     summaryTables_ls = NULL,
     sCRM_output_ls = NULL
-    #inputs_BiometricPars_rv = NULL,
-    #rctvBlck_FltHghDstInput = NULL # reactivity blocker for flight Height distributions fileInputs
+    
   )
   
   
@@ -301,15 +299,6 @@ function(input, output, session) {
   })
   
 
-  # observe({
-  #   #print(str(reactiveValuesToList(input), max.level = 2, list.len = 5))
-  #   #print(rv$birdDensParsInputs_ls)
-    # print(rv$mthDens_userOptions)
-  # print(rv$FlgtHghDstInputs_loc)
-  #   print(rv$monthDens_userDt_sample_loc)
-  #  print(rv$FlgtHghDstInputs_loc)
-  # })
-
 
   # --- Call and store flight height distributions of selected species in elements of a list
   flgtHghDstInputs_ls <- eventReactive(rv$FlgtHghDstInputs_loc, {
@@ -392,9 +381,6 @@ function(input, output, session) {
   # --- Create input table for turbine rotation speed vs windspeed relationship
   output$hotInput_turbinePars_rotationVsWind <- renderRHandsontable({
 
-    # data.frame(array(0, dim = c(10, 2),
-    #                  dimnames = list(NULL, c("windSpeed", "rotationSpeed"))),
-    #            stringsAsFactors = FALSE) %>%
     startUpValues$rotationVsWind_df %>%
       bind_rows(data.frame(windSpeed = NA, rotationSpeed=NA)) %>%
       rhandsontable(rowHeaders=NULL, colHeaders = c("Wind speed (m/s)", "Rotation speed (rpm)")) %>%
@@ -408,9 +394,6 @@ function(input, output, session) {
   # --- Create input table for turbine rotation speed vs windspeed relationship
   output$hotInput_turbinePars_pitchVsWind <- renderRHandsontable({
 
-    # data.frame(array(0, dim = c(10, 2),
-    #                  dimnames = list(NULL, c("windSpeed", "bladePitch"))),
-    #            stringsAsFactors = FALSE) %>%
     startUpValues$pitchVsWind_df %>%
       bind_rows(data.frame(windSpeed = NA, bladePitch=NA)) %>%
       rhandsontable(rowHeaders=NULL, colHeaders = c("Wind speed (m/s)", "Blade Pitch (deg)")) %>%
@@ -453,40 +436,6 @@ function(input, output, session) {
           hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
       })  
     })
-    
-    
-    # # input table for distribution percentiles
-    # hotTag_pctl <- paste0("hotInput_birdDensPars_prcntls_", cSpecTags$specLabel)
-    # walk(hotTag_pctl, function(x){
-    #   
-    #   output[[x]] <- renderRHandsontable({
-    # 
-    #     if(cSpecTags$specLabel == "Black_legged_Kittiwake"){
-    #       
-    #       initDF <- map2(startUpValues$meanDensity, startUpValues$sdDensity, function(x, y){
-    #         data.frame(qtls = qtnorm_dmp(p = c(0.000001, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.90, 0.95, 0.975, 0.999999999), mean = x, sd = y, lower = 0))
-    #       }) %>% 
-    #         bind_cols() 
-    #       
-    #       dimnames(initDF) <- list(c("Minimum", "2.5th %tile", "5th %tile", "10th %tile", "25th %tile", "50th %tile", "75th %tile", 
-    #                              "90th %tile", "95th %tile", "97.5th %tile", "Maximum"), month.name)
-    # 
-    #     }else{
-    #       initDF <- data.frame(matrix(c(rep(0.00001, 11*12)), nrow = 11, ncol = 12, byrow = TRUE,
-    #                                   dimnames = list(c("Minimum", "2.5th %tile", "5th %tile", "10th %tile", "25th %tile", "50th %tile", "75th %tile", 
-    #                                                     "90th %tile", "95th %tile", "97.5th %tile", "Maximum"), month.name)),
-    #                            stringsAsFactors = FALSE)
-    #     }
-    # 
-    #     initDF %>%
-    #       rhandsontable(rowHeaderWidth = 160) %>%
-    #       hot_cols(colWidths = 90) %>%
-    #       hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
-    #       hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
-    #   })
-    # 
-    # })
-    
     
   })
   
@@ -540,19 +489,7 @@ function(input, output, session) {
     )
   })
   
-  
-  
-  
-# observe({
-  # 
-  #   req(input$hotInput_turbinePars_pitchVsWind)
-  #   df <- hot_to_r(input$hotInput_turbinePars_pitchVsWind)
-  #   print(df)
-  # 
-  # })
-  
-  
-  
+
   #' -----------------------------------------------------------------
   #  ----                  Outputs Management                     ----
   #' -----------------------------------------------------------------
@@ -607,10 +544,6 @@ function(input, output, session) {
             cPlotData <- inputs_BiomParsToPlot %>% filter(plotTag == c_tag)
             c_qtTag <- unique(cPlotData$qtTag)
             c_par <- unique(cPlotData$par)
-            #print(cPlotData)
-            #print(c_qtTag)
-            #browser()
-            #print(unique(cPlotData$par))
 
             mu <- as.numeric(as.character(filter(cPlotData, hyper == "E")$Value))
             stdev <- as.numeric(as.character(filter(cPlotData, hyper == "SD")$Value))
@@ -652,7 +585,6 @@ function(input, output, session) {
   observeEvent(flgtHghDstInputs_ls(), {
     
     req(length(flgtHghDstInputs_ls())>0)
-    #print(names(flgtHghDstInputs_ls()))
     
     walk2(flgtHghDstInputs_ls(), names(flgtHghDstInputs_ls()), function(x, y){
 
@@ -660,7 +592,6 @@ function(input, output, session) {
       plotTagBoot_user <- paste0("plot_UserFHD_allBoots_", specLabel)
       plotTagBootQts_user <- paste0("plot_UserFHD_QtsBoot_", specLabel)
       
-      #browser()
       
       # data prep: rename height column and drop all 0s columns
       x %<>% rename(Height = Height_m) %>%
@@ -1025,14 +956,9 @@ function(input, output, session) {
           rownames_to_column(var = "month") %>%
           mutate(month = factor(month, levels = month)) %>%
           group_by(month) %>%
-          # mutate(med = qtnorm_possibly(p=0.5, mean = meanDensity, sd = sdDensity + 1e-10, 0),       # Truncated Normal bounded by 0 and 2 - ajustment on SD to workaround the issue of qtnorm error when mu==0 & sd==0
-          #        lwBound = qtnorm_possibly(p=0.025, mean = meanDensity, sd = sdDensity + 1e-10, 0),   
-          #        upBound = qtnorm_possibly(p=0.975, mean = meanDensity, sd = sdDensity + 1e-10, 0)) %>%
           mutate(med = qtnorm_dmp(p=0.5, mean = meanDensity, sd = sdDensity, lower = 0),
                  lwBound = qtnorm_dmp(p=0.025, mean = meanDensity, sd = sdDensity, lower = 0),   
                  upBound = qtnorm_dmp(p=0.975, mean = meanDensity, sd = sdDensity, lower = 0)) %>%
-          # upBound = if_else(is.na(upBound), 0, upBound),
-          # lwBound = if_else(is.na(lwBound), 0, lwBound)) %>%
           ggplot(aes(x=month, y = med, group=month)) +
           geom_errorbar(aes(ymin=lwBound, ymax=upBound), col = "darkorange", width = 0.2, size = 1) +
           geom_point(col="darkorange", size = 3) +
@@ -1219,7 +1145,6 @@ function(input, output, session) {
         nest() %>% 
         mutate(proc = map(data, function(x){
           
-          #browser()
           
           if(unique(x$option) == "truncNorm"){
             if(length(rv$birdDensParsInputs_ls)>0){
@@ -1238,7 +1163,6 @@ function(input, output, session) {
                        VariableMasden = factor(VariableMasden, levels = VariableMasden)
                 ) %>%
                 select(-c(hyperPar:month)) %>%
-                #mutate(Value = Value + 1e-8) %>%  # hack to deal with truncated normal function error when mean = sd = 0, when lower truncation at 0
                 spread(VariableMasden, Value) %>%
                 filter(Species %in% x$specLabel)
               
@@ -1250,7 +1174,6 @@ function(input, output, session) {
             if(length(monthDens_userDt_sample_ls())>0){
               
               out <- rbindlist(monthDens_userDt_sample_ls(), idcol = TRUE) %>%
-                #mutate(specLabel = x$specLabel) %>%
                 mutate(specLabel = str_replace_all(.id, "upldInput_monthDens_userDt_samples_", "")) %>%
                 select(specLabel, January:December)
             }
@@ -1281,42 +1204,21 @@ function(input, output, session) {
           
           if(x == "truncNorm"){
             fwrite(y, file = "data/CountData.csv", row.names = FALSE)
-            fwrite(y, file = "shinyOutputs/inputs/birdDensityData_truncnorm.csv", row.names = FALSE)
+            write.csv(y, file = "shinyOutputs/inputs/birdDensityData_truncnorm.csv", row.names = FALSE)
           }
           
           if(x == "reSamp"){
             fwrite(y, file = "data/birdDensityData_samples.csv", row.names = FALSE)
-            fwrite(y, file = "shinyOutputs/inputs/birdDensityData_samples.csv", row.names = FALSE)
+            write.csv(y, file = "shinyOutputs/inputs/birdDensityData_samples.csv", row.names = FALSE)
           }
           
           if(x == "pcntiles"){
             fwrite(y, file = "data/birdDensityData_refPoints.csv", row.names = FALSE)
-            fwrite(y, file = "shinyOutputs/inputs/birdDensityData_refPoints.csv", row.names = FALSE)
+            write.csv(y, file = "shinyOutputs/inputs/birdDensityData_refPoints.csv", row.names = FALSE)
           }
           
         }))
 
-      # if(length(rv$birdDensParsInputs_ls)>0){
-      #   countData <- rv$birdDensParsInputs_ls %>%
-      #     map2_df(., names(.), function(x,y){
-      #       x %>%
-      #         rownames_to_column(var="hyperPar") %>%
-      #         add_column(., inputTags = y, .before = 1)
-      #     }) %>%
-      #     mutate(inputTags_split = str_split(inputTags, "_")) %>%
-      #     mutate(Species = map_chr(inputTags_split, function(x) paste(x[-c(1:2)], collapse = "_"))) %>%
-      #     select(Species, hyperPar:December) %>%
-      #     gather(month, Value, -c(Species, hyperPar)) %>%
-      #     group_by(Species) %>%
-      #     mutate(VariableMasden = factor(paste0(rep(month.abb, each=2), c("", "SD"))),
-      #            VariableMasden = factor(VariableMasden, levels = VariableMasden)
-      #     ) %>%
-      #     select(-c(hyperPar:month)) %>%
-      #     #mutate(Value = Value + 1e-8) %>%  # hack to deal with truncated normal function error when mean = sd = 0, when lower truncation at 0
-      #     spread(VariableMasden, Value)
-      # }else{
-      #   countData <- NULL
-      # }
     }
     
     
@@ -1328,27 +1230,7 @@ function(input, output, session) {
       drop_na()
 
     
-    # output$out_simFunctionArgs <- renderPrint({
-    #   isolate(
-    #     print(list(
-    #       BirdData= birdData,
-    #       TurbineData = turbineData,
-    #       CountData = countData,
-    #       iter = input$sldInput_simulPars_numIter,
-    #       CRSpecies = slctSpeciesTags()$specLabel,
-    #       TPower = input$numInput_windfarmPars_targetPower,
-    #       WFWidth = input$numInput_windfarmPars_width,
-    #       LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"),
-    #       rop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp,
-    #       Latitude = input$numInput_windfarmPars_Latitude,
-    #       TideOff = input$numInput_windfarmPars_tidalOffset,
-    #       windSpeedMean = input$numInput_miscPars_windSpeed_E_,
-    #       windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
-    #       windPowerData = windPowerData
-    #     ))
-    #   )
-    # })
-    
+
     # --- wind farm parameters
     windfarmData <- tibble(
       #targetPower_MW = input$numInput_windfarmPars_nTurbines * input$numInput_turbinePars_turbinePower,
@@ -1370,7 +1252,6 @@ function(input, output, session) {
     #' Should change model function to expect data.frames instead of files once it's final version is established
     write.csv(birdData, file = "data/BirdData.csv", row.names = FALSE)
     write.csv(turbineData, file = "data/TurbineData.csv", row.names = FALSE)
-    #write.csv(countData, file = "data/CountData.csv", row.names = FALSE)
     write.csv(windPowerData, file = paste0("data/windpower_", input$numInput_turbinePars_turbinePower, ".csv"), row.names = FALSE)
     
     
@@ -1380,7 +1261,6 @@ function(input, output, session) {
     write.csv(birdData, file = "shinyOutputs/inputs/BirdData.csv", row.names = FALSE)
     write.csv(turbineData %>% select(-c(RotorRadiusSD, HubHeightAddSD, BladeWidthSD)) %>% rename(airGap = HubHeightAdd), 
               file = "shinyOutputs/inputs/TurbineData.csv", row.names = FALSE)
-    #write.csv(countData, file = "shinyOutputs/inputs/CountData.csv", row.names = FALSE)
     write.csv(windPowerData, file = paste0("shinyOutputs/inputs/windpower_", input$numInput_turbinePars_turbinePower, ".csv"), row.names = FALSE)
     write.csv(windfarmData, file = paste0("shinyOutputs/inputs/windfarmData.csv"), row.names = FALSE)
     write.csv(simOptions, file = paste0("shinyOutputs/inputs/simOptions.csv"), row.names = FALSE)
@@ -1406,15 +1286,10 @@ function(input, output, session) {
     updateProgress_Spec <- function(value = NULL, detail = NULL) {
       progress_Spec$set(value = value, detail = detail)
     }
-    # updateProgress_Spec <- function(detail = NULL, n = NULL) {
-    #   progress_Iter$inc(amount = 1/n, detail = detail)
-    # }
+    
     
     #' callback functions to update progress on iterations. Each time updateProgress_Iter() is called, 
     #' it moves the bar 1/nth of the total distance.
-    # updateProgress_Iter <- function(detail = NULL, n = NULL) {
-    #   progress_Iter$inc(amount = 1/n, detail = detail)
-    # }
     updateProgress_Iter <- function(value = NULL, detail = NULL) {
       progress_Iter$set(value = value, detail = detail)
     }
@@ -1431,8 +1306,8 @@ function(input, output, session) {
         CountDataFile = "data/CountData.csv",
         FlightDataFile = "data/FlightHeight.csv",
         iter = input$sldInput_simulPars_numIter, 
-        CRSpecies = slctSpeciesTags()$specLabel, #CRSpecies = c("Black_legged_Kittiwake"),
-        TPower = input$numInput_windfarmPars_nTurbines*input$numInput_turbinePars_turbinePower, #input$numInput_windfarmPars_targetPower, #600
+        CRSpecies = slctSpeciesTags()$specLabel,
+        TPower = input$numInput_windfarmPars_nTurbines*input$numInput_turbinePars_turbinePower, 
         LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"), # "yes",
         WFWidth = input$numInput_windfarmPars_width,
         Prop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp/100, # convert % (user input) to proportion (expected by model function)
@@ -1489,7 +1364,6 @@ function(input, output, session) {
     
     df_monthlyColl <- df %>%
       gather(Month, Collisions, -c(option, specLabel, turbineModel, iter)) %>%
-      #select(-turbineModel) %>%
       mutate(Month = factor(Month, levels = unique(Month)),
              specLabel = as.character(specLabel)) %>%
       group_by(specLabel, option, turbineModel) %>%
@@ -1522,7 +1396,7 @@ function(input, output, session) {
     df_monthlyColl %>%
       mutate(sumTable = pmap(list(dt = data, spec = specLabel, opt = option), function(dt, spec, opt){
         
-        dt %<>% #mutate(opt = opt) %>% 
+        dt %<>% 
           group_by(Month) %>%
           summarise(Mean = mean(Collisions), 
                     SD = sd(Collisions), CV = SD/Mean, 
@@ -1544,7 +1418,7 @@ function(input, output, session) {
         
         output[[sumTableTag]] <- renderDataTable({
           datatable(dt, rownames = FALSE, 
-                    caption = paste0("Model ", opt), # , " (SD = standard deviation, CV = coefficient of variation, IQR = inter quartile range, percentile)"),
+                    caption = paste0("Model ", opt), 
                     options = list(pageLength = 12, dom = 't'))
         })
         
@@ -1691,40 +1565,50 @@ function(input, output, session) {
     },
     contentType = "application/zip"
   )
+
+  
+
+  #' ----------------------------------------------------------------
+  #  ----              Miscellaneous  Stuff                    ----
+  #' ----------------------------------------------------------------
+  
+  # Version updates - describing latest developments/updates implemented in the app
+  observeEvent(input$appvrsn, {
+    showModal(
+      modalDialog(size = "l",
+                  title = h3("Release Notes"),
+                  h4("Current v2.2.1 - March 20th, 2018"),
+                  p("This is a major release based on feedback and discussions with the steering group after the first release. The following lists are not exhaustive, i.e. only the most relevant changes mentioned"),
+                  tags$ul(
+                    tags$li(tags$b("Additions & Updates"), 
+                            tags$ul(
+                              tags$li("Win farm's 'Target Power' replaced with 'Number of Turbines'"),
+                              tags$li("Turbine parameters 'Rotor Radius', 'Air Gap' and 'Maximum Blade Witdh' made fixed (i.e. stochasticity present in previous release was removed)"),
+                              tags$li("Turbine's 'Rotation Speed' and 'Blade Pitch' are now simulated from Truncated Normals (bounded at 0) by default. Also, bug found by MacArthur Grenn has been fixed, i.e. the model does not override this option in favour of a windpseed relationship"),
+                              tags$li("The option of simulating 'Rotation Speed' and 'Blade Pitch' in relation to 'Wind Speed' (now simulated from a Truncated Normal bounded at 0) was kept in case data from developers is made available"),
+                              tags$li("Biometric parameters 'Body Length', 'Wing Span' and 'Flight Speed' are now simulated as Truncated Normals bounded at 0"),
+                              tags$li("Biometric parameters 'Nocturnal Activity', 'Basic Avoidance', 'Extended Avoidance' and 'Proportion at CRH' are now simulated as Beta distributions"),
+                              tags$li("Implemented facility to upload user-defined bootstrap samples of flight heights distributions (FHD), either for listed species or new species"),
+                              tags$li("Added set of options to specify bird monthly densities: (a) Truncated Normal bounded at 0; (b) Reference points (min, max and percentiles) & (c) Random samples"),
+                              tags$li("Implemented on-the-fly validation feature for inputs sense-check, flagging up nonsensical values (e.g. negative SDs, decimal 'Number of Blades, etc)"),
+                              tags$li("Sampled parameter values are now included in the model output .zip file")
+                            )),
+                    tags$li(tags$b("To-Do List"),
+                            tags$ul(
+                              tags$li("Add logos of Marine Scotland, HiDef & DMP"),
+                              tags$li("Implement Bookmark feature to save current app status, e.g. allowing chosen model inputs to be recycled for future simulations"),
+                              tags$li("Allow user to choose a tag for the scenario under simulation, to be used as a prefix in the output file names"),
+                              tags$li("Implement an online user support facility (probably via GitHub) for users to e.g. submit issues found or access the User's manual"),
+                              tags$li("Add option to upload data into input tables (e.g. turbine's 'Monthly Operation' table)")
+                            ))
+                  ),
+                  easyClose = TRUE
+      ))
+  }, priority = 10)
+  
   
   
 
-  
-  
-  
-  
-  #' ------------------------------------------------------------------
-  #  ----         Debugging and value checking tools            ----
-  #' ------------------------------------------------------------------
-
-  output$inputRVs <- renderPrint({
-    str(reactiveValuesToList(input), max.level = 3)
-  })
-
-  output$out_inputs_biom <- renderPrint({
-    str(reactiveValuesToList(rv), max.level = 3)
-  })
-
-  # output$out_inputs_monthDens <- renderPrint({
-  #   print(inputs_monthDensPars())
-  # })
-
-  # observe(label="console",{
-  #   if(input$console != 0) {
-  #     options(browserNLdisabled=TRUE)
-  #     saved_console<-".RDuetConsole"
-  #     if (file.exists(saved_console)) load(saved_console)
-  #     isolate(browser())
-  #     save(file=saved_console,list=ls(environment()))
-  #   }
-  # })
-
-      
 }
 
 
