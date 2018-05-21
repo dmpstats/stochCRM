@@ -1,6 +1,3 @@
-# stochCRM
-Graphical User Interface (GUI) developed for a stochastic avian Collision Risk Model (CRM) 
-
 # Overview
 This Shiny app was built for the stochastic Collision Risk Model (CRM) developed by Masden (2015a,b) – itself based on the deterministic models of Band (2012).
 
