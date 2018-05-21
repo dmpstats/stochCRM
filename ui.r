@@ -7,10 +7,9 @@
 
 header <- dashboardHeader(
   titleWidth =270,
-  title = "Stochastic Avian CRM"
+  title = "Avian Stochastic CRM",
+  tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.2.1")), style = "padding-right: 5px")
 )
-
-
 
 
 #################################################################
@@ -24,8 +23,7 @@ sidebar <- dashboardSidebar(
   
   sidebarMenu(
     id = "tabs",
-    #style = "position: fixed; overflow: visible;",
-
+    
     menuItem(
       "Step 1: Turbine & Wind farm features", tabName = "tab_turbWindPars", icon = icon("tachometer")
     ),
@@ -41,24 +39,18 @@ sidebar <- dashboardSidebar(
     menuItem(#selected = TRUE,
       "Step 3: Species features", tabName = "speciesTab", icon = icon("twitter"),
       menuItemOutput("menuSubItems_species")
-      #  menuSubItem("Species 1", tabName = "tab_species1Pars", icon=icon("sliders"))
     ),
     
     
     menuItem(#selected = TRUE,
       "Step 4: Simulation & Results", tabName = "tab_simulation", icon = icon("bar-chart")
-    ),#,
-    # menuItem(
-    #   "test Item", tabName = "tab_testTab", icon = icon("sliders")
-    # ),
-    
+    ),
+
     hr(),
     
     bsAlert(anchorId = "alert")
     
-  )#,
-
-  #actionButton("console","server console")
+  )
 )
 
 
@@ -73,12 +65,10 @@ body <- dashboardBody(
   div(class="tab-content", id="tabItemsEnvelope",  # required as reference to the dynamic UI tab for each species via insertUI()
     tabItem(tabName="tab_turbWindPars",
             fluidRow(
-              box(title = "Wind farm features", 
+              box(title = "Wind Farm Features", 
                   width = 2, 
                   status = "primary", 
                   solidHeader = TRUE,
-                  
-                  #helpText("<Brief description of windfarm features here>"),
                   
                   # --- Turbine Power
                   numericInput(width = "85%", 
@@ -114,17 +104,13 @@ body <- dashboardBody(
                                label = label.help("Tidal Offset (m)", "lbl_tidalOffset"), #"Tidal Offset (m)", 
                                value = startUpValues$tidalOffset, min = 0, step = 0.1),
                   bsTooltip(id = "lbl_tidalOffset", 
-                            title = paste0("Tidal offset to correct for flight heights calculated in relation to sea-level",
-                                           " and turbine dimensions calculated in relation to Highest Astronomical Tide"),
+                            title = paste0("Tidal offset to correct for: (i) flight heights calculated in relation to mean sea-level",
+                                           " ; and (ii) turbine dimensions calculated in relation to Highest Astronomical Tide"),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
                   
                   br(),
-                  # --- Upwind/Downwind proportion of flights
-                  # sliderInput(width = "85%", 
-                  #             inputId = "sldInput_windfarmPars_upWindDownWindProp", 
-                  #             label = label.help("Upwind flights (%)", "lbl_upWindDownWindProp"), #"up/downwind ratio of flights", 
-                  #             value = 50, min = 0, max = 100, step = 10),
                   
+                  # --- Upwind/Downwind proportion of flights
                   knobInput(
                     inputId = "sldInput_windfarmPars_upWindDownWindProp",
                     label = label.help("Upwind flights (%)", "lbl_upWindDownWindProp"),
@@ -146,7 +132,7 @@ body <- dashboardBody(
                             options = list(container = "body"), placement = "right", trigger = "hover")
               ),
               
-              box(title = "Turbine parameters", 
+              box(title = "Turbine Parameters", 
                   width = 10, 
                   status = "primary", 
                   solidHeader = TRUE,
@@ -308,96 +294,13 @@ body <- dashboardBody(
                         )
                     )
                   )
-                  # fluidRow(
-                  #   column(4,
-                  #          
-                  #          # ---- Turbine Rotation Speed 
-                  #          box(width = 12, 
-                  #              #h5(tags$b("Rotation Speed")),
-                  #              radioButtons(inputId = "radButtonInput_turbinePars_rotSpdInputOption", 
-                  #                           label = label.help("Rotation Speed", "lbl_rotSpeed"), #"Rotation Speed", 
-                  #                           inline = FALSE,
-                  #                           choices = list("Probability Distribution" = "probDist",
-                  #                                          "Wind Vs. rotation speed relationship"= "windVsRotation"),
-                  #                           selected = "probDist"),
-                  #              conditionalPanel(
-                  #                condition = "input.radButtonInput_turbinePars_rotSpdInputOption == 'windVsRotation'",
-                  #                rHandsontableOutput("hotInput_turbinePars_rotationVsWind", width = "100%"),
-                  #                tags$style(type="text/css", "#hotInput_turbinePars_rotationVsWind th {font-weight:bold;}")
-                  #              ),
-                  #              conditionalPanel(
-                  #                condition = "input.radButtonInput_turbinePars_rotSpdInputOption == 'probDist'",
-                  #                NormNumericInput(paramID = "turbinePars_rotnSpeed", specID = "", 
-                  #                                 varName = "Rotation (rpm)",
-                  #                                 infoId = "lbl_rotSpeedProbDist", 
-                  #                                 infoText = "Rotation speed (~Truncated Normal with lower bound at 0)",
-                  #                                 E_value = startUpValues$rotnSpeed_E, SD_value = startUpValues$rotnSpeed_SD),
-                  #                plotOutput("plot_turbinePars_rotnSpeed", width = 300, height = 200),
-                  #                verbatimTextOutput("qtls_turbinePars_rotnSpeed")
-                  #              ), 
-                  #              bsTooltip(id = "lbl_rotSpeed", 
-                  #                        title = paste0("Rotation speed to be specified via a probability distribution", 
-                  #                                       " or a relationship between rotor speed and wind speed"),
-                  #                        options = list(container = "body"), placement = "right", trigger = "hover")
-                  #          )
-                  #   ),
-                  #   column(4,
-                  #          
-                  #          # ---- Turbine Blade Pitch
-                  #          box(width = 12, 
-                  #              #h5(tags$b("Blade Pitch")),
-                  #              radioButtons(inputId = "radButtonInput_turbinePars_bldPitchInputOption", 
-                  #                           label =  label.help("Blade Pitch", "lbl_bladePitch"),  #"Blade Pitch", 
-                  #                           inline = FALSE,
-                  #                           choices = list("Probability Distribution"= "probDist",
-                  #                                          "Wind Vs. blade pitch relationship" = "windVsPitch"),
-                  #                           selected = "probDist"),
-                  #              conditionalPanel(
-                  #                condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'windVsPitch'",
-                  #                rHandsontableOutput("hotInput_turbinePars_pitchVsWind", width = "100%"),
-                  #                tags$style(type="text/css", "#hotInput_turbinePars_pitchVsWind th {font-weight:bold;}")
-                  #              ),
-                  #              conditionalPanel(
-                  #                condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'probDist'",
-                  #                NormNumericInput(paramID = "turbinePars_bladePitch", specID = "", 
-                  #                                 varName = "Pitch (deg)", 
-                  #                                 infoId = "lbl_bladePitchProbDist", 
-                  #                                 infoText = "Blade pitch (~Truncated Normal with lower bound at 0)",
-                  #                                 E_value = startUpValues$bladePitch_E, SD_value = startUpValues$bladePitch_SD),
-                  #                plotOutput("plot_turbinePars_bladePitch", width = 300, height = 200),
-                  #                verbatimTextOutput("qtls_turbinePars_bladePitch")
-                  #              ),
-                  #              bsTooltip(id = "lbl_bladePitch",
-                  #                        title = paste0("Angle of the blade from plane of rotation (decimal degrees).",
-                  #                                       " To be specified via a probability distribution or",
-                  #                                       " a relationship between rotor speed and wind speed"),
-                  #                        options = list(container = "body"), placement = "right", trigger = "hover")
-                  #       )
-                  #   ),
-                  #   conditionalPanel(
-                  #     condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'windVsPitch' | input.radButtonInput_turbinePars_rotSpdInputOption == 'windVsRotation'",
-                  #     column(4, 
-                  #            box(width = 12, 
-                  #                NormNumericInput(paramID = "miscPars_windSpeed", specID = "", 
-                  #                                 varName = "Wind Speed (m/s)",
-                  #                                 infoId = "lbl_winSpeed", 
-                  #                                 infoText = paste0("If rotation speed and/or blade pitch are specified in relation to wind speed," , 
-                  #                                                   " wind speed is randomly generated (~Truncated Normal with lower bound at 0)"),
-                  #                                 E_value = startUpValues$windSpeed_E, SD_value = startUpValues$windSpeed_SD),
-                  #                plotOutput("plot_miscPars_windSpeed", width = 300, height = 200),
-                  #                verbatimTextOutput("qtls_miscPars_windSpeed")
-                  #            )
-                  #     )
-                  #   )
-                  # )
+                 
               )
             )
     ),
     tabItem(tabName="tab_simulation", class = "active",
             fluidRow(
               box(title = "Simulation Options", width = 2, status = "primary", solidHeader = TRUE, #background = "aqua", 
-                  # checkboxInput(inputId = "chkBoxInput_simulPars_largeArrarCorr", label = tags$b("Apply large Array Correction"), 
-                  #               value = TRUE),
                   tipify(
                     switchInput(inputId = "chkBoxInput_simulPars_largeArrarCorr", label = "Large Array Correction", size = "normal", 
                               onStatus = "success", offStatus = "danger", value = TRUE),
@@ -416,32 +319,12 @@ body <- dashboardBody(
  
               
               box(title = "Model Ouputs", width = 10, status = "primary", solidHeader = TRUE,
-                  #verbatimTextOutput("out_simFunctionArgs")
-                  # downloadButton("downloadData", "Download"),
-                  # br(),
                   uiOutput("simResults_UI")
               )
             )
     )
-  ),
-
-  
-
-  verbatimTextOutput("out_inputs_biom"),
-  verbatimTextOutput("inputRVs")
-
-  #uiOutput("bodyUI"),
-
-  #  verbatimTextOutput("test")
-
-  #verbatimTextOutput("out_inputs_monthDens")
-  
-  #plotOutput("testPlot")
+  )
 )
-
-
-
-#dashboardPage(header, sidebar, body)
 
 
 bootstrapPage(
@@ -460,9 +343,6 @@ bootstrapPage(
   div(class = "busy",
       tags$b(h4("Working on it...")),
       img(src="loading.gif")
-      #img(src="operation-and-maintenance.gif", height = "50%", width = "50%")
-      #h2(HTML('<i class="fa fa-cog fa-spin fa-2x"></i>'))
-      #h2(HTML('<i  class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'))
   )
 )
 
