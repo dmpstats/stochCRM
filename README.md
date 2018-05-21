@@ -10,11 +10,9 @@ The core calculations are largely the same as for Masden’s code, so associated
 
 Some core alterations and additions have been made for the GUI, in particular to address deficiencies identified in the review by Trinder (2017). In addition, there are correction of some bugs and general improvements in structure, speed and efficiency.
 
-The app is available here
-https://dmpstats.shinyapps.io/avian_stochcrm/ 
+The app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/)
 
-
-
+The user manual is available to download [here](https://github.com/dmpstats/stochCRM/blob/master/Stochastic%20CRM%20Shiny%20Users%20Manual%20V1.0_submitted.pdf)
 
 
 # References
