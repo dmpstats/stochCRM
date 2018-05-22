@@ -1,4 +1,4 @@
-# Overview
+## Overview
 This Shiny app was built for the stochastic Collision Risk Model (CRM) developed by Masden (2015a,b) – itself based on the deterministic models of Band (2012).
 
 Masden’s program was presented as R code, which users would interact with via standard R command-line. This code has been ported to Shiny to offer a user-friendly GUI accessible via standard web-browsers. The advantages are manifold:
@@ -15,7 +15,7 @@ The app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
 The user manual is available to download [here](https://github.com/dmpstats/stochCRM/blob/master/Stochastic%20CRM%20Shiny%20Users%20Manual%20V1.0_submitted.pdf).
 
 
-# References
+#### References
 Band, B. (2012) Using a collision risk model to assess bird collision risks for offshore windfarms. SOSS report, The Crown Estate.
 
 Masden, E (2015a) Developing an avian collision risk model to incorporate variability and uncertainty. Scottish Marine and Freshwater Science Report Vol 6 No 14. Marine Scotland Science. ISSN: 2043-7722 DOI: 10.7489/1659-1 
