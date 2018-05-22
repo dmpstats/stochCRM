@@ -20,16 +20,11 @@ library(DT)
 library(zip)
 library(RColorBrewer)
 library(pracma)
-
-
-#devtools::install_github("rstudio/d3heatmap")
 library(d3heatmap)
 
-# library(dplyr)
-
 source("helpers.r")
-#source("bandModel_mock.r")
 source("BandModel_function.R")
+
 
 species <- sort(c("Arctic Skua", "Northern Fulmar", "Great Black backed Gull", "Common Guillemot", "Northern Gannet",
              "Black legged Kittiwake", "Lesser Black Backed Gull", "Little Auk", "Atlantic Puffin", 

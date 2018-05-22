@@ -10,9 +10,26 @@ The core calculations are largely the same as for Masden’s code, so associated
 
 Some core alterations and additions have been made for the GUI, in particular to address deficiencies identified in the review by Trinder (2017). In addition, there are correction of some bugs and general improvements in structure, speed and efficiency.
 
-The app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
-
 The user manual is available to download [here](https://github.com/dmpstats/stochCRM/blob/master/Stochastic%20CRM%20Shiny%20Users%20Manual%20V1.0_submitted.pdf).
+
+The online version of the app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
+
+To run the app locally on your machine, download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location. Then:
+
+* If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), you can click the "Run App" button or use the shortcut **Ctrl+Shft+Enter**
+
+* If launching from an R console, call the `runApp` function as follows
+  ```R
+  > library(shiny)
+  > runApp("[path]/stochCRM-master")
+  ```
+  in which `[path]` should be replaced with the file system location of the unzipped directory with the app files. Note, you will also have to replace "stochCRM-master" with the appropriate directory name if the zip was named differently.
+
+
+
+\ 
+\ 
+\ 
 
 
 #### References
