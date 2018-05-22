@@ -29,6 +29,7 @@ To run the app locally on your machine, download the ZIP containing the app file
   in which `[path]` should be replaced with the file system location of the unzipped directory with the app files. Note, you will also have to replace "stochCRM-master" with the appropriate directory name if the zip was named differently.
 
 
+----------------
 
 #### References
 Band, B. (2012) Using a collision risk model to assess bird collision risks for offshore windfarms. SOSS report, The Crown Estate.
