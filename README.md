@@ -16,7 +16,7 @@ The online version of the app is available [here](https://dmpstats.shinyapps.io/
 
 To run the app locally on your machine, download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location. Then:
 
-* If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), you can click the "Run App" button or use the shortcut **Ctrl+Shft+Enter**
+* If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), open the "global.r" file, and either click the "Run App" button or use the shortcut **Ctrl+Shft+Enter**
 
 * If launching from an R console, call the `runApp` function as follows
   ```R
