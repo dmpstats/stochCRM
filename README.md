@@ -12,6 +12,9 @@ Some core alterations and additions have been made for the GUI, in particular to
 
 The user manual is available to download [here](https://github.com/dmpstats/stochCRM/blob/master/Stochastic%20CRM%20Shiny%20Users%20Manual%20V1.0_submitted.pdf).
 
+
+## How to run
+
 The online version of the app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
 
 To run the app locally on your machine, download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location. Then:
