@@ -27,11 +27,6 @@ To run the app locally on your machine, download the ZIP containing the app file
 
 
 
-\ 
-\ 
-\ 
-
-
 #### References
 Band, B. (2012) Using a collision risk model to assess bird collision risks for offshore windfarms. SOSS report, The Crown Estate.
 
