@@ -26,7 +26,7 @@ To run the app locally on your machine, download the ZIP containing the app file
   > library(shiny)
   > runApp("[path]/stochCRM-master")
   ```
-  in which `[path]` should be replaced with the file system location of the unzipped directory with the app files. Note, you will also have to replace "stochCRM-master" with the appropriate directory name if the zip was named differently.
+  in which `[path]` must be replaced with the file system location of the unzipped directory with the app files. Note, you will also need to replace "stochCRM-master" with the appropriate directory name if the ZIP was named differently.
 
 
 ----------------
