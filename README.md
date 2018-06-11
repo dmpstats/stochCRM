@@ -19,14 +19,14 @@ The online version of the app is available [here](https://dmpstats.shinyapps.io/
 
 To run the app locally on your machine, download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location. Then:
 
-* If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), open the "global.r" file, and either click the "Run App" button or use the shortcut **Ctrl+Shft+Enter**
+* If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), open the "global.r" file, and either click the "Run App" button or use the shortcut *Ctrl+Shift+Enter* (or *Ctrl+Alt+R*)
 
 * If launching from an R console, call the `runApp` function as follows
   ```R
   > library(shiny)
   > runApp("[path]/stochCRM-master")
   ```
-  in which `[path]` should be replaced with the file system location of the unzipped directory with the app files. Note, you will also have to replace "stochCRM-master" with the appropriate directory name if the zip was named differently.
+  in which `[path]` must be replaced with the file system location of the unzipped directory with the app files. Note, you will also need to replace "stochCRM-master" with the appropriate directory name if the ZIP was named differently.
 
 
 ----------------
