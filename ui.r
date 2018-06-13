@@ -8,7 +8,11 @@
 header <- dashboardHeader(
   titleWidth =270,
   title = "Avian Stochastic CRM",
-  tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.2.1")), style = "padding-right: 5px")
+  tags$li(class = "dropdown", a(icon('exclamation-circle', "fa-2x"), href='https://github.com/dmpstats/stochCRM/issues', 
+                                style = "padding-top: 10px; padding-bottom: 10px", target='_blank', id="lbl_issuesLink")),
+  tags$li(class = "dropdown", a(icon('github', "fa-2x"), href='https://github.com/dmpstats/stochCRM', 
+                                style = "padding-top: 10px; padding-bottom: 10px", target='_blank', id="lbl_codeLink")),
+  tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.2.1")), style = "padding-right: 5px; font-size: 17px")
 )
 
 
@@ -323,7 +327,18 @@ body <- dashboardBody(
               )
             )
     )
-  )
+  ),
+  
+  # popup msg for the elements in the header
+  bsTooltip(id = "lbl_issuesLink",
+            title = paste0("Submit issues, queries & suggestions. Thanks!"),
+            options = list(container = "body"), placement = "bottom", trigger = "hover"),
+  bsTooltip(id = "lbl_codeLink",
+            title = paste0("Code and user manual"),
+            options = list(container = "body"), placement = "bottom", trigger = "hover"),
+  bsTooltip(id = "appvrsn",
+            title = paste0("Release notes"),
+            options = list(container = "body"), placement = "bottom", trigger = "hover")
 )
 
 

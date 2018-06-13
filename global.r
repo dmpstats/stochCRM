@@ -1,28 +1,57 @@
 #' =============================================================================================================
 #' --- Version Logs ---------------
 #' 
-#'  - v2.1.1: Updated with the latest version of the sCRM model function - Carl made it faster to run and cleaned the R code 
+#'  - v2.1.1: Updated with the latest version of the sCRM model function - Cleaner code and faster to run
 #' 
 
-# function in package "pacman" to load packages, automatically installing the ones missing
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(shiny, 
-               shinydashboard, 
-               rhandsontable, 
-               plyr, 
-               tidyverse, 
-               magrittr, 
-               stringr,
-               shinyBS, 
-               msm, 
-               shinyjs, 
-               shinyWidgets, 
-               data.table, 
-               DT, 
-               zip, 
-               RColorBrewer, 
-               pracma, 
-               d3heatmap)
+
+options(shiny.reactlog=TRUE)
+# options(shiny.error = browser)
+
+localUse <- TRUE
+
+if(localUse){
+  # function in package "pacman" to load packages, automatically installing the ones missing
+  if (!require("pacman")) install.packages("pacman")
+  pacman::p_load(shiny,
+                 shinydashboard,
+                 rhandsontable,
+                 plyr,
+                 tidyverse,
+                 magrittr,
+                 stringr,
+                 shinyBS,
+                 msm,
+                 shinyjs,
+                 shinyWidgets,
+                 data.table,
+                 DT,
+                 zip,
+                 RColorBrewer,
+                 pracma,
+                 d3heatmap)
+  
+}else{
+  library(shiny)
+  library(shinydashboard)
+  library(rhandsontable)
+  library(plyr)
+  library(tidyverse)
+  library(magrittr)
+  library(stringr)
+  library(shinyBS)
+  library(msm)
+  library(shinyjs)
+  library(shinyWidgets)
+  library(data.table)
+  library(DT)
+  library(zip)
+  library(RColorBrewer)
+  library(pracma)
+  library(d3heatmap)
+}
+
+
 
 
 source("BandModel_function.R")
@@ -38,9 +67,6 @@ species <- sort(c("Arctic Skua", "Northern Fulmar", "Great Black backed Gull", "
 # set theme for ggplot
 theme_set(theme_bw())
 
-
-options(shiny.reactlog=TRUE)
-options(shiny.error = browser)
 
 
 startUpValues <- list(

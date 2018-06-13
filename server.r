@@ -1591,14 +1591,14 @@ function(input, output, session) {
                               tags$li("Implemented facility to upload user-defined bootstrap samples of flight heights distributions (FHD), either for listed species or new species"),
                               tags$li("Added set of options to specify bird monthly densities: (a) Truncated Normal bounded at 0; (b) Reference points (min, max and percentiles) & (c) Random samples"),
                               tags$li("Implemented on-the-fly validation feature for inputs sense-check, flagging up nonsensical values (e.g. negative SDs, decimal 'Number of Blades, etc)"),
-                              tags$li("Sampled parameter values are now included in the model output .zip file")
+                              tags$li("Sampled parameter values are now included in the model output .zip file"),
+                              tags$li("Implemented user support facility (via GitHub) for users to e.g. submit issues found or access the User's manual")
                             )),
                     tags$li(tags$b("To-Do List"),
                             tags$ul(
                               tags$li("Add logos of Marine Scotland, HiDef & DMP"),
                               tags$li("Implement Bookmark feature to save current app status, e.g. allowing chosen model inputs to be recycled for future simulations"),
                               tags$li("Allow user to choose a tag for the scenario under simulation, to be used as a prefix in the output file names"),
-                              tags$li("Implement an online user support facility (probably via GitHub) for users to e.g. submit issues found or access the User's manual"),
                               tags$li("Add option to upload data into input tables (e.g. turbine's 'Monthly Operation' table)")
                             ))
                   ),
