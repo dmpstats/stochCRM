@@ -117,7 +117,8 @@
 
   
   sampledTurbineParamsSummary <- sampledTurbine %>% gather(key = Parameter, value = value) %>% mutate(Parameter = factor(Parameter, levels = names(sampledTurbine))) %>%
-    group_by(Parameter) %>% summarise(Mean = mean(value), SD=sd(value), Median = median(value), IQR = IQR(value))
+    group_by(Parameter) %>% summarise(Mean = mean(value), SD=sd(value), Median = median(value), IQR = IQR(value)) %>%
+    mutate(Parameter = ifelse(Parameter == "Pitch", "Pitch_rad", as.character(Parameter)))
   
   
   #== write out turbine parameter tables

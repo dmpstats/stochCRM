@@ -16,8 +16,7 @@ function(input, output, session) {
     densParsInputs_ls = NULL,
     summaryTables_ls = NULL,
     sCRM_output_ls = NULL
-    #inputs_BiometricPars_rv = NULL,
-    #rctvBlck_FltHghDstInput = NULL # reactivity blocker for flight Height distributions fileInputs
+    
   )
   
   
@@ -453,40 +452,6 @@ function(input, output, session) {
           hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
       })  
     })
-    
-    
-    # # input table for distribution percentiles
-    # hotTag_pctl <- paste0("hotInput_birdDensPars_prcntls_", cSpecTags$specLabel)
-    # walk(hotTag_pctl, function(x){
-    #   
-    #   output[[x]] <- renderRHandsontable({
-    # 
-    #     if(cSpecTags$specLabel == "Black_legged_Kittiwake"){
-    #       
-    #       initDF <- map2(startUpValues$meanDensity, startUpValues$sdDensity, function(x, y){
-    #         data.frame(qtls = qtnorm_dmp(p = c(0.000001, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.90, 0.95, 0.975, 0.999999999), mean = x, sd = y, lower = 0))
-    #       }) %>% 
-    #         bind_cols() 
-    #       
-    #       dimnames(initDF) <- list(c("Minimum", "2.5th %tile", "5th %tile", "10th %tile", "25th %tile", "50th %tile", "75th %tile", 
-    #                              "90th %tile", "95th %tile", "97.5th %tile", "Maximum"), month.name)
-    # 
-    #     }else{
-    #       initDF <- data.frame(matrix(c(rep(0.00001, 11*12)), nrow = 11, ncol = 12, byrow = TRUE,
-    #                                   dimnames = list(c("Minimum", "2.5th %tile", "5th %tile", "10th %tile", "25th %tile", "50th %tile", "75th %tile", 
-    #                                                     "90th %tile", "95th %tile", "97.5th %tile", "Maximum"), month.name)),
-    #                            stringsAsFactors = FALSE)
-    #     }
-    # 
-    #     initDF %>%
-    #       rhandsontable(rowHeaderWidth = 160) %>%
-    #       hot_cols(colWidths = 90) %>%
-    #       hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
-    #       hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
-    #   })
-    # 
-    # })
-    
     
   })
   
@@ -1025,14 +990,9 @@ function(input, output, session) {
           rownames_to_column(var = "month") %>%
           mutate(month = factor(month, levels = month)) %>%
           group_by(month) %>%
-          # mutate(med = qtnorm_possibly(p=0.5, mean = meanDensity, sd = sdDensity + 1e-10, 0),       # Truncated Normal bounded by 0 and 2 - ajustment on SD to workaround the issue of qtnorm error when mu==0 & sd==0
-          #        lwBound = qtnorm_possibly(p=0.025, mean = meanDensity, sd = sdDensity + 1e-10, 0),   
-          #        upBound = qtnorm_possibly(p=0.975, mean = meanDensity, sd = sdDensity + 1e-10, 0)) %>%
           mutate(med = qtnorm_dmp(p=0.5, mean = meanDensity, sd = sdDensity, lower = 0),
                  lwBound = qtnorm_dmp(p=0.025, mean = meanDensity, sd = sdDensity, lower = 0),   
                  upBound = qtnorm_dmp(p=0.975, mean = meanDensity, sd = sdDensity, lower = 0)) %>%
-          # upBound = if_else(is.na(upBound), 0, upBound),
-          # lwBound = if_else(is.na(lwBound), 0, lwBound)) %>%
           ggplot(aes(x=month, y = med, group=month)) +
           geom_errorbar(aes(ymin=lwBound, ymax=upBound), col = "darkorange", width = 0.2, size = 1) +
           geom_point(col="darkorange", size = 3) +
@@ -1296,27 +1256,6 @@ function(input, output, session) {
           
         }))
 
-      # if(length(rv$birdDensParsInputs_ls)>0){
-      #   countData <- rv$birdDensParsInputs_ls %>%
-      #     map2_df(., names(.), function(x,y){
-      #       x %>%
-      #         rownames_to_column(var="hyperPar") %>%
-      #         add_column(., inputTags = y, .before = 1)
-      #     }) %>%
-      #     mutate(inputTags_split = str_split(inputTags, "_")) %>%
-      #     mutate(Species = map_chr(inputTags_split, function(x) paste(x[-c(1:2)], collapse = "_"))) %>%
-      #     select(Species, hyperPar:December) %>%
-      #     gather(month, Value, -c(Species, hyperPar)) %>%
-      #     group_by(Species) %>%
-      #     mutate(VariableMasden = factor(paste0(rep(month.abb, each=2), c("", "SD"))),
-      #            VariableMasden = factor(VariableMasden, levels = VariableMasden)
-      #     ) %>%
-      #     select(-c(hyperPar:month)) %>%
-      #     #mutate(Value = Value + 1e-8) %>%  # hack to deal with truncated normal function error when mean = sd = 0, when lower truncation at 0
-      #     spread(VariableMasden, Value)
-      # }else{
-      #   countData <- NULL
-      # }
     }
     
     
@@ -1571,6 +1510,7 @@ function(input, output, session) {
         plotTag <- paste0(spec, "_plot_overallCollisions")
         #print(plotTag)
         
+        
         p <- ggplot(dt) +
           geom_density(aes(x = overalCollisions, colour = option, fill = option), alpha = 0.2) +
           labs(x="Number of Collisions", y = "Probability Density") +
@@ -1691,9 +1631,47 @@ function(input, output, session) {
     },
     contentType = "application/zip"
   )
-  
+
   
 
+  #' ----------------------------------------------------------------
+  #  ----              Miscellaneous  Stuff                    ----
+  #' ----------------------------------------------------------------
+  
+  # Version updates - describing latest developments/updates implemented in the app
+  observeEvent(input$appvrsn, {
+    showModal(
+      modalDialog(size = "l",
+                  title = h3("Release Notes"),
+                  h4("Current v2.2.1 - March 20th, 2018"),
+                  p("This is a major release based on feedback and discussions with the steering group after the first release. The following lists are not exhaustive, i.e. only the most relevant changes mentioned"),
+                  tags$ul(
+                    tags$li(tags$b("Additions & Updates"), 
+                            tags$ul(
+                              tags$li("Win farm's 'Target Power' replaced with 'Number of Turbines'"),
+                              tags$li("Turbine parameters 'Rotor Radius', 'Air Gap' and 'Maximum Blade Witdh' made fixed (i.e. stochasticity present in previous release was removed)"),
+                              tags$li("Turbine's 'Rotation Speed' and 'Blade Pitch' are now simulated from Truncated Normals (bounded at 0) by default. Also, bug found by MacArthur Grenn has been fixed, i.e. the model does not override this option in favour of a windpseed relationship"),
+                              tags$li("The option of simulating 'Rotation Speed' and 'Blade Pitch' in relation to 'Wind Speed' (now simulated from a Truncated Normal bounded at 0) was kept in case data from developers is made available"),
+                              tags$li("Biometric parameters 'Body Length', 'Wing Span' and 'Flight Speed' are now simulated as Truncated Normals bounded at 0"),
+                              tags$li("Biometric parameters 'Nocturnal Activity', 'Basic Avoidance', 'Extended Avoidance' and 'Proportion at CRH' are now simulated as Beta distributions"),
+                              tags$li("Implemented facility to upload user-defined bootstrap samples of flight heights distributions (FHD), either for listed species or new species"),
+                              tags$li("Added set of options to specify bird monthly densities: (a) Truncated Normal bounded at 0; (b) Reference points (min, max and percentiles) & (c) Random samples"),
+                              tags$li("Implemented on-the-fly validation feature for inputs sense-check, flagging up nonsensical values (e.g. negative SDs, decimal 'Number of Blades, etc)"),
+                              tags$li("Sampled parameter values are now included in the model output .zip file"),
+                              tags$li("Implement an online user support facility (probably via GitHub) for users to e.g. submit issues found or access the User's manual")
+                            )),
+                    tags$li(tags$b("To-Do List"),
+                            tags$ul(
+                              tags$li("Add logos of Marine Scotland, HiDef & DMP"),
+                              tags$li("Implement Bookmark feature to save current app status, e.g. allowing chosen model inputs to be recycled for future simulations"),
+                              tags$li("Allow user to choose a tag for the scenario under simulation, to be used as a prefix in the output file names"),
+                              tags$li("Add option to upload data into input tables (e.g. turbine's 'Monthly Operation' table)")
+                            ))
+                  ),
+                  easyClose = TRUE
+      ))
+  }, priority = 10)
+  
   
   
   

@@ -86,21 +86,12 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
     tabName = tabName,
     fluidRow(
       box(
-        title = paste0(specName, " parameters"),
+        title = paste0(specName, " Parameters"),
         width = 12,
         status = "primary", 
         solidHeader = TRUE,
         #side = "right",
         
-        
-        # tabPanel(
-        #   title = "Biometric and behaviour features",
-        #   
-          # fileInput(inputId = paste0("upldInput_dt_biom_", specLabel), label = h3("Upload data")),
-          # hr(),
-          # h4("Flight Type", tipify(actionLink(inputId = paste0("lbl_flType_", specLabel), label=NULL, icon=icon('question-circle')),
-          #                          title="Type of flight", trigger = "hover", placement = "right")),
-          
         
         fluidRow(
           column(width = 4,
@@ -320,29 +311,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
 
                          br(),
                          uiOutput(paste0("renderUI_uploadUserFHD_", specLabel), inline = TRUE),
-                         # fluidRow(
-                         #   column(4,
-                         #          fileInput(inputId = paste0("upldInput_biomPars_FHD_userDt_", specLabel),
-                         #                    label = "Upload File",
-                         #                    multiple = FALSE,
-                         #                    accept = c("text/csv",
-                         #                               "text/comma-separated-values,text/plain",
-                         #                               ".csv"))
-                         #   ),
-                         #   column(1,
-                         #          style = "margin-top: 25px; margin-left: -10px",
-                         #          downloadButton(outputId = paste0("dwnld_template_FHD_", specLabel), label = NULL, class = "butt"),
-                         #          tags$head(tags$style(".butt{background-color:#4570a5;
-                         #                               color: #efecec}
-                         #                               .butt:hover{
-                         #                               background-color:#4570a5;
-                         #                               color: #efecec}"
-                         #                               ))
-                         #          )
-                         #   
-                         # ),
-                         #br(),
-                         
                          column(12,
                            # --- User FHD data
                            awesomeRadio(inputId = paste0("aweRadio_userOpts_UserFHDPlotType_", specLabel),

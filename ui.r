@@ -7,10 +7,17 @@
 
 header <- dashboardHeader(
   titleWidth =270,
-  title = "Stochastic Avian CRM"
+  title = "Avian Stochastic CRM",
+  tags$li(class = "dropdown", a(icon('exclamation-circle', "fa-2x"), href='https://github.com/dmpstats/stochCRM/issues', 
+                                style = "padding-top: 10px; padding-bottom: 10px", target='_blank', id="lbl_issuesLink")),
+  tags$li(class = "dropdown", a(icon('github', "fa-2x"), href='https://github.com/dmpstats/stochCRM', 
+                                style = "padding-top: 10px; padding-bottom: 10px", target='_blank', id="lbl_codeLink")),
+  tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.2.1")), style = "padding-right: 5px; font-size: 17px")
 )
 
-
+# "sitemap"
+# "cubes"
+# icon("cubes"))
 
 
 #################################################################
@@ -47,11 +54,7 @@ sidebar <- dashboardSidebar(
     
     menuItem(#selected = TRUE,
       "Step 4: Simulation & Results", tabName = "tab_simulation", icon = icon("bar-chart")
-    ),#,
-    # menuItem(
-    #   "test Item", tabName = "tab_testTab", icon = icon("sliders")
-    # ),
-    
+    ),
     hr(),
     
     bsAlert(anchorId = "alert")
@@ -73,12 +76,10 @@ body <- dashboardBody(
   div(class="tab-content", id="tabItemsEnvelope",  # required as reference to the dynamic UI tab for each species via insertUI()
     tabItem(tabName="tab_turbWindPars",
             fluidRow(
-              box(title = "Wind farm features", 
+              box(title = "Wind Farm Features", 
                   width = 2, 
                   status = "primary", 
                   solidHeader = TRUE,
-                  
-                  #helpText("<Brief description of windfarm features here>"),
                   
                   # --- Turbine Power
                   numericInput(width = "85%", 
@@ -114,17 +115,12 @@ body <- dashboardBody(
                                label = label.help("Tidal Offset (m)", "lbl_tidalOffset"), #"Tidal Offset (m)", 
                                value = startUpValues$tidalOffset, min = 0, step = 0.1),
                   bsTooltip(id = "lbl_tidalOffset", 
-                            title = paste0("Tidal offset to correct for flight heights calculated in relation to sea-level",
-                                           " and turbine dimensions calculated in relation to Highest Astronomical Tide"),
+                            title = paste0("Tidal offset to correct for: (i) flight heights calculated in relation to mean sea-level",
+                                           " ; and (ii) turbine dimensions calculated in relation to Highest Astronomical Tide"),
                             options = list(container = "body"), placement = "right", trigger = "hover"),
                   
                   br(),
-                  # --- Upwind/Downwind proportion of flights
-                  # sliderInput(width = "85%", 
-                  #             inputId = "sldInput_windfarmPars_upWindDownWindProp", 
-                  #             label = label.help("Upwind flights (%)", "lbl_upWindDownWindProp"), #"up/downwind ratio of flights", 
-                  #             value = 50, min = 0, max = 100, step = 10),
-                  
+
                   knobInput(
                     inputId = "sldInput_windfarmPars_upWindDownWindProp",
                     label = label.help("Upwind flights (%)", "lbl_upWindDownWindProp"),
@@ -146,7 +142,7 @@ body <- dashboardBody(
                             options = list(container = "body"), placement = "right", trigger = "hover")
               ),
               
-              box(title = "Turbine parameters", 
+              box(title = "Turbine Parameters", 
                   width = 10, 
                   status = "primary", 
                   solidHeader = TRUE,
@@ -416,32 +412,32 @@ body <- dashboardBody(
  
               
               box(title = "Model Ouputs", width = 10, status = "primary", solidHeader = TRUE,
-                  #verbatimTextOutput("out_simFunctionArgs")
-                  # downloadButton("downloadData", "Download"),
-                  # br(),
                   uiOutput("simResults_UI")
               )
             )
     )
   ),
-
+  
+  # popup msg for the elements in the header
+  bsTooltip(id = "lbl_issuesLink",
+            title = paste0("Submit issues, queries & suggestions. Thanks!"),
+            options = list(container = "body"), placement = "bottom", trigger = "hover"),
+  bsTooltip(id = "lbl_codeLink",
+            title = paste0("Code and user manual"),
+            options = list(container = "body"), placement = "bottom", trigger = "hover"),
+  bsTooltip(id = "appvrsn",
+            title = paste0("Release notes"),
+            options = list(container = "body"), placement = "bottom", trigger = "hover"),
   
 
+  
+  
   verbatimTextOutput("out_inputs_biom"),
   verbatimTextOutput("inputRVs")
-
-  #uiOutput("bodyUI"),
-
   #  verbatimTextOutput("test")
-
   #verbatimTextOutput("out_inputs_monthDens")
   
-  #plotOutput("testPlot")
 )
-
-
-
-#dashboardPage(header, sidebar, body)
 
 
 bootstrapPage(

@@ -4,28 +4,51 @@
 #'  - v2.1.1: Updated with the latest version of the sCRM model function - Carl made it faster to run and cleaned the R code 
 #' 
 
-library(shiny)
-library(shinydashboard)
-library(rhandsontable)
-library(plyr)
-library(tidyverse)
-library(magrittr)
-library(stringr)
-library(shinyBS)
-library(msm)
-library(shinyjs)
-library(shinyWidgets)
-library(data.table)
-library(DT)
-library(zip)
-library(RColorBrewer)
-library(pracma)
+options(shiny.reactlog=TRUE)
+# options(shiny.error = browser)
 
+localUse <- TRUE
 
-#devtools::install_github("rstudio/d3heatmap")
-library(d3heatmap)
-
-# library(dplyr)
+if(localUse){
+  # function in package "pacman" to load packages, automatically installing the ones missing
+  if (!require("pacman")) install.packages("pacman")
+  pacman::p_load(shiny,
+                 shinydashboard,
+                 rhandsontable,
+                 plyr,
+                 tidyverse,
+                 magrittr,
+                 stringr,
+                 shinyBS,
+                 msm,
+                 shinyjs,
+                 shinyWidgets,
+                 data.table,
+                 DT,
+                 zip,
+                 RColorBrewer,
+                 pracma,
+                 d3heatmap)
+  
+}else{
+  library(shiny)
+  library(shinydashboard)
+  library(rhandsontable)
+  library(plyr)
+  library(tidyverse)
+  library(magrittr)
+  library(stringr)
+  library(shinyBS)
+  library(msm)
+  library(shinyjs)
+  library(shinyWidgets)
+  library(data.table)
+  library(DT)
+  library(zip)
+  library(RColorBrewer)
+  library(pracma)
+  library(d3heatmap)
+}
 
 source("helpers.r")
 #source("bandModel_mock.r")
@@ -82,10 +105,10 @@ startUpValues <- list(
   noctAct_SD = 0.0045,
   CRHeight_E = 0.06,
   CRHeight_SD = 0.009,
-  basicAvoid_E = 0.9893,
-  basicAvoid_SD = 0.0007,
-  extAvoid_E = 0.9672,
-  extAvoid_SD = 0.0018
+  basicAvoid_E = 0.989,
+  basicAvoid_SD = 0.001,
+  extAvoid_E = 0.967,
+  extAvoid_SD = 0.002
   
 )
 
@@ -114,11 +137,6 @@ Spectral_pal_cont <- colorRampPalette(rev(brewer.pal(11,"Spectral")))
 YlOrRd_pal_cont <- colorRampPalette(c("white", brewer.pal(9,"YlOrRd")))
 PuBuGn_pal_cont <- colorRampPalette(brewer.pal(9,"PuBuGn"))
 YlOrBr_pal_cont <- colorRampPalette(c("white",brewer.pal(9,"YlOrBr")))
-#test_pal_cont <- colorRampPalette(rev(colorspace::heat_hcl(12, c. = c(80,30), l = c(30, 90), power = c(1/5, 1.5))))
 manual1_pal_cont <- colorRampPalette(rev(c("#8E063B", "#AB4147", "#C56551", "#DA8459", "#E99F61", "#F2B669", "#F6C971", "#F4D97B", "#EDE388", "#E2E6BD", "#e0e2cc", "#f1f2e6")))
 manual2_pal_cont <- colorRampPalette(rev(c("#7D0112", "#8E2C19", "#9E4723", "#AD5F30", "#BC763E", "#C88C4F", "#D4A261", "#DEB675", "#E6C98A", "#ECDAA0", "#F1E9B8", "#F2F1E4")))
 
-# 
-# library(colorspace)
-# pal <- choose_palette()
-# pal(12)

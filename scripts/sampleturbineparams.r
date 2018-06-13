@@ -19,7 +19,7 @@ if(TurbineData$RotorSpeedAndPitch_SimOption == "windSpeedReltn"){
   # Pitch
   sampledTurbine$Pitch <- rotorPitch[randomSample]
   
-  sampledTurbine$Pitch = sampledTurbine$Pitch*pi / 180 #### Transform Pitch, needed for Collision Risk Sheet
+  sampledTurbine$Pitch = sampledTurbine$Pitch*pi / 180 #### Transform Pitch from degrees to radians, needed for Collision Risk Sheet
   
 }else{
   if(TurbineData$RotorSpeedAndPitch_SimOption == "probDist"){
@@ -30,7 +30,7 @@ if(TurbineData$RotorSpeedAndPitch_SimOption == "windSpeedReltn"){
     # Pitch
     sampledTurbine$Pitch<- samplePitch(iter, TurbineData$Pitch[t], TurbineData$PitchSD[t])
     
-    sampledTurbine$Pitch = sampledTurbine$Pitch*pi / 180 #### Transform Pitch, needed for Collision Risk Sheet
+    sampledTurbine$Pitch = sampledTurbine$Pitch*pi / 180 #### Transform Pitch from degrees to radians, needed for Collision Risk Sheet
   }
 }
 
