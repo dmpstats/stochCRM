@@ -1,6 +1,0 @@
-Time difference of 1.152841 mins
-[1] "The model ran 100 iterations"
-[1] "The following species were modelled:"
-[1] "Black_legged_Kittiwake" "Common_Guillemot"      
-[1] "The following turbines were modelled:"
-[1] 6
