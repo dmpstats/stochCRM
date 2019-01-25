@@ -807,7 +807,7 @@ function(input, output, session) {
         
         x %>%
           gather(month, density)  %>%
-          mutate(month = factor(month, labels = unique(month))) %>%
+          mutate(month = factor(month, levels = unique(month))) %>%
           ggplot(aes(x = density)) +
           geom_histogram(fill="darkorange", col = "black", bins = 50) +
           labs(x = "Number of birds per km2", y = "Frequency", title = paste0("Uploaded draws from the distribution of monthly densities of ", specName)) +
@@ -821,7 +821,7 @@ function(input, output, session) {
         if(ncol(x) == 12 & nrow(x) >= 1000){
           x %>%
             gather(month, density)  %>%
-            mutate(month = factor(month, labels = unique(month))) %>%
+            mutate(month = factor(month, levels = unique(month))) %>%
             group_by(month) %>%
             summarise(
               lowBound = quantile(density, 0.025), 
@@ -874,7 +874,7 @@ function(input, output, session) {
             referenceProbs = referencePointsNum/100) %>% 
           select(-c(referencePoints, referencePointsNum)) %>% 
           gather(month, birdDensities, -referenceProbs) %>%
-          mutate(month = factor(month, labels = unique(month)))
+          mutate(month = factor(month, levels = unique(month)))
         
         dt_nest <- dt %>%
           group_by(month) %>%
@@ -910,7 +910,7 @@ function(input, output, session) {
               referenceProbs = referencePointsNum/100) %>% 
             select(-c(referencePoints, referencePointsNum)) %>% 
             gather(month, birdDensities, -referenceProbs) %>%
-            mutate(month = factor(month, labels = unique(month))) %>%
+            mutate(month = factor(month, levels = unique(month))) %>%
             filter(referenceProbs %in% c(0.025, 0.5, 0.975)) %>%
             spread(key = referenceProbs, value = birdDensities) %>%
             rename(lowBound = "0.025", med = "0.5", uppBound = "0.975") %>%

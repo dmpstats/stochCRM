@@ -12,7 +12,7 @@ header <- dashboardHeader(
                                 style = "padding-top: 10px; padding-bottom: 10px", target='_blank', id="lbl_issuesLink")),
   tags$li(class = "dropdown", a(icon('github', "fa-2x"), href='https://github.com/dmpstats/stochCRM', 
                                 style = "padding-top: 10px; padding-bottom: 10px", target='_blank', id="lbl_codeLink")),
-  tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.2.1")), style = "padding-right: 5px; font-size: 17px")
+  tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.2.2")), style = "padding-right: 5px; font-size: 17px")
 )
 
 

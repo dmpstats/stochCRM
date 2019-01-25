@@ -1,9 +1,3 @@
-#' =============================================================================================================
-#' --- Version Logs ---------------
-#' 
-#'  - v2.1.1: Updated with the latest version of the sCRM model function - Cleaner code and faster to run
-#' 
-
 
 options(shiny.reactlog=TRUE)
 # options(shiny.error = browser)
