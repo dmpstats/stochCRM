@@ -2,7 +2,7 @@
 options(shiny.reactlog=TRUE)
 # options(shiny.error = browser)
 
-localUse <- FALSE
+localUse <- TRUE
 
 if(localUse){
   # function in package "pacman" to load packages, automatically installing the ones missing
