@@ -11,26 +11,6 @@ label.help <- function(label, id){
 }
 
 
-# # generate input slider widget for Normal distributions
-# NormSliderInput <- function(title, paramID, specID, varName, E_value=50, E_min=1, E_max=100, SD_value=50, SD_min=1, SD_max=100){
-#   # wellPanel(width=5,
-#   #   style = "padding: 5px;",
-#   div(
-#     h4(title),
-#     sliderInput(inputId = paste0("sldInput_", paramID, "_E_", specID), 
-#                 label = paste0("Mean ", varName, ":"), 
-#                 min = E_min, max = E_max, step = 1, 
-#                 value = E_value, ticks = FALSE),
-#     
-#     sliderInput(inputId = paste0("sldInput_", paramID, "_SD_", specID), 
-#                 label = paste0("SD of ", varName, ":"), 
-#                 min = SD_min, max = SD_max, step = 1, 
-#                 value = SD_value, ticks = FALSE)
-#   )
-# }
-
-
-
 
 
 NormNumericInput <- function(paramID, specID, varName, infoId="foo", infoText ="",
@@ -77,7 +57,7 @@ NormNumericInput <- function(paramID, specID, varName, infoId="foo", infoText ="
 
 
 
-selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, startUpValues){
+selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, specStartVals){
   
   plotWidth <- 330
   plotHeight <- 200
@@ -99,8 +79,9 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                      
                      radioGroupButtons(inputId = paste0("slctInput_biomPars_flType_tp_", specLabel), 
                                        label = label.help("Flight Type", paste0("lbl_flType_", specLabel)), 
-                                       choices = c("Flapping", "Gliding"), individual = TRUE,
-                                       justified = FALSE,
+                                       choices = c("Flapping", "Gliding"), 
+                                       selected = ifelse(is.null(specStartVals$flType), "Flapping", specStartVals$flType),
+                                       individual = TRUE, justified = FALSE,
                                        checkIcon = list(yes = icon("ok", lib = "glyphicon"),
                                                         no = icon("remove", lib = "glyphicon"))
                      )
@@ -115,19 +96,16 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                         varName = "Body Length (m)",
                                         infoId = paste0("lbl_bodyLt_", specLabel),
                                         via_InsertUI = TRUE,
-                                        E_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$bodyLt_E, 1), 
+                                        E_value = ifelse(is.null(specStartVals$bodyLt_E), 1, specStartVals$bodyLt_E), 
                                         E_min=0, E_max=5, E_step = 0.01,
-                                        SD_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$bodyLt_SD, 0), 
+                                        SD_value = ifelse(is.null(specStartVals$bodyLt_SD), 0, specStartVals$bodyLt_SD), 
                                         SD_min = 0, SD_step = 0.001),
                        h5(paste0("PDF of ", specName, "'s body length")),
                        plotOutput(paste0("plot_biomPars_bodyLt_", specLabel), width = plotWidth, height = plotHeight),
                        column(11, 
                               verbatimTextOutput(paste0("qtls_biomPars_bodyLt_", specLabel))
                        )
-                       # ,
-                       # textAreaInput(inputId = paste0("textInput_bioParsSrc_bodyLt_", specLabel), label = NULL, value = "", 
-                       #               placeholder = "If possible, description of the source(s) for the specified parameter values", 
-                       #               width = "90%", rows = 6)
+                       
                    )
             ),
             column(width = 4,
@@ -136,9 +114,9 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                         varName = "Wing Span (m)",
                                         infoId = paste0("lbl_wngSpan_", specLabel),
                                         via_InsertUI = TRUE,
-                                        E_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$wngSpan_E, 1), 
+                                        E_value = ifelse(is.null(specStartVals$wngSpan_E), 1, specStartVals$wngSpan_E), 
                                         E_min=0, E_step = 0.01,
-                                        SD_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$wngSpan_SD, 0), 
+                                        SD_value = ifelse(is.null(specStartVals$wngSpan_SD), 0, specStartVals$wngSpan_SD), 
                                         SD_min = 0, SD_step = 0.001),
                        h5(paste0("PDF of ", specName, "'s wing span")),
                        plotOutput(paste0("plot_biomPars_wngSpan_", specLabel), width = plotWidth, height = plotHeight),
@@ -153,9 +131,9 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                          varName = "Flight Speed (m/s)",
                                          infoId = paste0("lbl_flSpeed_", specLabel),
                                          via_InsertUI = TRUE,
-                                         E_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$flSpeed_E, 1), 
+                                         E_value = ifelse(is.null(specStartVals$flSpeed_E), 1, specStartVals$flSpeed_E), 
                                          E_min=0, E_step = 0.01,
-                                         SD_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$flSpeed_SD, 0), 
+                                         SD_value = ifelse(is.null(specStartVals$flSpeed_SD), 0, specStartVals$flSpeed_SD), 
                                          SD_min = 0, SD_step = 0.01),
                        h5(paste0("PDF of ", specName, "'s flight speed")),
                        plotOutput(paste0("plot_biomPars_flSpeed_", specLabel), width = plotWidth, height = plotHeight),
@@ -175,9 +153,9 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                         varName = "Nocturnal Activity",
                                         infoId = paste0("lbl_noctAct_", specLabel),
                                         via_InsertUI = TRUE,
-                                        E_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$noctAct_E, 1), 
+                                        E_value = ifelse(is.null(specStartVals$noctAct_E), 1, specStartVals$noctAct_E), 
                                         E_min=0, E_step = 0.001,
-                                        SD_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$noctAct_SD, 0), 
+                                        SD_value = ifelse(is.null(specStartVals$noctAct_SD), 0, specStartVals$noctAct_SD), 
                                         SD_min = 0, SD_step = 0.001),
                        h5(paste0("PDF of ", specName, "'s Nocturnal Activity")),
                        plotOutput(paste0("plot_biomPars_noctAct_", specLabel), width = plotWidth, height = plotHeight),
@@ -192,9 +170,9 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                         varName = "Basic Avoidance",
                                         infoId = paste0("lbl_basicAvoid_", specLabel),
                                         via_InsertUI = TRUE,
-                                        E_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$basicAvoid_E, 1), 
+                                        E_value = ifelse(is.null(specStartVals$basicAvoid_E), 1, specStartVals$basicAvoid_E),  
                                         E_min=0, E_step = 0.001,
-                                        SD_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$basicAvoid_SD, 0), 
+                                        SD_value = ifelse(is.null(specStartVals$basicAvoid_SD), 0, specStartVals$basicAvoid_SD),
                                         SD_min = 0, SD_step = 0.001),
                        h5(paste0("PDF of ", specName, "'s basic avoidance")),
                        plotOutput(paste0("plot_biomPars_basicAvoid_", specLabel), width = plotWidth, height = plotHeight),
@@ -209,9 +187,9 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                         varName = "Extended Avoidance",
                                         infoId = paste0("lbl_extAvoid_", specLabel),
                                         via_InsertUI = TRUE,
-                                        E_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$extAvoid_E, 1), 
+                                        E_value = ifelse(is.null(specStartVals$extAvoid_E), 1, specStartVals$extAvoid_E),  
                                         E_min=0, E_step = 0.001,
-                                        SD_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$extAvoid_SD, 0), 
+                                        SD_value = ifelse(is.null(specStartVals$extAvoid_SD), 0, specStartVals$extAvoid_SD), 
                                         SD_min = 0, SD_step = 0.001),
                        h5(paste0("PDF of ", specName, "'s extended avoidance")),
                        plotOutput(paste0("plot_biomPars_extAvoid_", specLabel), width = plotWidth, height = plotHeight),
@@ -233,9 +211,9 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                         varName = "Proportion at CRH",
                                         infoId = paste0("lbl_CRHeight_", specLabel),
                                         via_InsertUI = TRUE,
-                                        E_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$CRHeight_E, 1), 
+                                        E_value = ifelse(is.null(specStartVals$CRHeight_E), 1, specStartVals$CRHeight_E),
                                         E_min=0, E_step = 0.01,
-                                        SD_value = ifelse(specLabel == "Black_legged_Kittiwake", startUpValues$CRHeight_SD, 0), 
+                                        SD_value = ifelse(is.null(specStartVals$CRHeight_SD), 0, specStartVals$CRHeight_SD), 
                                         SD_min = 0, SD_step = 0.001),
                        h5(paste0("PDF of ", specName, "'s Collision Risk Height")),
                        plotOutput(paste0("plot_biomPars_CRHeight_", specLabel), width = plotWidth, height = plotHeight),
@@ -262,6 +240,7 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                                   label = "Choose data source:",
                                                   choices = c("Johnson et al (2014)" = "default",
                                                               "Other" = "other"),
+                                                  selected = ifelse(is.null(specStartVals$FHD_dtSrc), "default", specStartVals$FHD_dtSrc),
                                                   checkIcon = list(yes = tags$i(class = "fa fa-circle",
                                                                                 style = "color: steelblue"),
                                                                    no = tags$i(class = "fa fa-circle-o",
@@ -354,10 +333,11 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
               radioGroupButtons(inputId = paste0("slctInput_userOpts_monthDens_sampler_", specLabel),
                                 individual = TRUE,
                                 justified = FALSE, 
-                                label = "Choose how to specify distribution of monthly bird densities",
+                                label = "Choose how to specify the distribution of monthly bird densities",
                                 choices = c("Truncated Normal" = "truncNorm",
                                             "Distribution reference points" = "pcntiles",
                                             "Distribution samples" = "reSamp"),
+                                selected = ifelse(is.null(specStartVals$monthDens_sampler), "truncNorm", specStartVals$monthDens_sampler),
                                 checkIcon = list(yes = tags$i(class = "fa fa-circle",
                                                               style = "color: steelblue"),
                                                  no = tags$i(class = "fa fa-circle-o",
@@ -393,7 +373,7 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                br(),
                                fluidRow(
                                  column(12, offset = 3,
-                                        plotOutput(paste0("plot_inputMonthDens_QtlsBars_summaries_", specLabel), width = 800, height = 300)
+                                        plotOutput(paste0("plot_inputMonthDens_QtlsBars_summaries_", specLabel), width = 800, height = 350)
                                  )
                                )
               ),
@@ -403,7 +383,7 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, st
                                br(),
                                fluidRow(
                                  column(12, 
-                                        plotOutput(paste0("plot_inputMonthDens_samples_", specLabel), width = "100%", height = 300)
+                                        plotOutput(paste0("plot_inputMonthDens_samples_", specLabel), width = "100%", height = 400)
                                  )
                                ),
                                br(),
@@ -439,8 +419,6 @@ results_tabPanelsBuilder <- function(specName, specLabel){
     tabPanel(title = tags$b(specName),
              fluidRow(
                box(width = 12,
-                   #title = h4(paste0("Overall number of collisions - ", specName)),
-                   #h5(tags$b(paste0("Overall number of collisions - ", specName))),
                    h4(paste0("Annual number of collisions - ", specName)),
                    br(),
                    
@@ -457,8 +435,6 @@ results_tabPanelsBuilder <- function(specName, specLabel){
              ),
              fluidRow(
                box(width = 12,
-                   #title = h4(paste0("Number of collisions per month - ", specName)),
-                   #h5(tags$b(paste0("Number of collisions per month - ", specName))),
                    h4(paste0("Monthly number of collisions by model option - ", specName)),
                    br(),
                    
@@ -694,12 +670,9 @@ betaInputPars_densPlots <- function(p, stdev, fill="olivedrab", xlab){
                           fill = fill, col = "black", alpha = 0.3) +
             labs(y="Density", x = xlab)
           
-          #print(is.infinite(yaxisUpLim$end))
-          
           if(is.infinite(yaxisUpLim$end)){
             p1
           }else{
-            #p1 + coord_cartesian(xlim = c(0, 1), ylim = c(0, yaxisUpLim$end))
             p1 + coord_cartesian(xlim = c(xaxisLowLim, xaxisUpLim), ylim = c(0, yaxisUpLim$end))
           }
         }else{
@@ -726,13 +699,6 @@ betaInputPars_densPlots <- function(p, stdev, fill="olivedrab", xlab){
 truncNormPars_qtlTbl <- function(mu, stdev, lower = -Inf, upper = Inf, varTag, decPlaces = 3){
   
   req(mu, stdev)
-  
-  # data.frame(pctile = paste0(varTag, "|"), t(round(qtnorm(p = c(0.025, 0.25, 0.5, 0.75, 0.975), mean = mu, sd = stdev, lower = lower, 
-  #                              upper = upper), decPlaces))) %>%
-  #   rename(`%tile|` = pctile, `2.5th` = X1, `25th` = X2, `50th` = X3, `75th` = X4, `97.5th` = X5) %>%
-  #   mutate_at(.vars = vars(`2.5th`:`97.5th`), funs(sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
-  #   mutate(dummy = "") %>%
-  #   column_to_rownames("dummy")
   
   if(stdev == 0 & mu <= lower){
     #NULL
@@ -808,7 +774,7 @@ tnormParamsAlert <- function(expVal, stdv, varName, varTag, session){
   
   if(!is.na(expVal) & !is.na(stdv)){
     if(stdv == 0 & expVal <= 0){
-      createAlert(session, anchorId = "alert", alertId = c_alertId_E, title = "Oops",
+      createAlert(session, anchorId = "alert", alertId = c_alertId_E, title = "Oops...",
                   content = paste0("<b>", varName, ":</b> needs Mean > 0<br/> when SD = 0"), append = TRUE, style = "danger")
     }else{
       closeAlert(session, alertId = c_alertId_E)
@@ -817,7 +783,7 @@ tnormParamsAlert <- function(expVal, stdv, varName, varTag, session){
   
   if(!is.na(stdv)){
     if(stdv < 0){
-      createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops",
+      createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops...",
                   content = paste0("<b>", varName, ":</b> needs SD >= 0"), append = TRUE, style = "danger")
     }else{
       closeAlert(session, alertId = c_alertId_SD)
@@ -840,7 +806,7 @@ betaParamsAlert <- function(p, stdv, varName, varTag, session){
   # input validation for p
   if(!is.na(p)){
     if(p < 0 | p > 1){
-      createAlert(session, anchorId = "alert", alertId = c_alertId_E, title = "Oops",
+      createAlert(session, anchorId = "alert", alertId = c_alertId_E, title = "Oops...",
                   content = paste0("<b>", varName, ":</b> needs Mean <br/> between 0 and 1"), append = TRUE, style = "danger")
     }else{
       closeAlert(session, alertId = c_alertId_E)
@@ -852,7 +818,7 @@ betaParamsAlert <- function(p, stdv, varName, varTag, session){
     if(p >= 0 & p <= 1){
       if(stdv > 0){
         if(p == 0 | p == 1){
-          createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops",
+          createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops...",
                       content = paste0("<b>", varName, ":</b> <br/> needs SD = 0 when Mean is 0 or 1"), append = TRUE, style = "danger")
         }else{
           closeAlert(session, alertId = c_alertId_SD)
@@ -860,14 +826,14 @@ betaParamsAlert <- function(p, stdv, varName, varTag, session){
         
         if(!betaMeanVarCond){
           condLimit <- round(sqrt(p*(1-p)), digits = 3)
-          createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops",
+          createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops...",
                       content = paste0("<b>", varName, ":</b> <br/> needs SD < ", condLimit, " for the <br/> Mean p = ", round(p, digits = 3)), append = TRUE, style = "danger")
         }else{
-          closeAlert(session, alertId = c_alertId_SD)    
+          closeAlert(session, alertId = c_alertId_SD)
         }
       }else{
         if(stdv < 0){
-          createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops",
+          createAlert(session, anchorId = "alert", alertId = c_alertId_SD, title = "Oops...",
                       content = paste0("<b>", varName, ":</b> needs SD >= 0"), append = TRUE, style = "danger")
         }else{
           closeAlert(session, alertId = c_alertId_SD)
@@ -879,7 +845,8 @@ betaParamsAlert <- function(p, stdv, varName, varTag, session){
 }
 
 
-  
+
+
 
 
 ## ------------------------------------------------------------------------------------- ##
@@ -982,7 +949,6 @@ qtnorm_dmp <- function(p, mean=0, sd=1, lower=-Inf, upper=Inf){
         warning("mu < lower & SD = 0 - NAs produced")
       }
       if(sd == 0 & mean > lower){
-        #out <- qtnorm(p, mean = mean, sd = sd, lower = lower, upper = upper)
         out <- rep(mean, length(p))
       }
       if(sd > 0){
@@ -1001,3 +967,18 @@ qtnorm_dmp <- function(p, mean=0, sd=1, lower=-Inf, upper=Inf){
 
 
 
+## -------------------------------------------------------------------- ##
+## -------------------------------------------------------------------- ##
+## -----             Miscelaneous functions                      -------- 
+## -------------------------------------------------------------------- ##
+## -------------------------------------------------------------------- ##
+
+# generate a temporary folder name for the current session to write out the simulation output files
+getTempFolderName <- function(){
+  paste0("sessionOutputs_", paste(sample(c(letters, LETTERS, 0:9), size = 12, replace = TRUE), collapse = ""))
+}
+
+
+# little safety function required to surpass the "Error:" value returned when ref points or resampled user bird density data is missing - 
+# used when checking/preparing data for modelling
+safe_names <- possibly(names, "MissingData") 

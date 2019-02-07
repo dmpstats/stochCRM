@@ -1,16 +1,22 @@
 # --- Number of Turbines
+nTurbs <- input$numInput_windfarmPars_nTurbines
 
-if(!is.integer(input$numInput_windfarmPars_nTurbines)){
-  createAlert(session, anchorId = "alert", alertId = "alertInput_windfarmPars_nTurbines", title = "Oops",
-              content = "Number of turbines should be an integer", append = TRUE, style = "danger")
-}else{
-  if(!input$numInput_windfarmPars_nTurbines>0){
-    createAlert(session, anchorId = "alert", alertId = "alertInput_windfarmPars_nTurbines", title = "Oops",
-                content = "<b>Number of turbines</b> should be a positive <br/> integer", append = TRUE, style = "danger")
-  }else{
-    closeAlert(session, alertId = "alertInput_windfarmPars_nTurbines")
-  }
-}  
+if(!is.na(nTurbs)){
+ # js$backgroundCol("numInput_windfarmPars_nTurbines", "white")
+  if(!is.integer(nTurbs)){
+    createAlert(session, anchorId = "alert", alertId = "alertInput_windfarmPars_nTurbines", title = "Ahem...",
+              content = "</b>Number of turbines<b> must be an integer", append = TRUE, style = "danger")
+    }else{
+      if(!nTurbs>0){
+        createAlert(session, anchorId = "alert", alertId = "alertInput_windfarmPars_nTurbines", title = "Ahem...",
+                    content = "<b>Number of turbines</b> must be a positive <br/> integer", append = TRUE, style = "danger")
+      }else{
+        closeAlert(session, alertId = "alertInput_windfarmPars_nTurbines")
+      }
+    }  
+}#else{
+#  js$backgroundCol("numInput_windfarmPars_nTurbines", NAsHighlightColor)
+#}
 
 
 
@@ -19,20 +25,41 @@ lat  <- input$numInput_windfarmPars_Latitude
 
 if(!is.na(lat)){
   if(!between(lat, -90, 90)){
-    createAlert(session, anchorId = "alert", alertId = "alertInput_windfarmPars_Latitude", title = "Oops",
-                content = "<b>Latitude</b> should be between -90 and <br/> 90 degrees", append = TRUE, style = "danger")
+    createAlert(session, anchorId = "alert", alertId = "alertInput_windfarmPars_Latitude", title = "Ahem...",
+                content = "<b>Latitude</b> must be between -90 and <br/> 90 degrees", append = TRUE, style = "danger")
   }else{
     closeAlert(session, alertId = "alertInput_windfarmPars_Latitude")
   }  
 }
 
 
+
+# --- windfarm width
+windFarmWitdth <- input$numInput_windfarmPars_width
+if(!is.na(windFarmWitdth)){
+  if(windFarmWitdth <= 0){
+    createAlert(session, anchorId = "alert", alertId = "alertInput_windfarmPars_width", title = "Ahem...",
+                content = "<b>Windfarm width</b> must be positive", append = TRUE, style = "danger")
+  }else{
+    closeAlert(session, alertId = "alertInput_windfarmPars_width")
+  }
+}
+
+
+
+# --- Tidal offset
+input$numInput_windfarmPars_tidalOffset
+
+
+
+
+
 # --- Turbine model
 turbPower <- input$numInput_turbinePars_turbinePower
 if(!is.na(turbPower)){
   if(!turbPower > 0){
-    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_turbinePower", title = "Oops",
-                content = "<b>Turbine power</b> should be positive", append = TRUE, style = "danger")
+    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_turbinePower", title = "Oops...",
+                content = "<b>Turbine power</b> must be positive", append = TRUE, style = "danger")
     }else{
       closeAlert(session, alertId = "alertInput_turbinePars_turbinePower")
     }
@@ -43,12 +70,12 @@ if(!is.na(turbPower)){
 nBlades <- input$numInput_turbinePars_numBlades
 if(!is.na(nBlades)){
   if(!nBlades > 0){
-    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_numBlades", title = "Oops",
-                content = "Number of blades should be a positive <br/> integer", append = TRUE, style = "danger")
+    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_numBlades", title = "Oops...",
+                content = "<b>Number of blades</b> must be a positive <br/> integer", append = TRUE, style = "danger")
   }else{
     if(!is.integer(nBlades)){
-      createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_numBlades", title = "Oops",
-                  content = "Number of blades should be a positive <br/> integer", append = TRUE, style = "danger")
+      createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_numBlades", title = "Oops...",
+                  content = "<b>Number of blades</b> must be a positive <br/> integer", append = TRUE, style = "danger")
     }else{  
       closeAlert(session, alertId = "alertInput_turbinePars_numBlades")
     }
@@ -59,9 +86,9 @@ if(!is.na(nBlades)){
 # --- Rotor Radius
 rotRadius <- input$numInput_turbinePars_rotRadius
 if(!is.na(rotRadius)){
-  if(!rotRadius > 0){
-    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_rotRadius", title = "Oops",
-                content = "<b>Rotor radius</b> should be positive", append = TRUE, style = "danger")
+   if(!rotRadius > 0){
+    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_rotRadius", title = "Oops...",
+                content = "<b>Rotor radius</b> must be positive", append = TRUE, style = "danger")
   }else{
       closeAlert(session, alertId = "alertInput_turbinePars_rotRadius")
   }
@@ -72,26 +99,25 @@ if(!is.na(rotRadius)){
 airGap <- input$numInput_turbinePars_airGap
 if(!is.na(airGap)){
   if(!airGap > 0){
-    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_airGap", title = "Oops",
-                content = "<b>Air gap</b> should be positive", append = TRUE, style = "danger")
+    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_airGap", title = "Oops...",
+                content = "<b>Air gap</b> must be positive", append = TRUE, style = "danger")
   }else{
     closeAlert(session, alertId = "alertInput_turbinePars_airGap")
   }
 }
 
 
+
 # --- Maximum blade width
 maxBladeWdth <- input$numInput_turbinePars_maxBladeWdth
 if(!is.na(maxBladeWdth)){
   if(!maxBladeWdth > 0){
-    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_maxBladeWdth", title = "Oops",
-                content = "<b>Maximum blade width</b> should be positive", append = TRUE, style = "warning")
+    createAlert(session, anchorId = "alert", alertId = "alertInput_turbinePars_maxBladeWdth", title = "Oops...",
+                content = "<b>Maximum blade width</b> must be positive", append = TRUE, style = "warning")
   }else{
     closeAlert(session, alertId = "alertInput_turbinePars_maxBladeWdth")
   }
 }
-
-
 
 
 
@@ -112,6 +138,10 @@ tnormParamsAlert(expVal = input$numInput_miscPars_windSpeed_E_,
                  stdv = input$numInput_miscPars_windSpeed_SD_, 
                  varName = "Wind speed", varTag = "miscPars_rotnSpeed", 
                  session = session)
+
+
+
+
 
 
 
@@ -160,6 +190,7 @@ if(length(c_biomPars) > 0){
       }
       
       if(cVarName %in% c("Nocturnal Activity", "Basic avoidance", "Extended avoidance", "CRH")){
+        
         betaParamsAlert(p =input_E,
                         stdv = input_SD,
                         varName = paste0(cVarName, " for <br/>", cSpecName),
@@ -171,6 +202,8 @@ if(length(c_biomPars) > 0){
 }
 
 
+
+#inputParsValidationStatus
 
 
 
@@ -186,19 +219,39 @@ if(!is.null(input$hotInput_turbinePars_monthOps)){
 
   apply(turbineOperation, MARGIN = 1, FUN = function(x){
 
-    #paste("alertInput_turbinePars_monthOp_", x[["Variable"]], x[["month"]], sep = "_")
-    #paste0("<b>", str_replace(x[["Variable"]], "_", " "), " in ", x[["month"]], "</b> should be between 0% and 100%")
-
     pctage <- as.numeric(x[["percentage"]])
-    if(!between(pctage, 0, 100)){
-      createAlert(session, anchorId = "alert", alertId = paste("alertInput_turbinePars_monthOp_", x[["Variable"]], x[["month"]], sep = "_"), title = "Oops",
-                  content = paste0("<b>", str_replace(x[["Variable"]], "_", " "), " (", x[["month"]], ")</b> should be </br>between 0% and 100%"),
-                  append = TRUE, style = "danger")
-    }else{
-      closeAlert(session, alertId = paste("alertInput_turbinePars_monthOp_", x[["Variable"]], x[["month"]], sep = "_"))
+    
+    if(!is.na(pctage)){
+      if(!between(pctage, 0, 100)){
+        createAlert(session, anchorId = "alert", alertId = paste("alertInput_turbinePars_monthOp_", x[["Variable"]], x[["month"]], sep = "_"), title = "Oops...",
+                    content = paste0("<b>", str_replace(x[["Variable"]], "_", " "), " (", x[["month"]], ")</b> should be </br>between 0% and 100%"),
+                    append = TRUE, style = "danger")
+      }else{
+        closeAlert(session, alertId = paste("alertInput_turbinePars_monthOp_", x[["Variable"]], x[["month"]], sep = "_"))
+      }
     }
-
+    
   })
 
 }
+
+
+
+
+
+## ------------------------------------------------------------------------ ##
+##     Highlight background of numeric input fields with NAs                ##
+## ------------------------------------------------------------------------ ##
+
+names(isolate(input)) %>%
+  str_subset(., pattern = "numInput_") %>%
+  map(function(x){
+    val <- isolate(input[[x]])
+    if(!is.na(val)){
+      js$backgroundCol(x,"white")
+    }else{
+      js$backgroundCol(x, NAsHighlightColor)
+    }
+  })
+
 

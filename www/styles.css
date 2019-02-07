@@ -16,6 +16,36 @@
    }
 */
 
+
+
+.main-header .navbar-custom-menu{ 
+  float: right;
+  width: 97%;
+}
+
+
+.navbar-nav{
+  float: left;
+  margin: 0;
+  width: 100%;
+}
+
+.main-header {
+  position: fixed;
+  width:100%;
+  color: red;
+}
+
+.content {
+  padding-top: 60px;
+}
+
+
+.main-sidebar{ 
+  position: fixed;
+}
+
+
 div.busy { 
   position:fixed;
   top: 40%;
@@ -34,9 +64,14 @@ div.busy {
 }
 
 
-
 .shiny-output-error-valErrorMsgClass{
-  color: #24a531;
+  color:  red; /*#24a531;*/
   font-size: 15px;
 }
+
+.shiny-output-error-valErrorMsgClass_2{
+  color:  #e67e22 ; /* #24a531;*/
+  font-size: 15px;
+}
+
 
