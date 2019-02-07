@@ -85,12 +85,13 @@
     library(dplyr)
     library(tidyr)
     library(pracma)
+    library(data.table)
 
     ###start timers
     start.time <- Sys.time()
     
     ###set random number seed
-    set.seed(100)
+    # set.seed(100)          ### BC CHANGE ### -- removing this as it was probably set for debugging purposes on the originbal Masden code - unclear to what would be the benefit of having identical runs on the online app
     S<-iter*20 ## this is number of samples, increased to ensure enough valid values - is this used?
     
     #### BC ##### -- initialise objects to store simulation replicates of monthly collisions, for each option, for current species and turbine  ===========
@@ -102,9 +103,9 @@
 # Create folders and paths ------------------------------------------------
 
 
-    ###create results folder
-    if(results_folder == "") results_folder<- Sys.Date() ## if no name given for results folder, use today's date
-    if(results_folder !="") dir.create(results_folder) ## if name given for results folder use that and create folder
+    # ###create results folder
+    # if(results_folder == "") results_folder<- Sys.Date() ## if no name given for results folder, use today's date
+    # if(results_folder !="") dir.create(results_folder) ## if name given for results folder use that and create folder      #####    BC CHANGE  -- folder created beforehand by app  ######
     
     ##make input, figures and tables folders
     dir.create(paste(results_folder, "figures", sep="/"))
@@ -221,6 +222,7 @@
       
       source("scripts/samplebirdparams.r", local=T)
 
+      
 # Start of turbine loop ---------------------------------------------------
 
 
@@ -438,12 +440,12 @@
     } # end of the species loop over s
     
     ##output input data##
-    write.csv(BirdData, paste(results_folder,"input", "BirdData.csv", sep="/"))
-    write.csv(CountData, paste(results_folder,"input", "birdDensityData.csv", sep="/"))      # <<<<< BC <<<<<  change of file name, for clarity
-    write.csv(TurbineData, paste(results_folder,"input", "TurbineData.csv", sep="/"))
+    fwrite(BirdData, paste(results_folder,"input", "BirdData.csv", sep="/"))
+    fwrite(CountData, paste(results_folder,"input", "birdDensityData.csv", sep="/"))      # <<<<< BC <<<<<  change of file name, for clarity
+    fwrite(TurbineData, paste(results_folder,"input", "TurbineData.csv", sep="/"))
     
     ###output results table###
-    write.csv (resultsSummary, paste(results_folder,"tables", "CollisionEstimates.csv", sep="/"))
+    fwrite(resultsSummary, paste(results_folder,"tables", "CollisionEstimates.csv", sep="/"))
     
     
     end.time <- Sys.time()
