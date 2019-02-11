@@ -230,8 +230,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, sp
                        br(),
                        br(),
                        
-                       #helpText("Choose between using the default data (provided by Johnson et al, 2014) or an alternative dataset."),
-                       
                        fluidRow(
                          column(5, 
                                 radioGroupButtons(inputId = paste0("slctInput_userOpts_FHD_dtSrc_", specLabel),
@@ -328,8 +326,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, sp
               br(),
               br(),
               
-              #helpText("Choose how to specify distribution of monthly bird densities"),
-              
               radioGroupButtons(inputId = paste0("slctInput_userOpts_monthDens_sampler_", specLabel),
                                 individual = TRUE,
                                 justified = FALSE, 
@@ -391,9 +387,6 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, sp
                                fluidRow(
                                  column(12, offset = 3, plotOutput(paste0("plot_inputMonthDens_QtlsBars_samples_", specLabel), width = 800, height = 350))
                                )
-                               #)
-                               # rHandsontableOutput(paste0("hotInput_birdDensPars_prcntls_", specLabel), width = "100%"),
-                               # tags$style(type="text/css", paste0("#hotInput_birdDensPars_prcntls_", specLabel, " th {font-weight:bold;}"))
               ),
               br(),
               br()
@@ -423,13 +416,12 @@ results_tabPanelsBuilder <- function(specName, specLabel){
                    br(),
                    
                    column(6,
-                          plotOutput(paste0(specLabel, "_plot_overallCollisions"), width = "100%") #width = plotWidth, height = plotHeight)
+                          plotOutput(paste0(specLabel, "_plot_overallCollisions"), width = "100%")
                    ),
                    column(6,
                           align="center",
                           div(dataTableOutput(paste0(specLabel, "_summTable_overallCollisions")), 
                               style = "font-size: 90%; width: 100%")
-                          #tableOutput(paste0("sumTable_results_monthCollisions_", specLabel))
                    )
                )
              ),

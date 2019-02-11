@@ -792,10 +792,6 @@ function(input, output, session) {
             cPlotData <- inputs_BiomParsToPlot %>% filter(plotTag == c_tag)
             c_qtTag <- unique(cPlotData$qtTag)
             c_par <- unique(cPlotData$par)
-            #print(cPlotData)
-            #print(c_qtTag)
-            #browser()
-            #print(unique(cPlotData$par))
 
             mu <- as.numeric(as.character(filter(cPlotData, hyper == "E")$Value))
             stdev <- as.numeric(as.character(filter(cPlotData, hyper == "SD")$Value))
@@ -837,7 +833,6 @@ function(input, output, session) {
   observeEvent(flgtHghDstInputs_ls(), {
     
     req(length(flgtHghDstInputs_ls())>0)
-    #print(names(flgtHghDstInputs_ls()))
     
     walk2(flgtHghDstInputs_ls(), names(flgtHghDstInputs_ls()), function(x, y){
 
@@ -845,7 +840,6 @@ function(input, output, session) {
       plotTagBoot_user <- paste0("plot_UserFHD_allBoots_", specLabel)
       plotTagBootQts_user <- paste0("plot_UserFHD_QtsBoot_", specLabel)
       
-      #browser()
       
       # data prep: rename height column and drop all 0s columns
       x %<>% rename(Height = Height_m) %>%
@@ -1477,7 +1471,6 @@ function(input, output, session) {
                        VariableMasden = factor(VariableMasden, levels = VariableMasden)
                 ) %>%
                 select(-c(hyperPar:month)) %>%
-                #mutate(Value = Value + 1e-8) %>%  # hack to deal with truncated normal function error when mean = sd = 0, when lower truncation at 0
                 spread(VariableMasden, Value) %>%
                 filter(Species %in% x$specLabel)
 
@@ -1487,7 +1480,6 @@ function(input, output, session) {
 
             if(unique(x$option) == "reSamp"){
               out <- rbindlist(monthDens_userDt_sample_ls(), idcol = TRUE) %>%
-                #mutate(specLabel = x$specLabel) %>%
                 mutate(specLabel = str_replace_all(.id, "upldInput_monthDens_userDt_samples_", "")) %>%
                 select(specLabel, January:December)
             }
@@ -1817,15 +1809,10 @@ function(input, output, session) {
     updateProgress_Spec <- function(value = NULL, detail = NULL) {
       progress_Spec$set(value = value, detail = detail)
     }
-    # updateProgress_Spec <- function(detail = NULL, n = NULL) {
-    #   progress_Iter$inc(amount = 1/n, detail = detail)
-    # }
+    
     
     #' callback functions to update progress on iterations. Each time updateProgress_Iter() is called, 
     #' it moves the bar 1/nth of the total distance.
-    # updateProgress_Iter <- function(detail = NULL, n = NULL) {
-    #   progress_Iter$inc(amount = 1/n, detail = detail)
-    # }
     updateProgress_Iter <- function(value = NULL, detail = NULL) {
       progress_Iter$set(value = value, detail = detail)
     }
@@ -1905,7 +1892,6 @@ function(input, output, session) {
     
     df_monthlyColl <- df %>%
       gather(Month, Collisions, -c(option, specLabel, turbineModel, iter)) %>%
-      #select(-turbineModel) %>%
       mutate(Month = factor(Month, levels = unique(Month)),
              specLabel = as.character(specLabel)) %>%
       group_by(specLabel, option, turbineModel) %>%
@@ -1945,7 +1931,7 @@ function(input, output, session) {
     df_monthlyColl %>%
       mutate(sumTable = pmap(list(dt = data, spec = specLabel, opt = option), function(dt, spec, opt){
         
-        dt %<>% #mutate(opt = opt) %>% 
+        dt %<>% 
           group_by(Month) %>%
           summarise(Mean = mean(Collisions), 
                     SD = sd(Collisions), CV = SD/Mean, 
@@ -1967,7 +1953,7 @@ function(input, output, session) {
         
         output[[sumTableTag]] <- renderDataTable({
           datatable(dt, rownames = FALSE, 
-                    caption = paste0("Model ", opt), # , " (SD = standard deviation, CV = coefficient of variation, IQR = inter quartile range, percentile)"),
+                    caption = paste0("Model ", opt), 
                     options = list(pageLength = 12, dom = 't'))
         })
         

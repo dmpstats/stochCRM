@@ -1,2 +1,9 @@
+<<<<<<< HEAD
 Species,AvoidanceBasic,AvoidanceBasicSD,AvoidanceExtended,AvoidanceExtendedSD,Body_Length,Body_LengthSD,Wingspan,WingspanSD,Flight_Speed,Flight_SpeedSD,Nocturnal_Activity,Nocturnal_ActivitySD,Flight,Prop_CRH_Obs,Prop_CRH_ObsSD
 Black_legged_Kittiwake,0.989,0.001,0.967,0.002,0.39,0.005,1.08,0.04,7.26,1.5,0.033,0.0045,Flapping,0.06,0.009
+=======
+"Species","AvoidanceBasic","AvoidanceBasicSD","AvoidanceExtended","AvoidanceExtendedSD","Body_Length","Body_LengthSD","Wingspan","WingspanSD","Flight_Speed","Flight_SpeedSD","Nocturnal_Activity","Nocturnal_ActivitySD","Flight","Prop_CRH_Obs","Prop_CRH_ObsSD"
+"Arctic_Tern","1","0","1","0","1","0","1","0","1","0","1","0","Flapping","1","0"
+"Black_legged_Kittiwake","0.989","0.001","0.967","0.002","0.39","0.005","1.08","0.04","7.26","1.5","0.033","0.0045","Flapping","0.06","0.009"
+"Northern_Gannet","1","0","1","0","1","0","1","0","1","0","1","0","Flapping","1","0"
+>>>>>>> c178467110c6d76c799ed48ab1baf324bc6c9440
