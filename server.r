@@ -2118,7 +2118,7 @@ function(input, output, session) {
                     tags$li(tags$b("Additions & Updates"), 
                             tags$ul(
                               tags$li("Consortium's logos added"),
-                              tags$li("Added default body length, wing span and flight speeds for most of the default species"),
+                              tags$li("Inclusion of default values for body length, wing span and flight speeds for most of the default species"),
                               tags$li("Implemented facility to save and restore input parameter values, allowing user to recover previously saved app status e.g. if the app disconnects."),
                               tags$li("Final check on missing values and data before proceeding to simulation. Simulation voided and warnings issued if key data absent"),
                               tags$li("Bugs fixed, including: fault on re-ordering in plots of monthly bird densities; error due to previous maximum height of 300m in FHD data (addressed by padding FHD data with zeros from 300m to 500m)")

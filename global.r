@@ -49,6 +49,8 @@ if(localUse){
 }
 
 source("helpers.r")
+source("BandModel_function.R")
+
 
 species <- sort(c("Arctic Skua", "Northern Fulmar", "Great Black-backed Gull", "Common Guillemot", "Northern Gannet",
              "Black-legged Kittiwake", "Lesser Black-Backed Gull", "Little Auk", "Atlantic Puffin", 
