@@ -1,7 +1,5 @@
 #' =============================================================================================================
 #' --- Version Logs ---------------
-#' 
-#'  - v2.1.1: Updated with the latest version of the sCRM model function - C. Donovan made it run faster and cleaned the R code 
 
 
 localUse <- TRUE

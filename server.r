@@ -345,17 +345,6 @@ function(input, output, session) {
   })
   
  
-#   observe({
-#     #print(str(reactiveValuesToList(input), max.level = 2, list.len = 5))
-#     #print(rv$birdDensParsInputs_ls)
-#     #print(rv$mthDens_userDtSample_loc)
-#     #print(rv$mthDens_userOptions)
-#     #print(rv$FlgtHghDstInputs_loc)
-#     #print(rv$monthDens_userDt_sample_loc)
-#     #print(rv$FlgtHghDstInputs_loc)
-#   })
-
-
   
   # --- Call and store flight height distributions of selected species in elements of a list
   flgtHghDstInputs_ls <- eventReactive(rv$FlgtHghDstInputs_loc, {
@@ -1744,27 +1733,6 @@ function(input, output, session) {
       drop_na()
 
     
-    # output$out_simFunctionArgs <- renderPrint({
-    #   isolate(
-    #     print(list(
-    #       BirdData= birdData,
-    #       TurbineData = turbineData,
-    #       CountData = countData,
-    #       iter = input$sldInput_simulPars_numIter,
-    #       CRSpecies = slctSpeciesTags()$specLabel,
-    #       TPower = input$numInput_windfarmPars_targetPower,
-    #       WFWidth = input$numInput_windfarmPars_width,
-    #       LargeArrayCorrection = ifelse(input$chkBoxInput_simulPars_largeArrarCorr==TRUE, "yes", "no"),
-    #       rop_Upwind = input$sldInput_windfarmPars_upWindDownWindProp,
-    #       Latitude = input$numInput_windfarmPars_Latitude,
-    #       TideOff = input$numInput_windfarmPars_tidalOffset,
-    #       windSpeedMean = input$numInput_miscPars_windSpeed_E_,
-    #       windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
-    #       windPowerData = windPowerData
-    #     ))
-    #   )
-    # })
-    
     
     # --- simulation Options
     simOptions <- tibble(
@@ -2191,34 +2159,7 @@ function(input, output, session) {
   }, priority = 10)
   
   
-  
-  
-  
-  #' ------------------------------------------------------------------
-  #  ----         Debugging and value checking tools            ----
-  #' ------------------------------------------------------------------
 
-  # output$inputRVs <- renderPrint({
-  #   str(reactiveValuesToList(input), max.level = 3)
-  # })
-  # 
-  # output$out_inputs_biom <- renderPrint({
-  #   str(reactiveValuesToList(rv), max.level = 3)
-  # })
-
-  # output$out_inputs_monthDens <- renderPrint({
-  #   print(inputs_monthDensPars())
-  # })
-
-  # observe(label="console",{
-  #   if(input$console != 0) {
-  #     options(browserNLdisabled=TRUE)
-  #     saved_console<-".RDuetConsole"
-  #     if (file.exists(saved_console)) load(saved_console)
-  #     isolate(browser())
-  #     save(file=saved_console,list=ls(environment()))
-  #   }
-  # })
 
       
 }

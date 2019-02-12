@@ -89,25 +89,8 @@
       bsAlert(anchorId = "alert"),
       
       initStore("store", "shinyStore-ex1")
-      #textInput("text", "Input:"),
-      #actionButton("save", "Save", icon("save"))
-      #div("Value stored currently:"),
-      #verbatimTextOutput("curText")
       
-      # absolutePanel(
-      #   bottom = "20px",
-      #   left = "20px",
-      #   width = "auto",
-      #   height = "auto",
-      #   draggable = FALSE,
-      #   bookmarkButton(id="bookmark_btt"),
-      #   tags$style(type='text/css', "#bookmark_btt { width:180px;}")  
-      # )
-      # 
-      
-    )#,
-    
-    #actionButton("console","server console")
+    )
   )
   
   
@@ -350,88 +333,6 @@
                             )
                         )
                       )
-                      # fluidRow(
-                      #   column(4,
-                      #          
-                      #          # ---- Turbine Rotation Speed 
-                      #          box(width = 12, 
-                      #              #h5(tags$b("Rotation Speed")),
-                      #              radioButtons(inputId = "radButtonInput_turbinePars_rotSpdInputOption", 
-                      #                           label = label.help("Rotation Speed", "lbl_rotSpeed"), #"Rotation Speed", 
-                      #                           inline = FALSE,
-                      #                           choices = list("Probability Distribution" = "probDist",
-                      #                                          "Wind Vs. rotation speed relationship"= "windVsRotation"),
-                      #                           selected = "probDist"),
-                      #              conditionalPanel(
-                      #                condition = "input.radButtonInput_turbinePars_rotSpdInputOption == 'windVsRotation'",
-                      #                rHandsontableOutput("hotInput_turbinePars_rotationVsWind", width = "100%"),
-                      #                tags$style(type="text/css", "#hotInput_turbinePars_rotationVsWind th {font-weight:bold;}")
-                      #              ),
-                      #              conditionalPanel(
-                      #                condition = "input.radButtonInput_turbinePars_rotSpdInputOption == 'probDist'",
-                      #                NormNumericInput(paramID = "turbinePars_rotnSpeed", specID = "", 
-                      #                                 varName = "Rotation (rpm)",
-                      #                                 infoId = "lbl_rotSpeedProbDist", 
-                      #                                 infoText = "Rotation speed (~Truncated Normal with lower bound at 0)",
-                      #                                 E_value = startUpValues$rotnSpeed_E, SD_value = startUpValues$rotnSpeed_SD),
-                      #                plotOutput("plot_turbinePars_rotnSpeed", width = 300, height = 200),
-                      #                verbatimTextOutput("qtls_turbinePars_rotnSpeed")
-                      #              ), 
-                      #              bsTooltip(id = "lbl_rotSpeed", 
-                      #                        title = paste0("Rotation speed to be specified via a probability distribution", 
-                      #                                       " or a relationship between rotor speed and wind speed"),
-                      #                        options = list(container = "body"), placement = "right", trigger = "hover")
-                      #          )
-                      #   ),
-                      #   column(4,
-                      #          
-                      #          # ---- Turbine Blade Pitch
-                      #          box(width = 12, 
-                      #              #h5(tags$b("Blade Pitch")),
-                      #              radioButtons(inputId = "radButtonInput_turbinePars_bldPitchInputOption", 
-                      #                           label =  label.help("Blade Pitch", "lbl_bladePitch"),  #"Blade Pitch", 
-                      #                           inline = FALSE,
-                      #                           choices = list("Probability Distribution"= "probDist",
-                      #                                          "Wind Vs. blade pitch relationship" = "windVsPitch"),
-                      #                           selected = "probDist"),
-                      #              conditionalPanel(
-                      #                condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'windVsPitch'",
-                      #                rHandsontableOutput("hotInput_turbinePars_pitchVsWind", width = "100%"),
-                      #                tags$style(type="text/css", "#hotInput_turbinePars_pitchVsWind th {font-weight:bold;}")
-                      #              ),
-                      #              conditionalPanel(
-                      #                condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'probDist'",
-                      #                NormNumericInput(paramID = "turbinePars_bladePitch", specID = "", 
-                      #                                 varName = "Pitch (deg)", 
-                      #                                 infoId = "lbl_bladePitchProbDist", 
-                      #                                 infoText = "Blade pitch (~Truncated Normal with lower bound at 0)",
-                      #                                 E_value = startUpValues$bladePitch_E, SD_value = startUpValues$bladePitch_SD),
-                      #                plotOutput("plot_turbinePars_bladePitch", width = 300, height = 200),
-                      #                verbatimTextOutput("qtls_turbinePars_bladePitch")
-                      #              ),
-                      #              bsTooltip(id = "lbl_bladePitch",
-                      #                        title = paste0("Angle of the blade from plane of rotation (decimal degrees).",
-                      #                                       " To be specified via a probability distribution or",
-                      #                                       " a relationship between rotor speed and wind speed"),
-                      #                        options = list(container = "body"), placement = "right", trigger = "hover")
-                      #       )
-                      #   ),
-                      #   conditionalPanel(
-                      #     condition = "input.radButtonInput_turbinePars_bldPitchInputOption == 'windVsPitch' | input.radButtonInput_turbinePars_rotSpdInputOption == 'windVsRotation'",
-                      #     column(4, 
-                      #            box(width = 12, 
-                      #                NormNumericInput(paramID = "miscPars_windSpeed", specID = "", 
-                      #                                 varName = "Wind Speed (m/s)",
-                      #                                 infoId = "lbl_winSpeed", 
-                      #                                 infoText = paste0("If rotation speed and/or blade pitch are specified in relation to wind speed," , 
-                      #                                                   " wind speed is randomly generated (~Truncated Normal with lower bound at 0)"),
-                      #                                 E_value = startUpValues$windSpeed_E, SD_value = startUpValues$windSpeed_SD),
-                      #                plotOutput("plot_miscPars_windSpeed", width = 300, height = 200),
-                      #                verbatimTextOutput("qtls_miscPars_windSpeed")
-                      #            )
-                      #     )
-                      #   )
-                      # )
                   )
                 )
         ),
@@ -480,9 +381,6 @@
     bsTooltip(id = "appvrsn",
               title = paste0("Release notes"),
               options = list(container = "body"), placement = "bottom", trigger = "hover"),
-    # bsTooltip(id = "bookmark_btt",
-    #           title = "Bookmark this application\\'s state and get a URL for sharing",
-    #           options = list(container = "body"), placement = "bottom", trigger = "hover"),
     bsTooltip(id = "saveInputs_btt",
               title = "Store currently specified input values",
               options = list(container = "body"), placement = "bottom", trigger = "hover"),
@@ -490,11 +388,7 @@
               title = "Restore inputs to latest stored values",
               options = list(container = "body"), placement = "bottom", trigger = "hover")
     
-    
-    # verbatimTextOutput("out_inputs_biom"),
-    # verbatimTextOutput("inputRVs")
-    # #  verbatimTextOutput("test")
-    # #verbatimTextOutput("out_inputs_monthDens")
+
     
   )
   
@@ -519,12 +413,10 @@
     div(class = "busy",
         tags$b(h4("Working on it...")),
         img(src="loading.gif")
-        #img(src="operation-and-maintenance.gif", height = "50%", width = "50%")
-        #h2(HTML('<i class="fa fa-cog fa-spin fa-2x"></i>'))
-        #h2(HTML('<i  class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'))
+
     )
   )
-#}
+
 
 
 
