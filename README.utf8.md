@@ -23,7 +23,7 @@ To run the app locally:
   * Download and install the latest version of [R]{https://cran.r-project.org/}
   * Two options to launch the app:
   
-    1. Run the following code in an opened R session
+  1. Run the following code in an opened R session
     ```R
     > if(!require("shiny")) install.packages("shiny")
     > runGitHub(repo = "dmpstats/stochCRM")

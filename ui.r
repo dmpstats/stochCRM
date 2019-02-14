@@ -354,7 +354,7 @@
 
                       hr(),
                       sliderInput(inputId = "sldInput_simulPars_numIter", label = "Number of Iterations",
-                                  min = 100, max = 5000, step = 100, value = 100),
+                                  min = 1000, max = 5000, step = 100, value = 1000),
                       
                       hr(),
                       actionButton(inputId = "actButtonInput_simulPars_GO", label = tags$b("Run Simulation"), 
