@@ -20,23 +20,24 @@ The user manual is available to download [here](https://github.com/dmpstats/stoc
 The online version of the app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
 
 To run the app locally, firstly download and install the latest version of [R](https://cran.r-project.org/). The app can then be launched via two options:
+1. Run the following code in an opened R session
 
-  1. Run the following code in an opened R session
-    ```R
-     if(!require("shiny")) install.packages("shiny")
-     runGitHub(repo = "dmpstats/stochCRM")
-    ```
+  ```R
+   > if(!require("shiny")) install.packages("shiny")
+   > runGitHub(repo = "dmpstats/stochCRM")
+  ```
   
-  2. Run code manually downloaded from GitHub, taking the following steps:
+2. Run code manually downloaded from GitHub, taking the following steps:
+  * Download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location
+  * If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), open the "global.r" file, and either click the "Run App" button or use the shortcut _Ctrl+Shift+Enter_ (or _Ctrl+Alt+R_)
+  * If launching from an R console, call the `runApp` function as follows
   
-    * Download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location
-    * If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), open the "global.r" file, and either click the "Run App" button or use the shortcut _Ctrl+Shift+Enter_ (or _Ctrl+Alt+R_)
-    * If launching from an R console, call the `runApp` function as follows
   ```R
   > if(!require("shiny")) install.packages("shiny")
   > library(shiny)
   > runApp("[path]/stochCRM-master")
   ```
+  
   in which `[path]` must be replaced with the file system location of the unzipped directory containing the app files. Note, you will also need to replace "stochCRM-master" with the appropriate directory name if the ZIP was named differently.
 
 
