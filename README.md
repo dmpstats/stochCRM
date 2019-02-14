@@ -28,7 +28,7 @@ To run the app locally, first download and install the latest version of [R](htt
    > runGitHub(repo = "dmpstats/stochCRM")
   ```
   
-* Run code manually downloaded from GitHub, taking the following steps:
+* Or, run code manually downloaded from GitHub, taking the following steps:
   1. Download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location
   2. If launching via the [RStudio Editor](https://www.rstudio.com/products/rstudio/), open the "global.r" file, and either click the "Run App" button or use the shortcut _Ctrl+Shift+Enter_ (or _Ctrl+Alt+R_)
   3. If launching from an R console, call the `runApp` function as follows
