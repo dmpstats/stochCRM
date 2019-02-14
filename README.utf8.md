@@ -19,12 +19,14 @@ The user manual is available to download [here](https://github.com/dmpstats/stoc
 
 The online version of the app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
 
-To run the app locally, firstly download and install the latest version of [R](https://cran.r-project.org/). The app can then be launched via two options:
-
+To run the app locally:
+  * Download and install the latest version of [R]{https://cran.r-project.org/}
+  * Two options to launch the app:
+  
   1. Run the following code in an opened R session
     ```R
-     if(!require("shiny")) install.packages("shiny")
-     runGitHub(repo = "dmpstats/stochCRM")
+    > if(!require("shiny")) install.packages("shiny")
+    > runGitHub(repo = "dmpstats/stochCRM")
     ```
   
   2. Run code manually downloaded from GitHub, taking the following steps:

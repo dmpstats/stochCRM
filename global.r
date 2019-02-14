@@ -16,6 +16,7 @@ if(localUse){
                  shinyBS,
                  msm,
                  shinyjs,
+                 V8,
                  shinyWidgets,
                  data.table,
                  DT,
@@ -37,6 +38,7 @@ if(localUse){
   library(shinyBS)
   library(msm)
   library(shinyjs)
+  library(V8)
   library(shinyWidgets)
   library(data.table)
   library(DT)

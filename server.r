@@ -12,7 +12,7 @@ function(input, output, session) {
   inputs_BiomParsPlotted <-  NULL
   birdDensPars_plotted <- list(NULL)
   flgtHghDstInputs_ls_Latest <- list(NULL)
-  restoringStage <- FALSE
+  storedSlctSpecLabel <- NULL
   
   
   # --- Initiate session's reactive variables
@@ -33,7 +33,11 @@ function(input, output, session) {
     pitchVsWind_df = startUpValues$turbinePars$pitchVsWind_df,
     rotationVsWind_df = startUpValues$turbinePars$rotationVsWind_df,
     startSpecMonthDens_df = map(startUpValues$speciesPars, ~data.frame(meanDensity = .$"meanDensity", sdDensity = .$"sdDensity")),
-    selectSpecRestored = 0
+    restoringChain =FALSE, restoringChain_2 = FALSE,
+    simCodeTrigger = 0, 
+    birdata_model = data.frame(), monthDensData_model = data.frame(), 
+    monthDensOpt_model = data.frame(), turbineData_model = data.frame(), windfarmData_model = data.frame(),
+    densityDataPresent = NULL, NAsFreeData = NULL, FHD_acceptable = NULL
   )
   
   
@@ -413,7 +417,7 @@ function(input, output, session) {
       hot_cols(colWidths = 85, 
                renderer = "function (instance, td, row, col, prop, value, cellProperties) {
            Handsontable.renderers.NumericRenderer.apply(this, arguments);
-               if (value.length == 0) {
+               if (value == null || value.length === 0) {
                td.style.background = 'pink';
                }}") %>%
       hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
@@ -450,12 +454,12 @@ function(input, output, session) {
 
   
   
-  # --- Create input table for bird monthly densities
+  # --- Create input table for bird monthly densities as each species is added
   observe({
     
     req(rv$addedSpec)
     
-    walk(rv$addedSpec, function(x, slctSpecTags = isolate(slctSpeciesTags()), startSpecMonthDens = rv$startSpecMonthDens_df){
+    walk(rv$addedSpec, function(x, slctSpecTags = isolate(slctSpeciesTags()), startSpecMonthDens = isolate(rv$startSpecMonthDens_df)){
       
       cSpecTags <- slctSpecTags %>% filter(species == x)
       
@@ -477,11 +481,11 @@ function(input, output, session) {
                         rowHeaders = c("Mean birds/km^2", "SD of birds/km^2")) %>%
           hot_cols(colWidths = 90, 
                    renderer = "function (instance, td, row, col, prop, value, cellProperties) {
-             Handsontable.renderers.NumericRenderer.apply(this, arguments);
-             if (value.length == 0) {
-              td.style.background = 'pink';
-             }
-           }") %>%
+                   Handsontable.renderers.NumericRenderer.apply(this, arguments);
+                   if (value == null || value.length === 0) {
+                   td.style.background = 'pink';
+                   }
+      }") %>%
           hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
           hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
         
@@ -544,128 +548,151 @@ function(input, output, session) {
   
   
 
-  # --- Restoring latest saved input values - part 1: selected species, winfarm and turbine parameters
+  # --- Restoring latest saved input values - Stage 1: selected species, winfarm and turbine parameters
   #
   observeEvent(input$restoreInputs_btt, {
     
     #browser()
     
     if(length(input$store)>0){
-    
-    # ---- Selected species ---- #
-    updateSelectizeInput(session, inputId = "selectSpecs", selected = input$store$selectSpecs, 
-                         choices = unique(c(species, input$store$selectSpecs)))
-    
-     
-    # -----  Windfarm and turbine parameters ---- #
-    # - numeric inputs
-    str_subset(names(input), pattern = "numInput_turbinePars|numInput_windfarmPars|numInput_miscPars_windSpeed") %>%
-      walk(function(x){
-        updateNumericInput(session, inputId = x, value = input$store[[x]])
-      })
-    
-    # - knob inputs
-    updateKnobInput(session, inputId = "sldInput_windfarmPars_upWindDownWindProp", 
-                    value = input$store$sldInput_windfarmPars_upWindDownWindProp)
-    
-    # - Handsontable inputs
-    rv$turbinePars_monthOps_df[1, ] <- as.numeric(input$store$hotInput_turbinePars_monthOps[1:12]) 
-    rv$turbinePars_monthOps_df[2, ] <- as.numeric(input$store$hotInput_turbinePars_monthOps[13:24])
-    rv$turbinePars_monthOps_df[3, ] <- as.numeric(input$store$hotInput_turbinePars_monthOps[25:36])
-    
-    rv$rotationVsWind_df <- input$store$hotInput_turbinePars_rotationVsWind %>%  
-      #unlist %>% 
-      matrix(ncol=2, byrow = TRUE) %>%
-      as.tibble() %>%
-      transmute(windSpeed = as.numeric(V1), rotationSpeed = as.numeric(V2)) %>%
-      filter(!(is.na(windSpeed) & is.na(rotationSpeed)))
-    
-    
-    rv$pitchVsWind_df <- input$store$hotInput_turbinePars_pitchVsWind %>%
-      #unlist %>% 
-      matrix(ncol=2, byrow = TRUE) %>%
-      as.tibble() %>%
-      transmute(windSpeed = as.numeric(V1), bladePitch = as.numeric(V2)) %>%
-      filter(!(is.na(windSpeed) & is.na(bladePitch)))
-    
-    # - radio buttons inputs
-    updateRadioGroupButtons(session, inputId = "radGrpInput_turbinePars_rotationAndPitchOption", 
-                            selected = input$store$radGrpInput_turbinePars_rotationAndPitchOption)
-    
-    
-    # start logic and chain events for the species specific parameters
-    # when restoring for the same previously stored species, force an input update to trigger the next module to perform the restoring
-    # This step is necessary to generate the required parameter names, as update* functions only update the inputs 
-    # after the remaining dependent reactive modules finish running
-    if(identical(input$selectSpecs, input$store$selectSpecs)){
-      defaultSpecLabel <- str_replace_all(string = defaultSpecies, pattern = "\\s|-", replacement = "_")
-      updateNumericInput(session, inputId = paste0("numInput_biomPars_bodyLt_E_", defaultSpecLabel), value = NA)
-    }
-
-    restoringStage <<- TRUE  # set the restoring status, crucial for the next chained module
-
+      
+      # ---- Selected species ---- #
+      updateSelectizeInput(session, inputId = "selectSpecs", selected = input$store$selectSpecs, 
+                           choices = unique(c(species, input$store$selectSpecs)))
+      
+      
+      # -----  Windfarm and turbine parameters ---- #
+      # - numeric inputs
+      str_subset(names(input), pattern = "numInput_turbinePars|numInput_windfarmPars|numInput_miscPars_windSpeed") %>%
+        walk(function(x){
+          updateNumericInput(session, inputId = x, value = ifelse(is.null(input$store[[x]]), NA, input$store[[x]]))
+        })
+      
+      # - knob inputs
+      updateKnobInput(session, inputId = "sldInput_windfarmPars_upWindDownWindProp", 
+                      value = input$store$sldInput_windfarmPars_upWindDownWindProp)
+      
+      
+      # - Handsontable inputs
+      rv$turbinePars_monthOps_df[1, 1] <- NA  # trick required to restore from unsaved changes (issue specific to handsonTables <-> rv's)
+      rv$turbinePars_monthOps_df <- data.frame(matrix(as.numeric(input$store$hotInput_turbinePars_monthOp), nrow = 3, ncol = 12, 
+                                                      dimnames = dimnames(rv$turbinePars_monthOps_df), byrow = TRUE))
+      
+      
+      rv$rotationVsWind_df[1, 1] <- NA       # trick required to restore from unsaved changes (issue specific to handsonTables <-> rv's)
+      rv$rotationVsWind_df <- input$store$hotInput_turbinePars_rotationVsWind %>%  
+        #unlist %>% 
+        matrix(ncol=2, byrow = TRUE) %>%
+        as.tibble() %>%
+        transmute(windSpeed = as.numeric(V1), rotationSpeed = as.numeric(V2)) %>%
+        filter(!(is.na(windSpeed) & is.na(rotationSpeed)))
+      
+      
+      rv$pitchVsWind_df[1, 1] <- NA           # trick required to restore from unsaved changes (issue specific to handsonTables <-> rv's)
+      rv$pitchVsWind_df <- input$store$hotInput_turbinePars_pitchVsWind %>%
+        #unlist %>% 
+        matrix(ncol=2, byrow = TRUE) %>%
+        as.tibble() %>%
+        transmute(windSpeed = as.numeric(V1), bladePitch = as.numeric(V2)) %>%
+        filter(!(is.na(windSpeed) & is.na(bladePitch)))
+      
+      # - radio buttons inputs
+      updateRadioGroupButtons(session, inputId = "radGrpInput_turbinePars_rotationAndPitchOption", 
+                              selected = input$store$radGrpInput_turbinePars_rotationAndPitchOption)
+      
+      
+      # -----  update trigger to activate chained module restoring species specific parameters ---- #
+      rv$restoringChain <- !rv$restoringChain 
+      
     }else{
       # show modal alerting that there are no input values stored
       sendSweetAlert(session = session, title = "Oops!", 
                      text = "Sorry, no parameter values currently stored",
                      type = "error")
     }
-    
   })
   
   
-  # Restoring latest saved input values - part 2: species specific parameters. 
+  
+  
+  # ----- Restoring latest saved input values - Stage 2: species specific parameters. 
   #
-  # Defined as a chain reaction of the module above. Gets triggered when the rv with species parameter 
-  # is invalidated, which occurs when the parameter names for new species are generated or, if restoring for
-  # the same species, when the forced update above is performed
-  observeEvent(rv$biomParsInputs_ls, {
-  
-    if(restoringStage){
+  # Triggered as a chain reaction of the module above.
+  observeEvent(rv$restoringChain, ignoreInit = TRUE, {
+    
+    storedSlctSpecLabel <<- str_replace_all(input$store$selectSpecs, pattern = "\\s|-", replacement = "_") 
+    
+    for(spec in storedSlctSpecLabel){
       
-      #browser()
+      # numeric inputs
+      names(input$store) %>% str_subset(pattern = paste0("numInput_biomPars_.+", spec)) %>%
+        walk(function(x){
+          updateNumericInput(session, inputId = x, value = ifelse(is.null(input$store[[x]]), NA, input$store[[x]]))
+        })
       
-      storedSlctSpecLabel <- str_replace_all(input$store$selectSpecs, pattern = "\\s|-", replacement = "_") 
+      # radio buttons inputs
+      names(input$store) %>% str_subset(pattern = paste0("slctInput_.+", spec)) %>%
+        walk(function(x){
+          updateRadioGroupButtons(session, inputId = x, selected = input$store[[x]])  
+        })
       
-      for(spec in storedSlctSpecLabel){
+      # monthly densities parameters
+      cSpecStoredMonthDens_DFName <- names(input$store) %>% str_subset(pattern = paste0("hotInput_.+", spec))
       
-        # numeric inputs
-        names(input$store) %>% str_subset(pattern = paste0("numInput_biomPars_.+", spec)) %>%
-          walk(function(x){
-            updateNumericInput(session, inputId = x, value = input$store[[x]])
-          })
+      if(!is_empty(cSpecStoredMonthDens_DFName)){
         
-        # radio buttons inputs
-        names(input$store) %>% str_subset(pattern = paste0("slctInput_.+", spec)) %>%
-          walk(function(x){
-            updateRadioGroupButtons(session, inputId = x, selected = input$store[[x]])  
-          })
-          
-        #str_view_all(names(input$store), pattern = paste0("slctInput_biomPars_.+", spec))
-        
-        # monthly densities parameters
-        cSpecStoredMonthDens_DFName <- names(input$store) %>% str_subset(pattern = paste0("hotInput_.+", spec))
-        
-        if(!is_empty(cSpecStoredMonthDens_DFName)){
-          
-          rv$startSpecMonthDens_df[[spec]] <- input$store[[cSpecStoredMonthDens_DFName]] %>%
-            #unlist() %>%
-            matrix(nrow = 2, byrow = TRUE) %>%
-            t() %>%
-            as.tibble() %>%
-            transmute(meanDensity = as.numeric(V1), sdDensity = as.numeric(V2))
-        }
+        rv$startSpecMonthDens_df[[spec]] <- data.frame()  # trick required to restore from unsaved changes, forcing change in rv$startSpecMonthDens_df
+        rv$startSpecMonthDens_df[[spec]] <- input$store[[cSpecStoredMonthDens_DFName]] %>%
+          #unlist() %>%
+          matrix(nrow = 2, byrow = TRUE) %>%
+          t() %>%
+          as.tibble() %>%
+          transmute(meanDensity = as.numeric(V1), sdDensity = as.numeric(V2))
       }
-      
-      # Show modal confirming stored input values have been restored
-      sendSweetAlert(session = session, title = "Parameters restored!", 
-                     text = "Previously stored parameter values have been restored",
-                     type = "success")
-      
-      restoringStage <<- FALSE
     }
-      
+    
+    rv$restoringChain_2 <- !rv$restoringChain_2
   })
+  
+  
+  
+  # ----- Restoring latest saved input values - Stage 3: re-render bird density tables with restored values
+  #
+  # Triggered as a chain reaction of the previous module. Required to guarantee that tables for all stored species are correctly updated
+  # These tables are firstly rendered as species are added, but they need to be re-rendered separately for restoring purposes
+  observeEvent(rv$restoringChain_2, ignoreInit = TRUE, {
+    
+    walk(storedSlctSpecLabel, function(x, startSpecMonthDens = rv$startSpecMonthDens_df){
+      
+      # input table for truncated normal parameters
+      hotTag_truncNorm <- paste0("hotInput_birdDensPars_tnorm_", x)
+      cStartSpecMonthDens <- startSpecMonthDens[[x]]
+      
+      output[[hotTag_truncNorm]] <- renderRHandsontable({
+        
+        data.frame(cStartSpecMonthDens) %>%
+          mutate(month = month.name) %>%
+          column_to_rownames(var = "month") %>%
+          t() %>%
+          rhandsontable(rowHeaderWidth = 160,
+                        rowHeaders = c("Mean birds/km^2", "SD of birds/km^2")) %>%
+          hot_cols(colWidths = 90,
+                   renderer = "function (instance, td, row, col, prop, value, cellProperties) {
+                   Handsontable.renderers.NumericRenderer.apply(this, arguments);
+                   if (!value) {
+                   td.style.background = 'pink';
+                   }}") %>%
+          hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
+          hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+    })
+  })
+    
+    # Show modal confirming stored input values have been restored
+    sendSweetAlert(session = session, title = "Parameters restored!",
+                   text = "Previously stored parameter values have been restored",
+                   type = "success")
+    
+})
     
   
  
@@ -1232,21 +1259,6 @@ function(input, output, session) {
   #  ---- Prepare & check input data for simulation, triggered when user pushes go        ----
   #' --------------------------------------------------------------------------------------------------
 
-  
-  rv$birdata_model <- data.frame()
-  rv$monthDensData_model <- data.frame()
-  rv$monthDensData_model <- data.frame()
-  rv$monthDensOpt_model <- data.frame()
-  rv$turbineData_model <- data.frame()
-  rv$windfarmData_model <- data.frame()
-  rv$simCodeTrigger <- 0
-  
-  rv$densityDataPresent <- NULL
-  rv$NAsFreeData <- NULL
-  rv$FHD_acceptable <- NULL
-  
-  
-  
   observeEvent(input$actButtonInput_simulPars_GO, {
 
     missingValues <- list()
@@ -1339,7 +1351,7 @@ function(input, output, session) {
                 })
               ), 
               #br(),
-              p("Simulation results for model Option 2 and Option 3 will be invalid. Option 1 results not affected by missing FHD data."),
+              p("Simulation results for model Option 2 and Option 3 will be invalid for the species mentioned above. Option 1 results not affected by missing FHD data."),
               p(tags$b("Do you wish to proceed with the simulation?"),  style = "text-align: center")
             ),
             type = "warning",
@@ -1424,7 +1436,7 @@ function(input, output, session) {
                 })
             ), 
             br(),
-            tags$b("Please upload/fill-in missing data before proceeding to simulation", style = "text-align: center")
+            tags$b("Please upload and/or fill in missing data before proceeding to simulation", style = "text-align: center")
             ),
           type = "error",
           html = TRUE
@@ -1495,13 +1507,18 @@ function(input, output, session) {
         #browser()
         
         # -- Check for NAs in truncated normal parameters and store affected parameters
-        monthDensData_truncNorm <- rv$monthDensData_model %>% 
-          filter(userOption == "truncNorm") %>% unnest()
+        monthDensData_truncNorm <- rv$monthDensData_model %>% filter(userOption == "truncNorm")
+        
+        monthDensData_truncNorm <- left_join(
+          unnest(monthDensData_truncNorm, metadata), 
+          unnest(monthDensData_truncNorm, data), 
+          by = c("userOption", "specLabel" = "Species"))
+        
         
         if(nrow(monthDensData_truncNorm) > 0){
           
           missingValues[["birdMonthDens"]] <- monthDensData_truncNorm %>%
-            select(-c(userOption, userOptionTag, option, Species)) %>%
+            select(-c(userOption, userOptionTag, option)) %>%
             gather(par_hyper, Value, -c(specLabel, specName)) %>%
             filter(is.na(Value)) %>%
             select(-Value)  
@@ -1591,7 +1608,6 @@ function(input, output, session) {
       upwindFlights_prop = input$sldInput_windfarmPars_upWindDownWindProp
     )
     
-    #browser()
     
     # check and identify NAs in windfarm pars
     missingValues[["windfarm"]] <- rv$windfarmData_model %>%
@@ -1642,7 +1658,7 @@ function(input, output, session) {
             })
           ),
           br(),
-          tags$b("Empty fields (highlighted in red) must be filled in before proceeding to simulation", style = "font-size: 15px; text-align: center")
+          tags$b("Please fill in empty fields (highlighted in red) before proceeding to simulation", style = "font-size: 15px; text-align: center")
         ),
         type = "error",
         html = TRUE
