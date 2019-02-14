@@ -38,7 +38,7 @@ To run the app locally, firstly download and install the latest version of [R](h
   > runApp("[path]/stochCRM-master")
   ```
   
-  in which `[path]` must be replaced with the file system location of the unzipped directory containing the app files. Note, you will also need to replace "stochCRM-master" with the appropriate directory name if the ZIP was named differently.
+   in which `[path]` must be replaced with the file system location of the unzipped directory containing the app files. Note, you will also need to replace "stochCRM-master" with the appropriate directory name if the ZIP was named differently.
 
 
 ----------------
