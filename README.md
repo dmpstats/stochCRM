@@ -14,12 +14,10 @@ The user manual is available to download [here](https://github.com/dmpstats/stoc
 
 Users have the option to use an online version of the app or download a copy of the code and run it locally. 
 
-Using the online version is recommended, as the advantages are manifold:
+Using the online version (available [here](https://dmpstats.shinyapps.io/avian_stochcrm/)) is recommended, as the advantages are manifold:
 * Users are not required to use any R code.
 * Users are not required to install or maintain R – their web-browser will communicate with remote servers that carry the necessary software and conduct the calculations.
 * Updates are made directly to the server, so are immediately propagated to users.
-
-  The online version of the app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
 
 
 To run the app locally, first download and install the latest version of [R](https://cran.r-project.org/). The app can then be launched via two options:
