@@ -3,11 +3,6 @@ This Shiny app was built for the stochastic Collision Risk Model (CRM) developed
 
 Masden’s program was presented as R code, which users would interact with via standard R command-line. This code has been ported to Shiny to offer a user-friendly GUI accessible via standard web-browsers. 
 
-Users have the option to use the [online version](https://dmpstats.shinyapps.io/avian_stochcrm/) of the app or download a copy of the code and run it locally (requiring a local installation of R). Using the online version is recommended, as the advantages are manifold:
-  * Users are not required to use any R code.
-  * Users are not required to install or maintain R – their web-browser will communicate with remote servers that carry the necessary software and conduct the calculations.
-  * Updates are made directly to the server, so are immediately propagated to users.
-  
 The core model calculations are largely the same as for Masden’s code, so associated documentation applies here. The core deterministic calculations underpinning the Masden code (i.e. without stochasticity) follow that of Band (2012), so the associated documentation there is also relevant. 
 
 Some core alterations and additions have been made for the GUI, in particular to address deficiencies identified in the review by Trinder (2017). In addition, there are correction of some bugs and general improvements in structure, speed and efficiency.
@@ -17,7 +12,14 @@ The user manual is available to download [here](https://github.com/dmpstats/stoc
 
 ## How to run
 
+Users have the option to use the online version of the app or download a copy of the code and run it locally (requiring a local installation of R). 
+
+Using the online version is recommended, as the advantages are manifold:
+  * Users are not required to use any R code.
+  * Users are not required to install or maintain R – their web-browser will communicate with remote servers that carry the necessary software and conduct the calculations.
+  * Updates are made directly to the server, so are immediately propagated to users.
 The online version of the app is available [here](https://dmpstats.shinyapps.io/avian_stochcrm/).
+
 
 To run the app locally, firstly download and install the latest version of [R](https://cran.r-project.org/). The app can then be launched via two options:
 1. Run the following code in an opened R session
