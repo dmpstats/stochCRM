@@ -2,7 +2,7 @@
 #' --- Version Logs ---------------
 
 
-localUse <- FALSE
+localUse <- TRUE
 
 if(localUse){
   # function in package "pacman" to load packages, automatically installing those missing
