@@ -1406,6 +1406,7 @@ function(input, output, session) {
         }) %>%
         filter(densDataMissing == TRUE)
 
+      # browser()
 
       # --- Launch error message and block simulation if any dens data is missing; else, prepare data for model
       if(nrow(densDataMissing) > 0){
@@ -1504,18 +1505,16 @@ function(input, output, session) {
           }))
 
         
-        #browser()
-        
         # -- Check for NAs in truncated normal parameters and store affected parameters
         monthDensData_truncNorm <- rv$monthDensData_model %>% filter(userOption == "truncNorm")
-        
-        monthDensData_truncNorm <- left_join(
-          unnest(monthDensData_truncNorm, metadata), 
-          unnest(monthDensData_truncNorm, data), 
-          by = c("userOption", "specLabel" = "Species"))
-        
-        
+
         if(nrow(monthDensData_truncNorm) > 0){
+          
+          monthDensData_truncNorm <- left_join(
+            unnest(monthDensData_truncNorm, metadata), 
+            unnest(monthDensData_truncNorm, data), 
+            by = c("userOption", "specLabel" = "Species"))
+          
           
           missingValues[["birdMonthDens"]] <- monthDensData_truncNorm %>%
             select(-c(userOption, userOptionTag, option)) %>%
@@ -1926,8 +1925,8 @@ function(input, output, session) {
                     `75%` = quantile(Collisions, 0.75),
                     `97.5%` = quantile(Collisions, 0.975)
                     ) %>%
-          mutate_at(.vars = vars(Mean:`97.5%`), funs(round), 3) %>%
-          mutate_at(.vars = vars(Mean:`97.5%`), funs(sprintf(fmt = "%.3f", .)))
+          mutate_at(.vars = vars(Mean:`97.5%`), list(~round), 3) %>%
+          mutate_at(.vars = vars(Mean:`97.5%`), list(~sprintf(fmt = "%.3f", .)))
         
         
         #print(dt)
@@ -2008,8 +2007,8 @@ function(input, output, session) {
                     `25%` = quantile(overalCollisions, 0.25),
                     `75%` = quantile(overalCollisions, 0.75),
                     `97.5%` = quantile(overalCollisions, 0.975)) %>%
-          mutate_at(.vars = vars(Mean:`97.5%`), funs(round), digits = 3) %>%
-          mutate_at(.vars = vars(Mean:`97.5%`), funs(sprintf(fmt = "%.3f", .))) %>%
+          mutate_at(.vars = vars(Mean:`97.5%`), list(~round), digits = 3) %>%
+          mutate_at(.vars = vars(Mean:`97.5%`), list(~sprintf(fmt = "%.3f", .))) %>%
           ungroup() %>% select(-Turbine)  # leave turbine model out of the table for now - current version with only one turbine model per simulation
         
         #print(dt)
@@ -2053,8 +2052,8 @@ function(input, output, session) {
       
       cSpecTurbSampledData <- fread(paste0(path2Outputs_results, "/tables/", x)) %>%
         select(-V1) %>%
-        mutate_at(.vars = vars(Mean:IQR), funs(round), digits = 4) %>%
-        mutate_at(.vars = vars(Mean:IQR), funs(sprintf(fmt = "%.4f", .)))
+        mutate_at(.vars = vars(Mean:IQR), list(~round), digits = 4) %>%
+        mutate_at(.vars = vars(Mean:IQR), list(~sprintf(fmt = "%.4f", .)))
       
       fwrite(cSpecTurbSampledData, file = file.path(path2ShinyOut_Outputs, paste0(cSpecLabel, "_sampledTurbineParameters.csv")))
     })
@@ -2069,8 +2068,8 @@ function(input, output, session) {
       
       cSpecBirdSampledData <- fread(paste0(path2Outputs_results, "/tables/", x)) %>%
         select(-V1) %>%
-        mutate_at(.vars = vars(Mean:IQR), funs(round), digits = 4) %>%
-        mutate_at(.vars = vars(Mean:IQR), funs(sprintf(fmt = "%.4f", .)))
+        mutate_at(.vars = vars(Mean:IQR), list(~round), digits = 4) %>%
+        mutate_at(.vars = vars(Mean:IQR), list(~sprintf(fmt = "%.4f", .)))
       
       fwrite(cSpecBirdSampledData, file = file.path(path2ShinyOut_Outputs, paste0(cSpecLabel, "_sampledBirdParameters.csv")))
     })

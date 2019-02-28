@@ -2,7 +2,7 @@
 #' --- Version Logs ---------------
 
 
-localUse <- TRUE
+localUse <- FALSE
 
 if(localUse){
   # function in package "pacman" to load packages, automatically installing those missing
@@ -24,7 +24,8 @@ if(localUse){
                  RColorBrewer,
                  pracma,
                  d3heatmap, 
-                 devtools)
+                 devtools, 
+                 rcmdcheck)
   
   pacman::p_load_gh("trestletech/shinyStore")
   
@@ -48,6 +49,7 @@ if(localUse){
   library(d3heatmap)
   library(devtools)
   library(shinyStore)
+  library(rcmdcheck)
 }
 
 source("helpers.r")
