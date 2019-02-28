@@ -557,7 +557,7 @@ normDens_ParsQtls <- function(mu, stdev, varTag, decPlaces = 3){
   req(mu, stdev)
   data.frame(pctile = paste0(varTag, "|"), t(round(qnorm(p = c(0.025, 0.25, 0.5, 0.75, 0.975), mean = mu, sd = stdev), decPlaces))) %>%
     rename(`%tile|` = pctile, `2.5th` = X1, `25th` = X2, `50th` = X3, `75th` = X4, `97.5th` = X5) %>%
-    mutate_at(.vars = vars(`2.5th`:`97.5th`), funs(sprintf(fmt = paste0("%.", decPlaces, "f"), .)))%>%
+    mutate_at(.vars = vars(`2.5th`:`97.5th`), list(~sprintf(fmt = paste0("%.", decPlaces, "f"), .)))%>%
     mutate(dummy = "") %>%
     column_to_rownames("dummy")
 }
@@ -700,7 +700,7 @@ truncNormPars_qtlTbl <- function(mu, stdev, lower = -Inf, upper = Inf, varTag, d
       data.frame(pctile = paste0(varTag, "|"), t(round(qtnorm(p = c(0.025, 0.25, 0.5, 0.75, 0.975), mean = mu, sd = stdev, lower = lower, 
                                                               upper = upper), decPlaces))) %>%
         rename(`%tile|` = pctile, `2.5th` = X1, `25th` = X2, `50th` = X3, `75th` = X4, `97.5th` = X5) %>%
-        mutate_at(.vars = vars(`2.5th`:`97.5th`), funs(sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
+        mutate_at(.vars = vars(`2.5th`:`97.5th`), list(~sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
         mutate(dummy = "") %>%
         column_to_rownames("dummy")   
     }else{
@@ -727,7 +727,7 @@ betaInputPars_qtlTbl <- function(p, stdev, varTag, decPlaces = 3){
     if(stdev == 0){   # if sd == 0, fixe sampled values to chosen p/mu (default qbeta generates fixed 0.5, as alpha = beta = Inf => p = 0.5)
       data.frame(pctile = paste0(varTag, "|"), X1 = p, X2 = p, X3 = p, X4 = p, X5 = p) %>%
         rename(`%tile|` = pctile, `2.5th` = X1, `25th` = X2, `50th` = X3, `75th` = X4, `97.5th` = X5) %>%
-        mutate_at(.vars = vars(`2.5th`:`97.5th`), funs(sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
+        mutate_at(.vars = vars(`2.5th`:`97.5th`), list(~sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
         mutate(dummy = "") %>%
         column_to_rownames("dummy")
     }else{
@@ -735,7 +735,7 @@ betaInputPars_qtlTbl <- function(p, stdev, varTag, decPlaces = 3){
         if(betaMeanVarCond){
           data.frame(pctile = paste0(varTag, "|"), t(round(qbeta(p = c(0.025, 0.25, 0.5, 0.75, 0.975), shape1 = alpha, shape2 = beta), decPlaces))) %>%
             rename(`%tile|` = pctile, `2.5th` = X1, `25th` = X2, `50th` = X3, `75th` = X4, `97.5th` = X5) %>%
-            mutate_at(.vars = vars(`2.5th`:`97.5th`), funs(sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
+            mutate_at(.vars = vars(`2.5th`:`97.5th`), list(~sprintf(fmt = paste0("%.", decPlaces, "f"), .))) %>%
             mutate(dummy = "") %>%
             column_to_rownames("dummy")
         }else{
