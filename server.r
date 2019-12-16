@@ -1827,6 +1827,40 @@ function(input, output, session) {
         DensityOpt = rv$monthDensOpt_model # pass in the user options for bird density data
       )
     }
+    
+    
+
+# Alternative parameterisation etc to match Band spreadsheet --------------
+
+    if(0){
+      
+      source("BandModel_function_band_comparison.R")
+      
+      rv$sCRM_output_ls <- stochasticBand_compare(
+        workingDirectory="sCRM/",
+        results_folder = path2Outputs_results,
+        BirdDataFile = "data/BirdData.csv",
+        TurbineDataFile = "band_comparison_inputs/TurbineData.csv",
+        CountDataFile = "band_comparison_inputs//CountData.csv",
+        FlightDataFile = "data/FlightHeight.csv",
+        iter = 2, 
+        CRSpecies = "Black_legged_Kittiwake", 
+        TPower = rv$windfarmData_model$targetPower_MW, #rv$windfarmData_model$nTurbines*input$numInput_turbinePars_turbinePower,
+        LargeArrayCorrection = "yes",
+        WFWidth = 10,
+        Prop_Upwind = 0.5, # convert % (user input) to proportion (expected by model function)
+        Latitude = 55.8,
+        TideOff = 2.5,
+        windSpeedMean = input$numInput_miscPars_windSpeed_E_, 
+        windSpeedSD = input$numInput_miscPars_windSpeed_SD_,
+        #windPowerData = windPowerData,
+        updateProgress_Spec,  # pass in the updateProgress function so that it can update the progress indicator.
+        updateProgress_Iter,
+        DensityOpt = rv$monthDensOpt_model # pass in the user options for bird density data
+      )
+    }    
+    
+    
   })
 
   
