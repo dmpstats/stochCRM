@@ -7,3 +7,5 @@ README.html
 README.utf8.md
 results/
 shinyOutputs/
+data/BirdData.csv
+data/CountData.csv
