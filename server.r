@@ -857,6 +857,8 @@ function(input, output, session) {
       plotTagBootQts_user <- paste0("plot_UserFHD_QtsBoot_", specLabel)
       
       
+      #browser()
+      
       # data prep: rename height column and drop all 0s columns
       x %<>% rename(Height = Height_m) %>%
         select_if(colSums(., na.rm = TRUE) > 0)

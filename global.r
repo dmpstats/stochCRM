@@ -2,7 +2,7 @@
 #' --- Version Logs ---------------
 
 
-localUse <- TRUE
+localUse <- FALSE
 
 if(localUse){
   # function in package "pacman" to load packages, automatically installing those missing
@@ -70,7 +70,7 @@ theme_set(theme_bw())
 
 
 # Set shiny options ---------------------------------
-#options(shiny.error = browser)
+options(shiny.error = browser)
 #options(shiny.reactlog=TRUE)
 
 
