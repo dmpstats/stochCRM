@@ -36,8 +36,8 @@ CollIntUP <- CollMinUP + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, 1) / 2 ### risk 
 
 ## Down wind
 
-CollMinDown <- HD.d.y[1] * xrisksum2(HD.y[1], 0.05, 1) / 2 ### risk at lowest point on rotor blade
-CollIntDown <- CollMinDown + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, 1) / 2 ### risk at highest point on rotor blade
+CollMinDown <- HD.d.y[1] * xrisksum2(HD.y[1], 0.05, -1) / 2 ### risk at lowest point on rotor blade
+CollIntDown <- CollMinDown + HD.d.y[41] * xrisksum2(HD.y[41], 0.05, -1) / 2 ### risk at highest point on rotor blade
 
 for (w in 2:40) {
 

@@ -51,3 +51,12 @@ Masden, E (2015a) Developing an avian collision risk model to incorporate variab
 Masden, E. (2015b) Developing an avian collision risk model to incorporate variability and uncertainty. [R computer code]
 
 Trinder, M (2017) Incorporating Uncertainty in Collision Risk Models: a test of Masden. Final Draft dated 28/04/2017. McArthur Green.
+
+
+---------------------
+#### Note - Band comparisons
+
+There is facility for comparing outputs from the Band spreadsheet (2012). If working from a local copy, the server.r file can be modified at __step 5: run simulation function__ to set parameters equivalent to those in the pre-prepared spreadsheet (`band_comparison_inputs/Band_Kittiwake_comparison.xlsm`) and suppress stochasticity. In effect, all standard deviations are made zero (or very small) and bootstrap FHD are set to be the same for each draw. All other parameters and input data are set to be the same - although rounding differs between the platforms.
+
+Toggling the `if(1)` and `if(0)` will switch between these modes. Turning this comparison on will make sCRM iterate only twice for Kittiwakes and produce comparison tables for the option 1 to option 3 outputs. Option 1 and 2 (at 16/12/2019) are within 0.05% of the Band estimates and option 3 is within approximately 0.4%.
+
