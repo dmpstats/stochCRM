@@ -1330,7 +1330,8 @@ function(input, output, session) {
     
     
     # Logic to deal with missing FHD - if missing for any species, invalidade simulation and launch confirmation window 
-    # (while also preparing data accordingly)
+    # (while also preparing data accordingly). Otherwise, set appropriate data (i.e. default or user-uploaded)
+    # for simulation
     FHD_dataStatus %>%
       split(.$missingFHD) %>%
       walk(function(x){
@@ -1363,11 +1364,27 @@ function(input, output, session) {
           )
           
           rv$FHD_acceptable <- FALSE
+          
         }else{
           
           x$specLabel %>% 
-            walk(~file.copy(from = paste0("data/", ., "_ht_dflt.csv"),to = paste0("data/", ., "_ht.csv"), 
-                    overwrite = TRUE))
+            walk(., function(spLab){
+              
+              FHD_Option <- FHD_UserOptions_ls[[str_which(names(FHD_UserOptions_ls), spLab)]]
+              
+              if(FHD_Option == "default"){
+                
+                file.copy(from = paste0("data/", spLab, "_ht_dflt.csv"), to = paste0("data/", spLab, "_ht.csv"), 
+                          overwrite = TRUE)
+                
+              }else{
+                if(FHD_Option == "other"){
+                  
+                  UserFHD_LsIndice <- str_which(names(flgtHghDstInputs_ls()), spLab)
+                  dataToWrite <- flgtHghDstInputs_ls()[[UserFHD_LsIndice]]
+                  fwrite(dataToWrite, file=paste0("data/", spLab, "_ht.csv"), row.names = FALSE)
+                }}
+            })
           
           rv$FHD_acceptable <- TRUE
         }
