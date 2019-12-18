@@ -11,7 +11,7 @@
     titleWidth =270,
     title = "Avian Stochastic CRM",
     
-    tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.3.1"), style = "font-size: 19px")), 
+    tags$li(class = "dropdown", actionLink("appvrsn", label = tags$b("v2.3.2"), style = "font-size: 19px")), 
     tags$li(class = "dropdown", a(icon('github', "fa-2x"), href='https://github.com/dmpstats/stochCRM', 
                                   style = "padding-top: 10px; padding-bottom: 10px", target='_blank', id="lbl_codeLink")),
     tags$li(class = "dropdown", a(icon('bug', "fa-2x"), href='https://github.com/dmpstats/stochCRM/issues', #exclamation-circle
