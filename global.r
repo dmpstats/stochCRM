@@ -1,35 +1,5 @@
-#' =============================================================================================================
-#' --- Version Logs ---------------
+# Upload Packages ---------------------------------
 
-
-localUse <- FALSE
-
-if(localUse){
-  # function in package "pacman" to load packages, automatically installing those missing
-  if (!require("pacman")) install.packages("pacman")
-  pacman::p_load(shiny,
-                 shinydashboard,
-                 rhandsontable,
-                 plyr,
-                 tidyverse,
-                 magrittr,
-                 shinyBS,
-                 msm,
-                 shinyjs,
-                 V8,
-                 shinyWidgets,
-                 data.table,
-                 DT,
-                 zip,
-                 RColorBrewer,
-                 pracma,
-                 d3heatmap, 
-                 devtools, 
-                 rcmdcheck)
-  
-  pacman::p_load_gh("trestletech/shinyStore")
-  
-}else{
   library(shiny)
   library(shinydashboard)
   library(rhandsontable)
@@ -50,7 +20,7 @@ if(localUse){
   library(devtools)
   library(shinyStore)
   library(rcmdcheck)
-}
+
 
 source("helpers.r")
 source("BandModel_function.R")
