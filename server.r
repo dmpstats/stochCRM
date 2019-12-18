@@ -861,6 +861,15 @@ function(input, output, session) {
         select_if(colSums(., na.rm = TRUE) > 0)
       
       output[[plotTagBoot_user]] <-  renderD3heatmap({
+        
+        validate(
+          need(ncol(x) > 1,
+               paste0("Error: uploaded FHD data is not valid - no non-zero values in any of bootstrap samples provided. ",
+                      "Please upload a different dataset.")),
+          errorClass = "valErrorMsgClass_2"
+        )
+         
+        
         x %>%
           select(1:min(100, ncol(.))) %>%
           slice(1:50) %>%
@@ -872,6 +881,14 @@ function(input, output, session) {
       })
       
       output[[plotTagBootQts_user]] <- renderPlot({
+        
+        validate(
+          need(ncol(x) > 1,
+               paste0("Error: uploaded FHD data is not valid - no non-zero values in any of bootstrap samples provided",
+                      "Please upload a different dataset")),
+          errorClass = "valErrorMsgClass_2"
+        )
+        
         x %>%
           gather(bootId, Prop, -Height) %>%
           group_by(Height) %>%
