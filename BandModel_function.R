@@ -200,7 +200,7 @@
       
       FlightHeightSpec <- read.csv(ht, header = T) #and change in option2 code
       
-      flight.boot <- 1:dim(FlightHeightSpec)[2]
+      flight.boot <- 2:dim(FlightHeightSpec)[2]     ##### BC CHANGE  -- need to skip first column with heights ######
       
       flight.boot.sample <- sample(flight.boot, iter, replace=T)
       
