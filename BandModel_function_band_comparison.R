@@ -148,7 +148,7 @@ stochasticBand_compare <- function(
     
     FlightHeightSpec <- read.csv("band_comparison_inputs/Black_legged_Kittiwake_ht_dflt.csv", header = T) #and change in option2 code
     
-    flight.boot <- 1:dim(FlightHeightSpec)[2]
+    flight.boot <- 2:dim(FlightHeightSpec)[2]
     
     flight.boot.sample <- sample(flight.boot, iter, replace=T)
     
