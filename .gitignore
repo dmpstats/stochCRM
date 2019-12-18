@@ -2,10 +2,13 @@
 .Rhistory
 .RData
 .Ruserdata
-shiny-stochCRM v2.3.1.Rproj
 README.html
 README.utf8.md
 results/
 shinyOutputs/
 data/BirdData.csv
 data/CountData.csv
+data/Black_legged_Kittiwake_ht.csv
+data/birdDensityData_samples.csv
+data/windpower_6.csv
+data/TurbineData.csv

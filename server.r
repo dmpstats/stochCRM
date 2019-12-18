@@ -209,7 +209,7 @@ function(input, output, session) {
                              accept = c("text/csv",
                                         "text/comma-separated-values,text/plain",
                                         ".csv")),
-                   title = "Model expects dataset with the first column comprising 1m height bands and remaining columns with bootstrap samples of the specie`s FHD. Using the provided template is highly recommended",
+                   title = "Model expects dataset with the first column comprising 1m height bands and remaining columns with bootstrap samples of the species FHD. Please download & use the adjacent template.",
                    placement = "left", trigger = "hover", options = list(container = "body")
                  )
           ),
@@ -249,7 +249,7 @@ function(input, output, session) {
         divUI_monthDens_PctlsAndSample_DownButtons(
           introText = paste0("Provide reference points of the distributions of monthly densities of ", x), 
           fileInputId = paste0("upldInput_monthDens_userDt_summaries_", specLabel), 
-          fileInputPopUpText = "Data with reference points of distributions of monthly bird densities. Provide at least Min, 2.5th, 50th, 97.5th percentiles & Max (blank cells for no data). Downloading & using the adjacent template is highly recommended",
+          fileInputPopUpText = "Data with reference points of distributions of monthly bird densities. Provide at least Min, 2.5th, 50th, 97.5th percentiles & Max (blank cells for no data). Please download & use the adjacent template.",
           downButtOutputId = paste0("dwnld_template_monthDens_summaries_", specLabel))
         
       })
@@ -262,7 +262,7 @@ function(input, output, session) {
         divUI_monthDens_PctlsAndSample_DownButtons(
           introText = paste0("Provide random samples from the distributions of monthly densities of ", x), 
           fileInputId = paste0("upldInput_monthDens_userDt_samples_", specLabel), #x), 
-          fileInputPopUpText = "Data with random samples from distributions of monthly bird densities. Provide at least 1000 draws. Downloading & using the adjacent template is highly recommended",
+          fileInputPopUpText = "Data with random samples from distributions of monthly bird densities. Provide at least 1000 draws. Please download & use the adjacent template.",
           downButtOutputId = paste0("dwnld_template_monthDens_samples_", specLabel))
       })
       
@@ -856,15 +856,20 @@ function(input, output, session) {
       plotTagBoot_user <- paste0("plot_UserFHD_allBoots_", specLabel)
       plotTagBootQts_user <- paste0("plot_UserFHD_QtsBoot_", specLabel)
       
-      
-      #browser()
-      
       # data prep: rename height column and drop all 0s columns
-      x %<>% rename(Height = Height_m) %>%
+      x %<>% rename(Height = matches("(H|h)eight")) %>%
         select_if(colSums(., na.rm = TRUE) > 0)
       
-  
       output[[plotTagBoot_user]] <-  renderD3heatmap({
+        
+        validate(
+          need(ncol(x) > 1,
+               paste0("Error: uploaded FHD data is not valid - no non-zero values in any of bootstrap samples provided. ",
+                      "Please upload a different dataset.")),
+          errorClass = "valErrorMsgClass_2"
+        )
+         
+        
         x %>%
           select(1:min(100, ncol(.))) %>%
           slice(1:50) %>%
@@ -876,6 +881,14 @@ function(input, output, session) {
       })
       
       output[[plotTagBootQts_user]] <- renderPlot({
+        
+        validate(
+          need(ncol(x) > 1,
+               paste0("Error: uploaded FHD data is not valid - no non-zero values in any of bootstrap samples provided",
+                      "Please upload a different dataset")),
+          errorClass = "valErrorMsgClass_2"
+        )
+        
         x %>%
           gather(bootId, Prop, -Height) %>%
           group_by(Height) %>%
@@ -921,11 +934,9 @@ function(input, output, session) {
         )
         
         addedSpec_defFHDBootDt %>%
-          select(1:100) %>%
           slice(1:50) %>%
-          mutate(Height = 1:nrow(.)) %>%
-          arrange(desc(Height)) %>%
-          select(-Height) %>%
+          arrange(desc(Height_m)) %>%
+          select(bootId_1:bootId_100) %>%
           d3heatmap(colors = manual2_pal_cont(40), dendrogram = 'none', labRow = paste0(nrow(.):1, " m"),
                     xaxis_font_size= "5pt", labCol = paste0("bootID ", 1:ncol(.)))
         
@@ -944,16 +955,15 @@ function(input, output, session) {
         )
         
         addedSpec_defFHDBootDt %>%
-          mutate(Height = 1:nrow(.)) %>%
-          gather(bootId, Prop, -Height) %>%
-          group_by(Height) %>%
+          gather(bootId, Prop, -Height_m) %>%
+          group_by(Height_m) %>%
           filter(!is.na(Prop)) %>%
           summarise(
             perc2.5 = quantile(Prop, probs = 0.025),
             perc50 = quantile(Prop, probs = 0.5),
             perc97.5 = quantile(Prop, probs = 0.975)) %>%
           filter(perc97.5 > 0.000001) %>%
-          ggplot(aes(y = perc50, x = Height)) +
+          ggplot(aes(y = perc50, x = Height_m)) +
           geom_pointrange(aes(ymin = perc2.5, ymax = perc97.5), col = "darkorange", size = 0.3) +
           #geom_line(size = 0.8) +
           labs(y = "Proportion", x = "Height (m)")
@@ -1330,7 +1340,8 @@ function(input, output, session) {
     
     
     # Logic to deal with missing FHD - if missing for any species, invalidade simulation and launch confirmation window 
-    # (while also preparing data accordingly)
+    # (while also preparing data accordingly). Otherwise, set appropriate data (i.e. default or user-uploaded)
+    # for simulation
     FHD_dataStatus %>%
       split(.$missingFHD) %>%
       walk(function(x){
@@ -1363,11 +1374,27 @@ function(input, output, session) {
           )
           
           rv$FHD_acceptable <- FALSE
+          
         }else{
           
           x$specLabel %>% 
-            walk(~file.copy(from = paste0("data/", ., "_ht_dflt.csv"),to = paste0("data/", ., "_ht.csv"), 
-                    overwrite = TRUE))
+            walk(., function(spLab){
+              
+              FHD_Option <- FHD_UserOptions_ls[[str_which(names(FHD_UserOptions_ls), spLab)]]
+              
+              if(FHD_Option == "default"){
+                
+                file.copy(from = paste0("data/", spLab, "_ht_dflt.csv"), to = paste0("data/", spLab, "_ht.csv"), 
+                          overwrite = TRUE)
+                
+              }else{
+                if(FHD_Option == "other"){
+                  
+                  UserFHD_lsIndex <- str_which(names(flgtHghDstInputs_ls()), spLab)
+                  dataToWrite <- flgtHghDstInputs_ls()[[UserFHD_lsIndex]]
+                  fwrite(dataToWrite, file=paste0("data/", spLab, "_ht.csv"), row.names = FALSE)
+                }}
+            })
           
           rv$FHD_acceptable <- TRUE
         }
@@ -1453,7 +1480,8 @@ function(input, output, session) {
         rv$monthDensData_model <- rv$monthDensOpt_model %>%
           group_by(userOption) %>%
           mutate(option = userOption) %>%
-          nest(.key = "metadata") %>%
+          nest(metadata = -userOption) %>%
+          #nest(.key = "metadata") %>%
           mutate(data = map(metadata, function(x){
 
             #browser()
@@ -1519,6 +1547,7 @@ function(input, output, session) {
           
           
           missingValues[["birdMonthDens"]] <- monthDensData_truncNorm %>%
+            ungroup() %>%
             select(-c(userOption, userOptionTag, option)) %>%
             gather(par_hyper, Value, -c(specLabel, specName)) %>%
             filter(is.na(Value)) %>%
