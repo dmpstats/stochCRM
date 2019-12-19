@@ -116,7 +116,7 @@ startUpValues <- list(
 
 
 # template data sets
-template_FHD <- data.frame(Height_m = 1:300, matrix(0, nrow = 300, ncol = 200, dimnames = list(NULL,  paste0("bootId_", 1:200))))
+template_FHD <- data.frame(Height_m = 1:500, matrix(0, nrow = 500, ncol = 200, dimnames = list(NULL,  paste0("bootId_", 1:200))))
 
 template_monthDens_summaries <- data.frame(referencePoints = c("Minimum", "2.5th %tile", "5th %tile", "10th %tile", "25th %tile", "50th %tile", "75th %tile", 
                                                                "90th %tile", "95th %tile", "97.5th %tile", "Maximum"), 
