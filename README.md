@@ -20,9 +20,11 @@ Using the [online version](https://dmpstats.shinyapps.io/avian_stochcrm/) is rec
 * Updates are made directly to the server, so are immediately propagated to users.
 
 
-To run the app locally, first download and install the latest version of [R](https://cran.r-project.org/). The code can be downloaded from GitHub, then run using the following steps:
+To run the app locally, first download and install the latest version of [R](https://cran.r-project.org/) and [R-Studio](https://rstudio.com/). The correct package versions for the app are managed through an R-Studio R-project file, so must run via R-studio. 
+
+The code can be downloaded from GitHub, then run using the following steps:
   1. Download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location.
-  1. Open the R project in R-Studio, either by double-clicking the `*.Rproj` file (named along the lines of: `shiny-stochCRM vXXX.Rproj`), or __File -> Open Project__ and locating the same. This will ensure that the correct versions of the libraries are used, rather than versions you may have installed (via `packrat`). __It is important that the project file be used for this reason.__
+  1. Open the R project in R-Studio, either by double-clicking the `*.Rproj` file (named along the lines of: `shiny-stochCRM vXXX.Rproj`), or __File -> Open Project__ and locating the same. This will ensure that the correct versions of the libraries are used, rather than versions you may have installed (via `packrat`). __It is important that the R-Studio project file be used for this reason.__
   1. Launch the app - say via the __Run App__ button at the top-right of the code window. 
 
 
