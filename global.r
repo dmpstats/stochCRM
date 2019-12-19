@@ -1,7 +1,7 @@
 
 local <- TRUE
 
-if(Local) packrat::restore(restart = TRUE, overwrite.dirty = TRUE, prompt = FALSE)
+if(local) packrat::restore(restart = TRUE, overwrite.dirty = TRUE, prompt = FALSE)
 
 
 # Upload Packages ---------------------------------
