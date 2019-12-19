@@ -1,0 +1,40 @@
+Package: d3heatmap
+Type: Package
+Title: Interactive Heat Maps Using 'htmlwidgets' and 'D3.js'
+Version: 0.6.1.2
+Date: 2016-02-23
+Authors@R: c( person("Joe", "Cheng", role = c("aut", "cre"), email =
+    "joe@rstudio.com"), person("Tal", "Galili", role = c("aut"), email
+    = "tal.galili@gmail.com"), person("RStudio, Inc.", role =
+    c("cph")), person("Michael", "Bostock", role = c("ctb", "cph"),
+    comment = "D3.js library"), person("Justin", "Palmer", role =
+    c("ctb", "cph"), comment = "d3.tip library") )
+Maintainer: ORPHANED
+Description: Create interactive heat maps that are usable from the R
+    console, in the 'RStudio' viewer pane, in 'R Markdown' documents,
+    and in 'Shiny' apps. Hover the mouse pointer over a cell to show
+    details, drag a rectangle to zoom, and click row/column labels to
+    highlight.
+License: GPL-3 | file LICENSE
+Imports: scales (>= 0.2.5), htmlwidgets, png, base64enc, dendextend (>=
+    0.18.0), stats, grDevices
+Suggests: shiny, knitr, rmarkdown
+VignetteBuilder: knitr, rmarkdown
+URL: https://github.com/rstudio/d3heatmap
+BugReports: https://github.com/rstudio/d3heatmap/issues
+Collate: 'd3heatmap.R' 'dendrogram.R'
+RoxygenNote: 5.0.1
+NeedsCompilation: no
+Packaged: 2018-02-01 15:15:28 UTC; ripley
+Author: Joe Cheng [aut, cre], Tal Galili [aut], RStudio, Inc. [cph],
+    Michael Bostock [ctb, cph] (D3.js library), Justin Palmer [ctb,
+    cph] (d3.tip library)
+Repository: CRAN
+Date/Publication: 2018-02-01 15:19:34 UTC
+X-CRAN-Original-Maintainer: Joe Cheng <joe@rstudio.com>
+X-CRAN-Comment: Orphaned on 2018-02-01 as check errors were not
+    corrected despite reminders.
+Built: R 3.6.1; ; 2019-12-16 23:55:53 UTC; windows
+InstallAgent: packrat 0.5.0
+InstallSource: CRAN
+Hash: a0115e8fcb4b5566c836a55af6fb238e

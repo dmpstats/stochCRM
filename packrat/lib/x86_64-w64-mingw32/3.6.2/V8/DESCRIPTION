@@ -1,0 +1,33 @@
+Package: V8
+Type: Package
+Title: Embedded JavaScript Engine for R
+Version: 2.3
+Authors@R: person("Jeroen", "Ooms", role = c("aut", "cre"), email =
+    "jeroen@berkeley.edu", comment = c(ORCID = "0000-0002-4035-0289"))
+Description: An R interface to Google's open source JavaScript engine.
+    This package can now be compiled either with V8 version 6 or 7
+    (LTS) from nodejs or with the legacy 3.14/3.15 branch of V8.
+License: MIT + file LICENSE
+URL: https://github.com/jeroen/v8 (devel) https://v8.dev (upstream)
+BugReports: https://github.com/jeroen/v8/issues
+SystemRequirements: V8 version 6 or 7 is recommended, but 3.14 (legacy)
+    is still supported as well. On Debian / Ubuntu you need either
+    libv8-dev or libnode-dev, on Fedora use v8-devel.
+NeedsCompilation: yes
+VignetteBuilder: knitr
+Imports: Rcpp (>= 0.12.12), jsonlite (>= 1.0), curl (>= 1.0), utils
+LinkingTo: Rcpp
+Suggests: testthat, knitr, rmarkdown
+RoxygenNote: 6.1.1
+Language: en-US
+Packaged: 2019-07-02 09:56:44 UTC; jeroen
+Author: Jeroen Ooms [aut, cre]
+    (<https://orcid.org/0000-0002-4035-0289>)
+Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
+Repository: CRAN
+Date/Publication: 2019-07-02 10:51:07 UTC
+Built: R 3.6.1; x86_64-w64-mingw32; 2019-12-16 18:32:07 UTC; windows
+Archs: i386, x64
+InstallAgent: packrat 0.5.0
+InstallSource: CRAN
+Hash: 657ce35b82c5eeab8bfe2c0f8c8959b7
