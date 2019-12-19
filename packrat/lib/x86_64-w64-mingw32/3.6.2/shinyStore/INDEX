@@ -1,3 +1,0 @@
-initStore               Initialize shinyStore in an application's UI
-ssErr                   Get shinyStore error code
-updateStore             Update local storage
