@@ -1,3 +1,9 @@
+
+local <- TRUE
+
+if(Local) packrat::restore(restart = TRUE, overwrite.dirty = TRUE, prompt = FALSE)
+
+
 # Upload Packages ---------------------------------
 
 library(shiny)
