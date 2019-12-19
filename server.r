@@ -884,7 +884,7 @@ function(input, output, session) {
         
         validate(
           need(ncol(x) > 1,
-               paste0("Error: uploaded FHD data is not valid - no non-zero values in any of bootstrap samples provided",
+               paste0("Error: uploaded FHD data is not valid - no non-zero values in any of bootstrap samples provided. ",
                       "Please upload a different dataset")),
           errorClass = "valErrorMsgClass_2"
         )
@@ -2188,20 +2188,6 @@ function(input, output, session) {
     showModal(
       modalDialog(size = "l",
                   title = h3("Release Notes"),
-                  h4("v2.3.2 - December, 2019"),
-                  p("Bugs fixed and `Packrat` tool added"),
-                  tags$ul(
-                    tags$li(tags$b("Additions & Updates"), 
-                            tags$ul(
-                              tags$li("Implemented (minor) fixes to address divergences in outputs between sCRM and the original Band model (refer to 'https://github.com/dmpstats/stochCRM/issues/13')."),
-                              tags$li("Packrat added to improve management of R package dependencies and version conflicts")
-                            )),
-                    tags$li(tags$b("To-Do List"),
-                            tags$ul(
-                              tags$li("Allow user to choose a tag for the scenario under simulation, to be used as a prefix in the output file names"),
-                              tags$li("Add option to upload data into input tables (e.g. turbine's 'Monthly Operation' table)")
-                            ))
-                  ),
                   h4("v2.3.1 - February, 2019"),
                   p("Added user-assistance features and fixed issues raised since previous release"),
                   tags$ul(
