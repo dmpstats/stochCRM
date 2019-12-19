@@ -1,56 +1,26 @@
-#' =============================================================================================================
-#' --- Version Logs ---------------
+# Upload Packages ---------------------------------
 
+library(shiny)
+library(shinydashboard)
+library(rhandsontable)
+library(plyr)
+library(tidyverse)
+library(magrittr)
+library(shinyBS)
+library(msm)
+library(shinyjs)
+library(V8)
+library(shinyWidgets)
+library(data.table)
+library(DT)
+library(zip)
+library(RColorBrewer)
+library(pracma)
+library(d3heatmap)
+library(devtools)
+library(shinyStore)
+library(rcmdcheck)
 
-localUse <- FALSE
-
-if(localUse){
-  # function in package "pacman" to load packages, automatically installing those missing
-  if (!require("pacman")) install.packages("pacman")
-  pacman::p_load(shiny,
-                 shinydashboard,
-                 rhandsontable,
-                 plyr,
-                 tidyverse,
-                 magrittr,
-                 shinyBS,
-                 msm,
-                 shinyjs,
-                 V8,
-                 shinyWidgets,
-                 data.table,
-                 DT,
-                 zip,
-                 RColorBrewer,
-                 pracma,
-                 d3heatmap, 
-                 devtools, 
-                 rcmdcheck)
-  
-  pacman::p_load_gh("trestletech/shinyStore")
-  
-}else{
-  library(shiny)
-  library(shinydashboard)
-  library(rhandsontable)
-  library(plyr)
-  library(tidyverse)
-  library(magrittr)
-  library(shinyBS)
-  library(msm)
-  library(shinyjs)
-  library(V8)
-  library(shinyWidgets)
-  library(data.table)
-  library(DT)
-  library(zip)
-  library(RColorBrewer)
-  library(pracma)
-  library(d3heatmap)
-  library(devtools)
-  library(shinyStore)
-  library(rcmdcheck)
-}
 
 source("helpers.r")
 source("BandModel_function.R")
@@ -70,7 +40,7 @@ theme_set(theme_bw())
 
 
 # Set shiny options ---------------------------------
-options(shiny.error = browser)
+#options(shiny.error = browser)
 #options(shiny.reactlog=TRUE)
 
 
@@ -146,7 +116,7 @@ startUpValues <- list(
 
 
 # template data sets
-template_FHD <- data.frame(Height_m = 1:300, matrix(0, nrow = 300, ncol = 200, dimnames = list(NULL,  paste0("bootId_", 1:200))))
+template_FHD <- data.frame(Height_m = 1:500, matrix(0, nrow = 500, ncol = 200, dimnames = list(NULL,  paste0("bootId_", 1:200))))
 
 template_monthDens_summaries <- data.frame(referencePoints = c("Minimum", "2.5th %tile", "5th %tile", "10th %tile", "25th %tile", "50th %tile", "75th %tile", 
                                                                "90th %tile", "95th %tile", "97.5th %tile", "Maximum"), 

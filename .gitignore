@@ -12,3 +12,6 @@ data/Black_legged_Kittiwake_ht.csv
 data/birdDensityData_samples.csv
 data/windpower_6.csv
 data/TurbineData.csv
+packrat/lib*/
+data/BirdData.csv
+data/CountData.csv
