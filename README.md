@@ -14,7 +14,7 @@ The user manual is available to download [here](https://github.com/dmpstats/stoc
 
 Users have the option to use an online version of the app or download a copy of the code and run it locally. 
 
-### Run Online
+### Online
 
 Using the [online version](https://dmpstats.shinyapps.io/avian_stochcrm/) is recommended, as the advantages are manifold:
 * Users are not required to use any R code.
@@ -22,7 +22,7 @@ Using the [online version](https://dmpstats.shinyapps.io/avian_stochcrm/) is rec
 * Updates are made directly to the server, so are immediately propagated to users.
 
 
-### Run Locally
+### Locally
 
 To run the app locally, the correct package versions for the app are managed through an R-Studio R-project file, so must run via R-studio. Follow the next steps to set up and run sCRM locally:
   1. Download and install the latest version of [R](https://cran.r-project.org/) and [R-Studio](https://rstudio.com/).
