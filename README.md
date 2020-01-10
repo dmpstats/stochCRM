@@ -32,7 +32,11 @@ To run the app locally, the correct package versions for the app are managed thr
   1. Run `packrat::restore()`. Wait till the function finishes its job (i.e. install the required packages).
   1. Restart the R session (e.g. press _Ctrl+Shift+F10_).
   1. Open the `global.r` file.
-  1. Launch the app - say via the __Run App__ button at the top-right of the code window. 
+  1. Launch the app - say via the __Run App__ button at the top-right of the code window.
+
+
+For subsequent app launches, follow steps 4, 7 & 8.
+
 
 
 ---------------------
