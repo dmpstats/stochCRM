@@ -2221,6 +2221,20 @@ function(input, output, session) {
     showModal(
       modalDialog(size = "l",
                   title = h3("Release Notes"),
+                  h4("v2.3.2 - January, 2020"),
+                  p("Minor bug fixes and packrat added"),
+                  tags$ul(
+                    tags$li(tags$b("Additions & Updates"), 
+                            tags$ul(
+                              tags$li("Implemented (minor) fixes to address divergences in outputs between sCRM and the original Band model (refer to issue #13 in GitHub)"),
+                              tags$li("Packrat added to improve management of R package dependencies and version conflicts")
+                            )),
+                    tags$li(tags$b("To-Do List"),
+                            tags$ul(
+                              tags$li("Allow user to choose a tag for the scenario under simulation, to be used as a prefix in the output file names"),
+                              tags$li("Add option to upload data into input tables (e.g. turbine's 'Monthly Operation' table)")
+                            ))
+                  ),
                   h4("v2.3.1 - February, 2019"),
                   p("Added user-assistance features and fixed issues raised since previous release"),
                   tags$ul(
