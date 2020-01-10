@@ -24,11 +24,11 @@ Using the [online version](https://dmpstats.shinyapps.io/avian_stochcrm/) is rec
 
 ### On a local machine
 
-To run the app locally, the correct package versions for the app are managed through an R-Studio R-project file, so must run via R-studio. Follow the next steps to set up and run sCRM locally:
+To run the app locally, the correct package versions for the app are managed through `packrat` which requires an R-Studio R-project file, so must run via R-Studio. Follow the next steps to set up and run stochCRM locally:
   1. Download and install the latest version of [R](https://cran.r-project.org/) and [R-Studio](https://rstudio.com/).
-  1. To enable R package building from source (required for packrat), go to [Package Development Prerequisites](https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites) and install the tools needed for your operating system.
+  1. To enable R package building from source (a requirement for `packrat`), go to [Package Development Prerequisites](https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites) and install the tools needed for your operating system.
   1. Download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location.
-  1. Open the R project in R-Studio, either by double-clicking the `*.Rproj` file (named along the lines of: `shiny-stochCRM vXXX.Rproj`), or __File -> Open Project__ and locating the same. This will ensure that the correct versions of the libraries are used, rather than versions you may have installed (via `packrat`). __It is important that the R-Studio project file be used for this reason.__
+  1. Open the R project in R-Studio, either by double-clicking the `*.Rproj` file (named along the lines of: `shiny-stochCRM vXXX.Rproj`), or __File -> Open Project__ and locating the same. This will ensure that the correct versions of the libraries are used, rather than versions you may have installed. __It is important that the R-Studio project file be used for this reason.__
   1. Run `packrat::restore()`. Wait till the function finishes its job (i.e. install the required packages).
   1. Restart the R session (e.g. press _Ctrl+Shift+F10_).
   1. Open the `global.r` file.
