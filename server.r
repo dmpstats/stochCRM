@@ -37,7 +37,7 @@ function(input, output, session) {
     simCodeTrigger = 0, 
     birdata_model = data.frame(), monthDensData_model = data.frame(), 
     monthDensOpt_model = data.frame(), turbineData_model = data.frame(), windfarmData_model = data.frame(),
-    densityDataPresent = NULL, NAsFreeData = NULL, FHD_acceptable = NULL
+    densityDataPresent = NULL, NAsFreeData = NULL, FHD_acceptable = NULL, speciesFieldFilled= NULL
   )
   
   
@@ -1275,6 +1275,37 @@ function(input, output, session) {
 
     missingValues <- list()
     
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ---  Check if at least one species selected
+    
+    # Launch error message and block simulation if species field is empty; else, carry on
+    if(is.null(slctSpeciesTags())){
+      
+      rv$speciesFieldFilled <- FALSE
+      
+      # Modal describing error to the user
+      sendSweetAlert(
+        session = session,
+        title = "No species selected",
+        text = span(
+          style = "font-size: 15px; text-align: left",
+          hr(),
+          br(),
+          tags$b("Please select at least one species in 'Step 2: Specie(s)'", style = "font-size: 15px; text-align: center")
+        ),
+        type = "error",
+        html = TRUE
+      )
+      
+      req(rv$speciesFieldFilled)
+      
+    }else{
+      
+      rv$speciesFieldFilled <- TRUE
+    }
+    
+    
+    
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # -------  bird biometric data
 
@@ -1736,7 +1767,8 @@ function(input, output, session) {
   observeEvent(rv$simCodeTrigger, ignoreInit = TRUE, {
     
     #--- step 1: safety check if the various types on input data are valid for proceeding to simulation ------ #
-    req(rv$densityDataPresent, 
+    req(rv$speciesFieldFilled,
+        rv$densityDataPresent, 
         rv$NAsFreeData,
         rv$FHD_acceptable)
   
