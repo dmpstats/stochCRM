@@ -1275,7 +1275,6 @@ function(input, output, session) {
 
     missingValues <- list()
     
-
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # -------  bird biometric data
 
@@ -1287,7 +1286,8 @@ function(input, output, session) {
              par = map_chr(inputTags_split, function(x) x[3]),
              hyper = map_chr(inputTags_split, function(x) x[4]),
              par_hyper = paste(par, hyper, sep = "_")) %>%
-      select(-c(inputTags, inputTags_split, par, hyper))
+      select(-c(inputTags, inputTags_split, par, hyper)) %>%
+      semi_join(., slctSpeciesTags(), by = "specLabel")  # filter for currently selected species
 
 
     # -- Check for NAs and save affected parameters
@@ -1303,7 +1303,7 @@ function(input, output, session) {
       spread(par_hyper, Value) %>%
       rename(Species = specLabel, AvoidanceBasic = basicAvoid_E, AvoidanceBasicSD = basicAvoid_SD,
              AvoidanceExtended = extAvoid_E, AvoidanceExtendedSD = extAvoid_SD, Body_Length = bodyLt_E, Body_LengthSD = bodyLt_SD,
-             Wingspan = wngSpan_E,  WingspanSD = wngSpan_SD, Flight_Speed  = flSpeed_E, Flight_SpeedSD = flSpeed_SD,
+             Wingspan = wngSpan_E, WingspanSD = wngSpan_SD, Flight_Speed = flSpeed_E, Flight_SpeedSD = flSpeed_SD,
              Nocturnal_Activity = noctAct_E, Nocturnal_ActivitySD = noctAct_SD, Flight = flType_tp,
              Prop_CRH_Obs = CRHeight_E, Prop_CRH_ObsSD = CRHeight_SD) %>%
       select(Species, AvoidanceBasic, AvoidanceBasicSD, AvoidanceExtended, AvoidanceExtendedSD, Body_Length, Body_LengthSD,
@@ -1336,7 +1336,9 @@ function(input, output, session) {
               mutate(missingFHD = ifelse(length(cUserFHD_LsIndice) > 0, FALSE, TRUE))
           }
         }
-      })
+      })%>%
+      semi_join(., slctSpeciesTags(), by = "specLabel")  # filter for currently selected species
+    
     
     
     # Logic to deal with missing FHD - if missing for any species, invalidade simulation and launch confirmation window 
@@ -1415,7 +1417,8 @@ function(input, output, session) {
         mutate(
           specLabel = str_replace(userOptionTag, "slctInput_userOpts_monthDens_sampler_", replacement = ""),
           specName = str_replace_all(specLabel, "_", " ")
-        )
+        ) %>%
+        semi_join(., slctSpeciesTags(), by = "specLabel")  # filter for currently selected species
 
       # -- check if there is missing data for any of the options
       densDataMissing <- rv$monthDensOpt_model %>%
@@ -1435,7 +1438,7 @@ function(input, output, session) {
         }) %>%
         filter(densDataMissing == TRUE)
 
-      # browser()
+      #browser()
 
       # --- Launch error message and block simulation if any dens data is missing; else, prepare data for model
       if(nrow(densDataMissing) > 0){
@@ -1731,8 +1734,6 @@ function(input, output, session) {
   
   #observeEvent(input$actButtonInput_simulPars_GO, {
   observeEvent(rv$simCodeTrigger, ignoreInit = TRUE, {
-    
-    #browser()
     
     #--- step 1: safety check if the various types on input data are valid for proceeding to simulation ------ #
     req(rv$densityDataPresent, 
