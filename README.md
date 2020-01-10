@@ -29,7 +29,7 @@ To run the app locally, the correct package versions for the app are managed thr
   1. To enable R package building from source (required for packrat), go to [Package Development Prerequisites](https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites) and install the tools needed for your operating system.
   1. Download the ZIP containing the app files (green button "Clone or download") and unzip it to a convenient location.
   1. Open the R project in R-Studio, either by double-clicking the `*.Rproj` file (named along the lines of: `shiny-stochCRM vXXX.Rproj`), or __File -> Open Project__ and locating the same. This will ensure that the correct versions of the libraries are used, rather than versions you may have installed (via `packrat`). __It is important that the R-Studio project file be used for this reason.__
-  1. Run `r packrat::restore()`
+  1. Run `packrat::restore()`
   1. Press _Ctrl+Shift+F10_ to restart the R session.
   1. Open the `global.r` file.
   1. Launch the app - say via the __Run App__ button at the top-right of the code window. 
