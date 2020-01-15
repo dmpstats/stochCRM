@@ -35,7 +35,7 @@ To run the app locally, the correct package versions for the app are managed thr
   1. Launch the app - say via the __Run App__ button at the top-right of the code window.
 
 
-For subsequent app launches, follow steps 4, 7 & 8.
+For subsequent app launches, follow steps 4, 7 and 8.
 
 
 
