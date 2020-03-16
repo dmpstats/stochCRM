@@ -181,7 +181,7 @@ function(input, output, session) {
                     placement = "right", trigger = "hover"),
           
           bsTooltip(id = paste0("lbl_FHD_", cSpecTags$specLabel),
-                    title = paste0("Bootstrap samples of the proportion of birds flying within 1m height bands, between 1m and 300m. Required for model Options 2 & 3."),
+                    title = paste0("Bootstrap samples of the proportion of birds flying within 1m height bands, between 1m and 500m. Required for model Options 2 & 3."),
                     options = list(container = "body"),
                     placement = "right", trigger = "hover")
         )
