@@ -79,6 +79,18 @@ Hash: 77a82ae397d1011a20ea8bfc36332526
 Requires: backports, dplyr, generics, purrr, reshape2, stringr, tibble,
     tidyr
 
+Package: bslib
+Source: CRAN
+Version: 0.2.4
+Hash: 2dcc37222856e66b36db2c1ad11b9bc0
+Requires: digest, htmltools, jquerylib, jsonlite, magrittr, rlang, sass
+
+Package: cachem
+Source: CRAN
+Version: 1.0.4
+Hash: 8ba7d0e3593d47517fbabf30860d0eeb
+Requires: fastmap, rlang
+
 Package: callr
 Source: CRAN
 Version: 3.4.0
@@ -180,8 +192,8 @@ Requires: DT, callr, cli, covr, crayon, desc, digest, ellipsis, git2r,
 
 Package: digest
 Source: CRAN
-Version: 0.6.23
-Hash: 7ec748e53ca45166e0824224421529ad
+Version: 0.6.27
+Hash: 8ba156629c1537635b39332c93d8ed33
 
 Package: dplyr
 Source: CRAN
@@ -218,8 +230,14 @@ Hash: eb671f52c8ebb4b81617eba93abda72b
 
 Package: fastmap
 Source: CRAN
-Version: 1.0.1
-Hash: d272cd728e4095b3964181b44763f46c
+Version: 1.1.0
+Hash: e4d212b14d40b91c791c0b9d3b6ffd99
+
+Package: fontawesome
+Source: CRAN
+Version: 0.2.2
+Hash: 81ad575d20858542199b870221ba006b
+Requires: htmltools, rlang
 
 Package: forcats
 Source: CRAN
@@ -258,8 +276,8 @@ Hash: 744a0a12d9f4ac186b222f6795fab4fe
 
 Package: glue
 Source: CRAN
-Version: 1.3.1
-Hash: 660bbbe3803c7cf7c9489a7d99a9c0ed
+Version: 1.4.2
+Hash: afa798ba9deec3676e20300b79094749
 
 Package: gridExtra
 Source: CRAN
@@ -291,9 +309,9 @@ Requires: pkgconfig, rlang, vctrs
 
 Package: htmltools
 Source: CRAN
-Version: 0.4.0
-Hash: ede066c0aec518db9acda803c6b94503
-Requires: Rcpp, digest, rlang
+Version: 0.5.2
+Hash: b28ba309140d26d4c282c4b5f91240aa
+Requires: base64enc, digest, fastmap, rlang
 
 Package: htmlwidgets
 Source: CRAN
@@ -317,6 +335,12 @@ Package: ini
 Source: CRAN
 Version: 0.3.1
 Hash: 9d6de5178c1cedabfb24e7d2acc9a092
+
+Package: jquerylib
+Source: CRAN
+Version: 0.1.4
+Hash: 338eb4374296b76bdee1e463c810113d
+Requires: htmltools
 
 Package: jsonlite
 Source: CRAN
@@ -347,8 +371,8 @@ Hash: 563563691bea3cde6945a98996d7c166
 
 Package: lifecycle
 Source: CRAN
-Version: 0.1.0
-Hash: fd2ceffa778c010fab2df12b2eccd835
+Version: 1.0.0
+Hash: 0c18dc7a4e21abdc8132b7cac2b5fcb4
 Requires: glue, rlang
 
 Package: lubridate
@@ -497,6 +521,11 @@ Version: 0.3.3
 Hash: d4f497f8a97ef6c7182a87b2476748d1
 Requires: magrittr, rlang
 
+Package: rappdirs
+Source: CRAN
+Version: 0.3.3
+Hash: fd602edfd7dbf365642e35dd9cc97958
+
 Package: rcmdcheck
 Source: CRAN
 Version: 1.3.3
@@ -552,8 +581,8 @@ Requires: htmlwidgets, jsonlite, magrittr
 
 Package: rlang
 Source: CRAN
-Version: 0.4.2
-Hash: c5cfcde637bbff4e42edad2e69dac5c7
+Version: 0.4.11
+Hash: 765f56f2e0697cfd1ad4c9d34e4efedc
 
 Package: rmarkdown
 Source: CRAN
@@ -575,6 +604,12 @@ Version: 1.3-2
 Hash: a25c3f70c166fb3fbabc410eb32b6366
 Requires: backports
 
+Package: rsconnect
+Source: CRAN
+Version: 0.8.16
+Hash: 88c8ca5cd5688ce9dfa26be667cabff9
+Requires: curl, digest, jsonlite, openssl, packrat, rstudioapi, yaml
+
 Package: rstudioapi
 Source: CRAN
 Version: 0.10
@@ -591,6 +626,12 @@ Source: CRAN
 Version: 0.3.5
 Hash: 76dc42671d747a857ea344bc56cd5b51
 Requires: httr, magrittr, selectr, xml2
+
+Package: sass
+Source: CRAN
+Version: 0.4.0
+Hash: 898260598d59907eda6f28dfec65473c
+Requires: R6, fs, htmltools, rappdirs, rlang
 
 Package: scales
 Source: CRAN
@@ -613,10 +654,11 @@ Requires: cli, withr
 
 Package: shiny
 Source: CRAN
-Version: 1.4.0
-Hash: 7a1d8725849ecb792b4df2c084769c23
-Requires: R6, crayon, digest, fastmap, htmltools, httpuv, jsonlite,
-    later, mime, promises, rlang, sourcetools, xtable
+Version: 1.7.1
+Hash: 7270787dc86efbcfba473df7639fe5cb
+Requires: R6, bslib, cachem, commonmark, crayon, ellipsis, fastmap,
+    fontawesome, glue, htmltools, httpuv, jsonlite, later, lifecycle,
+    mime, promises, rlang, sourcetools, withr, xtable
 
 Package: shinyBS
 Source: CRAN
@@ -633,11 +675,6 @@ GithubRepo: shinyStore
 GithubUsername: trestletech
 GithubRef: master
 GithubSha1: d7e36d57284df01edb6f6815ff1d762ffa77742e
-RemoteHost: api.github.com
-RemoteRepo: shinyStore
-RemoteUsername: trestletech
-RemoteRef: master
-RemoteSha: d7e36d57284df01edb6f6815ff1d762ffa77742e
 
 Package: shinyWidgets
 Source: CRAN
