@@ -398,7 +398,8 @@
   bootstrapPage(
     
     useShinyjs(),
-    extendShinyjs(text = jsCode),
+    #extendShinyjs(text = jsCode),
+    extendShinyjs(text= jsCode,functions=c("backgroundCol")),
     useSweetAlert(),
     
     # Add custom CSS & Javascript;
