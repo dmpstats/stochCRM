@@ -2220,6 +2220,8 @@ function(input, output, session) {
     showModal(
       modalDialog(size = "l",
                   title = h3("Release Notes"),
+                  h4("v2.3.3 - March, 2022"),
+                  p("Changed startup values of flight speed, body length and wing-span for Black-legged Kittiwake (using species default values"),
                   h4("v2.3.2 - January, 2020"),
                   p("Minor bug fixes and packrat added"),
                   tags$ul(
