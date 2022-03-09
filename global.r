@@ -88,8 +88,14 @@ startUpValues <- list(
     Black_legged_Kittiwake = list(
       meanDensity = c(0.97, 1.04, 1.15, 0.48, 0.56, 0.63, 0.68, 0.64, 0.53, 1.20, 1.02, 0.99),
       sdDensity = c(0.67, 0.75, 0.78, 0.36, 0.58, 0.45, 0.47, 0.47, 0.39, 0.78, 0.61, 0.7),
-      trucDensity = c(0,2), bodyLt_E = 0.39, bodyLt_SD = 0.005, wngSpan_E = 1.08, wngSpan_SD = 0.04,
-      flSpeed_E = 7.26,  flSpeed_SD = 1.5, noctAct_E = 0.033, noctAct_SD = 0.0045, CRHeight_E = 0.06,
+      trucDensity = c(0,2), 
+      bodyLt_E = dfltSpecSizeAndSpeed$Black_legged_Kittiwake$bodyLt_E, 
+      bodyLt_SD = dfltSpecSizeAndSpeed$Black_legged_Kittiwake$bodyLt_SD, 
+      wngSpan_E = dfltSpecSizeAndSpeed$Black_legged_Kittiwake$wngSpan_E, 
+      wngSpan_SD = dfltSpecSizeAndSpeed$Black_legged_Kittiwake$wngSpan_SD,
+      flSpeed_E = dfltSpecSizeAndSpeed$Black_legged_Kittiwake$flSpeed_E,  
+      flSpeed_SD = 1, # no source for SD
+      noctAct_E = 0.033, noctAct_SD = 0.0045, CRHeight_E = 0.06,
       CRHeight_SD = 0.009, basicAvoid_E = 0.989, basicAvoid_SD = 0.001, extAvoid_E = 0.967, extAvoid_SD = 0.002,
       flType = "Flapping"
     ), 
