@@ -860,24 +860,24 @@ function(input, output, session) {
       x %<>% rename(Height = matches("(H|h)eight")) %>%
         select_if(colSums(., na.rm = TRUE) > 0)
       
-      output[[plotTagBoot_user]] <-  renderD3heatmap({
-        
-        validate(
-          need(ncol(x) > 1,
-               paste0("Error: uploaded FHD data is not valid - at least one of the bootstrap samples provided needs to be non-zero.")),
-          errorClass = "valErrorMsgClass_2"
-        )
-         
-        
-        x %>%
-          select(1:min(100, ncol(.))) %>%
-          slice(1:50) %>%
-          arrange(desc(Height)) %>%
-          select(-Height) %>%
-          d3heatmap(colors = manual2_pal_cont(40), dendrogram = 'none', labRow = paste0(nrow(.):1, " m"),
-                    xaxis_font_size= "5pt", labCol = paste0("bootID ", 1:ncol(.)))
-        
-      })
+      # output[[plotTagBoot_user]] <-  renderD3heatmap({
+      #   
+      #   validate(
+      #     need(ncol(x) > 1,
+      #          paste0("Error: uploaded FHD data is not valid - at least one of the bootstrap samples provided needs to be non-zero.")),
+      #     errorClass = "valErrorMsgClass_2"
+      #   )
+      #    
+      #   
+      #   x %>%
+      #     select(1:min(100, ncol(.))) %>%
+      #     slice(1:50) %>%
+      #     arrange(desc(Height)) %>%
+      #     select(-Height) %>%
+      #     d3heatmap(colors = manual2_pal_cont(40), dendrogram = 'none', labRow = paste0(nrow(.):1, " m"),
+      #               xaxis_font_size= "5pt", labCol = paste0("bootID ", 1:ncol(.)))
+      #   
+      # })
       
       output[[plotTagBootQts_user]] <- renderPlot({
         
@@ -921,25 +921,25 @@ function(input, output, session) {
       
       addedSpec_defFHDBootDt <- fread_possibly(paste0("data/", specLabel, "_ht_dflt.csv"))
 
-      output[[plotTagBoot]] <- renderD3heatmap({
-        
-        validate(
-          need(!is.null(addedSpec_defFHDBootDt),
-               paste0("Warning: Default FHD data for ", x, " not available. ",
-                      "Select 'Other' to upload data. ",
-                      "Missing data will lead to invalid results for model Options 2 & 3"
-               )),
-          errorClass = "valErrorMsgClass_2"
-        )
-        
-        addedSpec_defFHDBootDt %>%
-          slice(1:50) %>%
-          arrange(desc(Height_m)) %>%
-          select(bootId_1:bootId_100) %>%
-          d3heatmap(colors = manual2_pal_cont(40), dendrogram = 'none', labRow = paste0(nrow(.):1, " m"),
-                    xaxis_font_size= "5pt", labCol = paste0("bootID ", 1:ncol(.)))
-        
-      })
+      # output[[plotTagBoot]] <- renderD3heatmap({
+      #   
+      #   validate(
+      #     need(!is.null(addedSpec_defFHDBootDt),
+      #          paste0("Warning: Default FHD data for ", x, " not available. ",
+      #                 "Select 'Other' to upload data. ",
+      #                 "Missing data will lead to invalid results for model Options 2 & 3"
+      #          )),
+      #     errorClass = "valErrorMsgClass_2"
+      #   )
+      #   
+      #   addedSpec_defFHDBootDt %>%
+      #     slice(1:50) %>%
+      #     arrange(desc(Height_m)) %>%
+      #     select(bootId_1:bootId_100) %>%
+      #     d3heatmap(colors = manual2_pal_cont(40), dendrogram = 'none', labRow = paste0(nrow(.):1, " m"),
+      #               xaxis_font_size= "5pt", labCol = paste0("bootID ", 1:ncol(.)))
+      #   
+      # })
       
       
       output[[plotTagBootQts]] <- renderPlot({
@@ -2221,7 +2221,7 @@ function(input, output, session) {
       modalDialog(size = "l",
                   title = h3("Release Notes"),
                   h4("v2.3.3 - March, 2022"),
-                  p("Changed startup values of flight speed, body length and wing-span for Black-legged Kittiwake (using species default values"),
+                  p("Startup values of flight speed, body length and wing-span for Black-legged Kittiwake from global defaults (refer to issue #27)"),
                   h4("v2.3.2 - January, 2020"),
                   p("Minor bug fixes and packrat added"),
                   tags$ul(

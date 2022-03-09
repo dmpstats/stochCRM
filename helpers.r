@@ -252,36 +252,46 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, sp
 
                          br(),
                          
-                         # --- Default FHD data
-                         awesomeRadio(inputId = paste0("aweRadio_userOpts_defaultFHDPlotType_", specLabel),
-                                      label = "Data visualisation",
-                                      choices = c("Bootstrap quantiles" = "Qtls",
-                                                  "Bootstrap samples" = "bootSamp"),
-                                      inline = TRUE,
-                                      selected = "Qtls",
-                                      status = "warning"),
-                        
-                         # nested conditions for panels with plots of bootstrap data
-                         conditionalPanel(condition = paste0("input.aweRadio_userOpts_defaultFHDPlotType_", specLabel, " == 'Qtls'"),
-                                          column(12, p(paste0("Proportion of ", specName," flying at 1m height intervals 
+                         column(12, p(paste0("Proportion of ", specName," flying at 1m height intervals 
                                                          (medians and 95% intervals of bootstrap data) - Default Data"))),
-                                          br(),
-                                          plotOutput(paste0("plot_defaultFHD_QtsBoot_", specLabel), width = "100%", height = 400),
-                                          br(),
-                                          column(3, offset = 9,
-                                                 helpText(tags$i(tags$a(href ="http://onlinelibrary.wiley.com/doi/10.1111/1365-2664.12191/full", 
-                                                                        target = "_blank", "Source: Johnson et al (2014)"))))
-                         ),
-                         conditionalPanel(condition = paste0("input.aweRadio_userOpts_defaultFHDPlotType_", specLabel, " == 'bootSamp'"),
-                                          column(12, p(paste0("100 Bootstrap samples of proportion of ", specName, " flying at 1m height 
-                                                              bands (first 50m plotted; full data up to 300m) - Default Data"))),
-                                          br(),
-                                          d3heatmapOutput(paste0("plot_defaultFHD_allBoots_", specLabel), width = "105%", height = 430),
-                                          column(3, offset = 9,
-                                                 helpText(tags$i(tags$a(href ="http://onlinelibrary.wiley.com/doi/10.1111/1365-2664.12191/full",
-                                                                        target = "_blank",
-                                                                        "Source: Johnson et al (2014)"))))
-                         )
+                         br(),
+                         plotOutput(paste0("plot_defaultFHD_QtsBoot_", specLabel), width = "100%", height = 400),
+                         br(),
+                         column(3, offset = 9,
+                                helpText(tags$i(tags$a(href ="http://onlinelibrary.wiley.com/doi/10.1111/1365-2664.12191/full", 
+                                                       target = "_blank", "Source: Johnson et al (2014)")))),
+                         
+                         
+                         # # --- Default FHD data
+                         # awesomeRadio(inputId = paste0("aweRadio_userOpts_defaultFHDPlotType_", specLabel),
+                         #              label = "Data visualisation",
+                         #              choices = c("Bootstrap quantiles" = "Qtls",
+                         #                          "Bootstrap samples" = "bootSamp"),
+                         #              inline = TRUE,
+                         #              selected = "Qtls",
+                         #              status = "warning"),
+                         # 
+                         # # nested conditions for panels with plots of bootstrap data
+                         # conditionalPanel(condition = paste0("input.aweRadio_userOpts_defaultFHDPlotType_", specLabel, " == 'Qtls'"),
+                         #                  column(12, p(paste0("Proportion of ", specName," flying at 1m height intervals 
+                         #                                 (medians and 95% intervals of bootstrap data) - Default Data"))),
+                         #                  br(),
+                         #                  plotOutput(paste0("plot_defaultFHD_QtsBoot_", specLabel), width = "100%", height = 400),
+                         #                  br(),
+                         #                  column(3, offset = 9,
+                         #                         helpText(tags$i(tags$a(href ="http://onlinelibrary.wiley.com/doi/10.1111/1365-2664.12191/full", 
+                         #                                                target = "_blank", "Source: Johnson et al (2014)"))))
+                         # ),
+                         # conditionalPanel(condition = paste0("input.aweRadio_userOpts_defaultFHDPlotType_", specLabel, " == 'bootSamp'"),
+                         #                  column(12, p(paste0("100 Bootstrap samples of proportion of ", specName, " flying at 1m height 
+                         #                                      bands (first 50m plotted; full data up to 300m) - Default Data"))),
+                         #                  br(),
+                         #                  d3heatmapOutput(paste0("plot_defaultFHD_allBoots_", specLabel), width = "105%", height = 430),
+                         #                  column(3, offset = 9,
+                         #                         helpText(tags$i(tags$a(href ="http://onlinelibrary.wiley.com/doi/10.1111/1365-2664.12191/full",
+                         #                                                target = "_blank",
+                         #                                                "Source: Johnson et al (2014)"))))
+                         # )
                        ),
                        conditionalPanel(
                          condition = paste0("input.slctInput_userOpts_FHD_dtSrc_", specLabel, " == 'other'"),
@@ -289,28 +299,33 @@ selectSpecies_UITabBuilder <- function(specName, tabName, specLabel, session, sp
                          br(),
                          uiOutput(paste0("renderUI_uploadUserFHD_", specLabel), inline = TRUE),
                          column(12,
-                           # --- User FHD data
-                           awesomeRadio(inputId = paste0("aweRadio_userOpts_UserFHDPlotType_", specLabel),
-                                        label = "Data visualisation",
-                                        choices = c("Bootstrap quantiles" = "Qtls",
-                                                    "Bootstrap samples" = "bootSamp"),
-                                        inline = TRUE,
-                                        selected = "Qtls",
-                                        status = "warning"),
-                           
-                           # nested conditions for panels with plots of bootstrap data
-                           conditionalPanel(condition = paste0("input.aweRadio_userOpts_UserFHDPlotType_", specLabel, " == 'Qtls'"),
-                                            column(12, p(paste0("Proportion of ", specName," flying at 1m height intervals 
+                                column(12, p(paste0("Proportion of ", specName," flying at 1m height intervals 
                                                          (medians and 95% intervals of bootstrap data) - Uploaded Data"))),
-                                            br(),
-                                            plotOutput(paste0("plot_UserFHD_QtsBoot_", specLabel), width = "100%", height = 430)
-                           ),
-                           conditionalPanel(condition = paste0("input.aweRadio_userOpts_UserFHDPlotType_", specLabel, " == 'bootSamp'"),
-                                            column(12, p(paste0("100 Bootstrap samples of proportion of ", specName, " flying at 1m height 
-                                                         bands (only first 50m plotted) - Uploaded Data"))),
-                                            br(),
-                                            d3heatmapOutput(paste0("plot_UserFHD_allBoots_", specLabel), width = "105%", height = 430)
-                           )
+                                br(),
+                                plotOutput(paste0("plot_UserFHD_QtsBoot_", specLabel), width = "100%", height = 430)
+                                
+                           # # --- User FHD data
+                           # awesomeRadio(inputId = paste0("aweRadio_userOpts_UserFHDPlotType_", specLabel),
+                           #              label = "Data visualisation",
+                           #              choices = c("Bootstrap quantiles" = "Qtls",
+                           #                          "Bootstrap samples" = "bootSamp"),
+                           #              inline = TRUE,
+                           #              selected = "Qtls",
+                           #              status = "warning"),
+                           # 
+                           # # nested conditions for panels with plots of bootstrap data
+                           # conditionalPanel(condition = paste0("input.aweRadio_userOpts_UserFHDPlotType_", specLabel, " == 'Qtls'"),
+                           #                  column(12, p(paste0("Proportion of ", specName," flying at 1m height intervals 
+                           #                               (medians and 95% intervals of bootstrap data) - Uploaded Data"))),
+                           #                  br(),
+                           #                  plotOutput(paste0("plot_UserFHD_QtsBoot_", specLabel), width = "100%", height = 430)
+                           # ),
+                           # conditionalPanel(condition = paste0("input.aweRadio_userOpts_UserFHDPlotType_", specLabel, " == 'bootSamp'"),
+                           #                  column(12, p(paste0("100 Bootstrap samples of proportion of ", specName, " flying at 1m height 
+                           #                               bands (only first 50m plotted) - Uploaded Data"))),
+                           #                  br(),
+                           #                  d3heatmapOutput(paste0("plot_UserFHD_allBoots_", specLabel), width = "105%", height = 430)
+                           # )
                          )
                        )
                    )
