@@ -69,7 +69,7 @@ function(input, output, session) {
       species_SubItemsList <- cSelSpec %>%
         select(species, specTabNames) %>%
         rename(text = species, tabName = specTabNames) %>%
-        pmap(menuSubItem, icon = icon("sliders"))
+        pmap(menuSubItem, icon = icon("sliders-h"))
     }else{
       species_SubItemsList <- NULL
     }

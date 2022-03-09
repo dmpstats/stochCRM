@@ -57,7 +57,7 @@
       #style = "position: fixed; overflow: visible;",
       
       menuItem(
-        "Step 1: Turbine & Wind farm features", tabName = "tab_turbWindPars", icon = icon("tachometer")
+        "Step 1: Turbine & Wind farm features", tabName = "tab_turbWindPars", icon = icon("tachometer-alt")
       ),
       
       menuItem(text = "Step 2: Specie(s)", icon = icon("bullseye"),
@@ -76,7 +76,7 @@
       
       
       menuItem(#selected = TRUE,
-        "Step 4: Simulation & Results", tabName = "tab_simulation", icon = icon("bar-chart")
+        "Step 4: Simulation & Results", tabName = "tab_simulation", icon = icon("chart-bar")
       ),
       
       
